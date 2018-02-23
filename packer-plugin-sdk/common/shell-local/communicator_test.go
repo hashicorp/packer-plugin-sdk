@@ -1,4 +1,4 @@
-package shell
+package shell_local
 
 import (
 	"bytes"
