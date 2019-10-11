@@ -1,8 +1,10 @@
 package chroot
 
 import (
+	"context"
+
+	"github.com/hashicorp/packer/helper/multistep"
 	"github.com/hashicorp/packer/packer"
-	"github.com/mitchellh/multistep"
 )
 
 type preMountCommandsData struct {
@@ -14,7 +16,7 @@ type StepPreMountCommands struct {
 	Commands []string
 }
 
-func (s *StepPreMountCommands) Run(state multistep.StateBag) multistep.StepAction {
+func (s *StepPreMountCommands) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	config := state.Get("config").(*Config)
 	device := state.Get("device").(string)
 	ui := state.Get("ui").(packer.Ui)
@@ -24,11 +26,11 @@ func (s *StepPreMountCommands) Run(state multistep.StateBag) multistep.StepActio
 		return multistep.ActionContinue
 	}
 
-	ctx := config.ctx
-	ctx.Data = &preMountCommandsData{Device: device}
+	ictx := config.ctx
+	ictx.Data = &preMountCommandsData{Device: device}
 
 	ui.Say("Running device setup commands...")
-	if err := RunLocalCommands(s.Commands, wrappedCommand, ctx, ui); err != nil {
+	if err := RunLocalCommands(s.Commands, wrappedCommand, ictx, ui); err != nil {
 		state.Put("error", err)
 		ui.Error(err.Error())
 		return multistep.ActionHalt

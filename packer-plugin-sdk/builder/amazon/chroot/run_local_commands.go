@@ -1,16 +1,18 @@
 package chroot
 
 import (
+	"context"
 	"fmt"
 
+	sl "github.com/hashicorp/packer/common/shell-local"
 	"github.com/hashicorp/packer/packer"
-	"github.com/hashicorp/packer/post-processor/shell-local"
 	"github.com/hashicorp/packer/template/interpolate"
 )
 
-func RunLocalCommands(commands []string, wrappedCommand CommandWrapper, ctx interpolate.Context, ui packer.Ui) error {
+func RunLocalCommands(commands []string, wrappedCommand CommandWrapper, ictx interpolate.Context, ui packer.Ui) error {
+	ctx := context.TODO()
 	for _, rawCmd := range commands {
-		intCmd, err := interpolate.Render(rawCmd, &ctx)
+		intCmd, err := interpolate.Render(rawCmd, &ictx)
 		if err != nil {
 			return fmt.Errorf("Error interpolating: %s", err)
 		}
@@ -21,15 +23,17 @@ func RunLocalCommands(commands []string, wrappedCommand CommandWrapper, ctx inte
 		}
 
 		ui.Say(fmt.Sprintf("Executing command: %s", command))
-		comm := &shell_local.Communicator{}
+		comm := &sl.Communicator{
+			ExecuteCommand: []string{"sh", "-c", command},
+		}
 		cmd := &packer.RemoteCmd{Command: command}
-		if err := cmd.StartWithUi(comm, ui); err != nil {
+		if err := cmd.RunWithUi(ctx, comm, ui); err != nil {
 			return fmt.Errorf("Error executing command: %s", err)
 		}
-		if cmd.ExitStatus != 0 {
+		if cmd.ExitStatus() != 0 {
 			return fmt.Errorf(
 				"Received non-zero exit code %d from command: %s",
-				cmd.ExitStatus,
+				cmd.ExitStatus(),
 				command)
 		}
 	}
