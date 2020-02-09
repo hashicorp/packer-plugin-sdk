@@ -3,6 +3,7 @@ package chroot
 import (
 	"context"
 
+	"github.com/hashicorp/packer/common"
 	"github.com/hashicorp/packer/helper/multistep"
 	"github.com/hashicorp/packer/packer"
 )
@@ -19,17 +20,17 @@ type StepPostMountCommands struct {
 }
 
 func (s *StepPostMountCommands) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
-	config := state.Get("config").(*Config)
+	config := state.Get("config").(interpolateContextProvider)
 	device := state.Get("device").(string)
 	mountPath := state.Get("mount_path").(string)
 	ui := state.Get("ui").(packer.Ui)
-	wrappedCommand := state.Get("wrappedCommand").(CommandWrapper)
+	wrappedCommand := state.Get("wrappedCommand").(common.CommandWrapper)
 
 	if len(s.Commands) == 0 {
 		return multistep.ActionContinue
 	}
 
-	ictx := config.ctx
+	ictx := config.GetContext()
 	ictx.Data = &postMountCommandsData{
 		Device:    device,
 		MountPath: mountPath,
