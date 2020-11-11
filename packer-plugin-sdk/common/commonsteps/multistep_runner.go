@@ -1,4 +1,4 @@
-package common
+package commonsteps
 
 import (
 	"context"
@@ -8,11 +8,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hashicorp/packer/common"
 	"github.com/hashicorp/packer/helper/multistep"
 	"github.com/hashicorp/packer/packer"
 )
 
-func newRunner(steps []multistep.Step, config PackerConfig, ui packer.Ui) (multistep.Runner, multistep.DebugPauseFn) {
+func newRunner(steps []multistep.Step, config common.PackerConfig, ui packer.Ui) (multistep.Runner, multistep.DebugPauseFn) {
 	switch config.PackerOnError {
 	case "", "cleanup":
 	case "abort":
@@ -47,7 +48,7 @@ func newRunner(steps []multistep.Step, config PackerConfig, ui packer.Ui) (multi
 
 // NewRunner returns a multistep.Runner that runs steps augmented with support
 // for -debug and -on-error command line arguments.
-func NewRunner(steps []multistep.Step, config PackerConfig, ui packer.Ui) multistep.Runner {
+func NewRunner(steps []multistep.Step, config common.PackerConfig, ui packer.Ui) multistep.Runner {
 	runner, _ := newRunner(steps, config, ui)
 	return runner
 }
@@ -56,7 +57,7 @@ func NewRunner(steps []multistep.Step, config PackerConfig, ui packer.Ui) multis
 // with support for -debug and -on-error command line arguments.  With -debug it
 // puts the multistep.DebugPauseFn that will pause execution between steps into
 // the state under the key "pauseFn".
-func NewRunnerWithPauseFn(steps []multistep.Step, config PackerConfig, ui packer.Ui, state multistep.StateBag) multistep.Runner {
+func NewRunnerWithPauseFn(steps []multistep.Step, config common.PackerConfig, ui packer.Ui, state multistep.StateBag) multistep.Runner {
 	runner, pauseFn := newRunner(steps, config, ui)
 	if pauseFn != nil {
 		state.Put("pauseFn", pauseFn)

@@ -1,6 +1,6 @@
 //go:generate struct-markdown
 
-package common
+package commonsteps
 
 import (
 	"errors"
