@@ -11,10 +11,10 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/hashicorp/packer/packer-plugin-sdk/multistep"
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
-	"github.com/hashicorp/packer/packer-plugin-sdk/shell-local/localexec"
-	"github.com/hashicorp/packer/packer-plugin-sdk/tmp"
+	"github.com/hashicorp/packer-plugin-sdk/multistep"
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
+	"github.com/hashicorp/packer-plugin-sdk/shell-local/localexec"
+	"github.com/hashicorp/packer-plugin-sdk/tmp"
 )
 
 // StepCreateCD will create a CD disk with the given files.

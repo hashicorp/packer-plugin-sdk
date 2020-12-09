@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/rpc"
 
-	"github.com/hashicorp/packer/packer-plugin-sdk/random"
+	"github.com/hashicorp/packer-plugin-sdk/random"
 )
 
 // TrackProgress starts a pair of ProgressTrackingClient and ProgressProgressTrackingServer

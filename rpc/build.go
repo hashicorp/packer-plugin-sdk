@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 )
 
 // An implementation of packersdk.Build where the build is actually executed

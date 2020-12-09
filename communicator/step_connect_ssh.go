@@ -13,11 +13,11 @@ import (
 
 	"golang.org/x/crypto/ssh/terminal"
 
-	helperssh "github.com/hashicorp/packer/packer-plugin-sdk/communicator/ssh"
-	"github.com/hashicorp/packer/packer-plugin-sdk/multistep"
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
-	"github.com/hashicorp/packer/packer-plugin-sdk/pathing"
-	"github.com/hashicorp/packer/packer-plugin-sdk/sdk-internals/communicator/ssh"
+	helperssh "github.com/hashicorp/packer-plugin-sdk/communicator/ssh"
+	"github.com/hashicorp/packer-plugin-sdk/multistep"
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
+	"github.com/hashicorp/packer-plugin-sdk/pathing"
+	"github.com/hashicorp/packer-plugin-sdk/sdk-internals/communicator/ssh"
 	gossh "golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 	"golang.org/x/net/proxy"

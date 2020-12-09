@@ -9,7 +9,7 @@ import (
 	"os"
 	"sync"
 
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 )
 
 // An implementation of packersdk.Communicator where the communicator is actually

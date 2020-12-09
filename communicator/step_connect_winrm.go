@@ -13,9 +13,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/packer/packer-plugin-sdk/multistep"
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
-	"github.com/hashicorp/packer/packer-plugin-sdk/sdk-internals/communicator/winrm"
+	"github.com/hashicorp/packer-plugin-sdk/multistep"
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
+	"github.com/hashicorp/packer-plugin-sdk/sdk-internals/communicator/winrm"
 	winrmcmd "github.com/masterzen/winrm"
 	"golang.org/x/net/http/httpproxy"
 )

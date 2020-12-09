@@ -15,8 +15,8 @@
 package main
 
 import (
+	pluginsdk "github.com/hashicorp/packer-plugin-sdk/plugin"
 	"github.com/hashicorp/packer/builder/amazon/chroot"
-	pluginsdk "github.com/hashicorp/packer/packer-plugin-sdk/plugin"
 	dockerpush "github.com/hashicorp/packer/post-processor/docker-push"
 	"github.com/hashicorp/packer/provisioner/powershell"
 )

@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"testing"
 
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	amazonebsbuilder "github.com/hashicorp/packer/builder/amazon/ebs"
 	"github.com/hashicorp/packer/command"
 	"github.com/hashicorp/packer/packer"
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
 	fileprovisioner "github.com/hashicorp/packer/provisioner/file"
 	"github.com/hashicorp/packer/provisioner/shell"
 )

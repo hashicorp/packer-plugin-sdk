@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 
 	"golang.org/x/crypto/ssh"
 )

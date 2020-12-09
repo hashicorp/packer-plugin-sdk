@@ -10,9 +10,9 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/hashicorp/packer/packer-plugin-sdk/packerbuilderdata"
-	commontpl "github.com/hashicorp/packer/packer-plugin-sdk/template"
-	"github.com/hashicorp/packer/packer-plugin-sdk/uuid"
+	"github.com/hashicorp/packer-plugin-sdk/packerbuilderdata"
+	commontpl "github.com/hashicorp/packer-plugin-sdk/template"
+	"github.com/hashicorp/packer-plugin-sdk/uuid"
 	strftime "github.com/jehiah/go-strftime"
 )
 

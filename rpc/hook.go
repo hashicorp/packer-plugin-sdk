@@ -5,7 +5,7 @@ import (
 	"log"
 	"sync"
 
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 )
 
 // An implementation of packersdk.Hook where the hook is actually executed
