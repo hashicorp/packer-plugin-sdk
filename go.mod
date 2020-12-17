@@ -29,9 +29,9 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/ugorji/go v0.0.0-20151218193438-646ae4a518c1
 	github.com/zclconf/go-cty v1.4.0
-    golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
-    golang.org/x/mobile v0.0.0-20191130191448-5c0e7e404af8
-    golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	golang.org/x/mobile v0.0.0-20191130191448-5c0e7e404af8
+	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 )
 
