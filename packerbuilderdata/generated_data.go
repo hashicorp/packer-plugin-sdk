@@ -4,7 +4,7 @@
 // relevant details that provisioning scripts may need access to.
 package packerbuilderdata
 
-import "github.com/hashicorp/packer/packer-plugin-sdk/multistep"
+import "github.com/hashicorp/packer-plugin-sdk/multistep"
 
 // This is used in the BasicPlaceholderData() func in the packer/provisioner.go
 // To force users to access generated data via the "generated" func.

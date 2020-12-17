@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hashicorp/packer-plugin-sdk/common"
+	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
-	"github.com/hashicorp/packer/packer-plugin-sdk/common"
-	"github.com/hashicorp/packer/packer-plugin-sdk/multistep"
 )
 
 func newRunner(steps []multistep.Step, config common.PackerConfig, ui packersdk.Ui) (multistep.Runner, multistep.DebugPauseFn) {

@@ -5,7 +5,7 @@
 // having to reimplement common useful functions across various environments.
 package shell
 
-import "github.com/hashicorp/packer/packer-plugin-sdk/common"
+import "github.com/hashicorp/packer-plugin-sdk/common"
 
 // Provisioner contains common fields to all shell provisioners.
 // It is provided as a convenience to encourage plugin developers to

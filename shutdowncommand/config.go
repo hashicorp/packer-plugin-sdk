@@ -6,7 +6,7 @@ package shutdowncommand
 import (
 	"time"
 
-	"github.com/hashicorp/packer/packer-plugin-sdk/template/interpolate"
+	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 )
 
 // ShutdownConfig defines implementation details for shutting down a VM once it

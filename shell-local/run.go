@@ -11,10 +11,10 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/hashicorp/packer-plugin-sdk/multistep/commonsteps"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
-	"github.com/hashicorp/packer/packer-plugin-sdk/multistep/commonsteps"
-	"github.com/hashicorp/packer/packer-plugin-sdk/template/interpolate"
-	"github.com/hashicorp/packer/packer-plugin-sdk/tmp"
+	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
+	"github.com/hashicorp/packer-plugin-sdk/tmp"
 )
 
 func Run(ctx context.Context, ui packersdk.Ui, config *Config, generatedData map[string]interface{}) (bool, error) {

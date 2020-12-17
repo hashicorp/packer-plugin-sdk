@@ -10,8 +10,8 @@ import (
 	"testing"
 
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
+	"github.com/hashicorp/packer-plugin-sdk/template"
 	"github.com/hashicorp/packer/packer"
-	"github.com/hashicorp/packer/packer-plugin-sdk/template"
 	"github.com/hashicorp/packer/provisioner/file"
 	shellprovisioner "github.com/hashicorp/packer/provisioner/shell"
 )

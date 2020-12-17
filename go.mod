@@ -22,7 +22,7 @@ require (
 	github.com/mitchellh/go-fs v0.0.0-20180402235330-b7b9ca407fff
 	github.com/mitchellh/iochan v1.0.0
 	github.com/mitchellh/mapstructure v1.4.0
-	github.com/mitchellh/reflectwalk v1.0.1
+	github.com/mitchellh/reflectwalk v1.0.0
 	github.com/packer-community/winrmcp v0.0.0-20180921211025-c76d91c1e7db
 	github.com/pkg/sftp v1.12.0
 	github.com/ryanuber/go-glob v1.0.0
@@ -34,5 +34,7 @@ require (
 	golang.org/x/net v0.0.0-20201209123823-ac852fbbde11
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 )
+
+replace github.com/hashicorp/packer => /Users/mmarsh/Projects/packer
 
 go 1.14

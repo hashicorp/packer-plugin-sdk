@@ -12,8 +12,8 @@ import (
 	"strings"
 	"testing"
 
+	builderT "github.com/hashicorp/packer-plugin-sdk/acctest"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
-	builderT "github.com/hashicorp/packer/packer-plugin-sdk/acctest"
 )
 
 // ProvisionerTestCase is a single set of tests to run for a provisioner.

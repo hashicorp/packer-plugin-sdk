@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
-	"github.com/hashicorp/packer/packer-plugin-sdk/multistep"
 )
 
 // MultistepDebugFn will return a proper multistep.DebugPauseFn to
