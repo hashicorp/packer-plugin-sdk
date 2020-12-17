@@ -17,8 +17,8 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	urlhelper "github.com/hashicorp/go-getter/v2/helper/url"
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer/packer-plugin-sdk/multistep"
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer/packer-plugin-sdk/tmp"
 )
 

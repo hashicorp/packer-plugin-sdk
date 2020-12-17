@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer/packer-plugin-sdk/multistep"
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer/packer-plugin-sdk/tmp"
 	"github.com/mitchellh/go-fs"
 	"github.com/mitchellh/go-fs/fat"

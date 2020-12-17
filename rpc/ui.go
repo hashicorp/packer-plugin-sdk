@@ -3,7 +3,7 @@ package rpc
 import (
 	"log"
 
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 )
 
 // An implementation of packersdk.Ui where the Ui is actually executed

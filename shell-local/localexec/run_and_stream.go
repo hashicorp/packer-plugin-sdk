@@ -10,7 +10,7 @@ import (
 	"sync"
 	"syscall"
 
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/mitchellh/iochan"
 )
 

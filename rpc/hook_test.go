@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 )
 
 func TestHook_Implements(t *testing.T) {

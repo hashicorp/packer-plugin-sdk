@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer/packer-plugin-sdk/communicator/sshkey"
 	"github.com/hashicorp/packer/packer-plugin-sdk/multistep"
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
 )
 
 // StepSSHKeyGen is a Packer build step that generates SSH key pairs.

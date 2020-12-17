@@ -8,7 +8,7 @@ import (
 	"os"
 	"sort"
 
-	packersdk "github.com/hashicorp/packer/packer-plugin-sdk/packer"
+	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	pluginVersion "github.com/hashicorp/packer/packer-plugin-sdk/version"
 	"github.com/hashicorp/packer/version"
 )
