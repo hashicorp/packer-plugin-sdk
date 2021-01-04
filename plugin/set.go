@@ -113,7 +113,7 @@ func (i *Set) start(kind, name string) error {
 		err = server.RegisterBuilder(i.Builders[name])
 	case "post-processor":
 		err = server.RegisterPostProcessor(i.PostProcessors[name])
-	case "provisioners":
+	case "provisioner":
 		err = server.RegisterProvisioner(i.Provisioners[name])
 	default:
 		err = fmt.Errorf("Unknown plugin type: %s", kind)
