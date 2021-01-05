@@ -13,6 +13,10 @@ import (
 	"github.com/hashicorp/packer/version"
 )
 
+// Use this name to make the name of the plugin in the packer template match
+// the multiplugin suffix, instead of requirng a second part.
+const DEFAULT_NAME = "-packer-default-plugin-name-"
+
 // Set is a plugin set. It's API is meant to be very close to what is returned
 // by plugin.Server
 // It can describe itself or run a single plugin using the CLI arguments.
