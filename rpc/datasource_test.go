@@ -48,8 +48,7 @@ func TestDatasource(t *testing.T) {
 
 	// Test Configure
 	config := 42
-	err := dsClient.Configure(config)
-	if err != nil {
+	if err := dsClient.Configure(config); err != nil {
 		t.Fatalf("error: %s", err)
 	}
 	if !d.configCalled {

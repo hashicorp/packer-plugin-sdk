@@ -10,11 +10,7 @@ import (
 // FlatMockDatasource is an auto-generated flat version of MockDatasource.
 // Where the contents of a field with a `mapstructure:,squash` tag are bubbled up.
 type FlatMockDatasource struct {
-	Foo              *string       `cty:"foo" hcl:"foo"`
-	OutputSpecCalled *bool         `cty:"output_spec_called" hcl:"output_spec_called"`
-	ConfigureCalled  *bool         `cty:"configure_called" hcl:"configure_called"`
-	ConfigureConfigs []interface{} `cty:"configure_configs" hcl:"configure_configs"`
-	ExecuteCalled    *bool         `cty:"execute_called" hcl:"execute_called"`
+	Foo *string `cty:"foo" hcl:"foo"`
 }
 
 // FlatMapstructure returns a new FlatMockDatasource.
@@ -29,11 +25,7 @@ func (*MockDatasource) FlatMapstructure() interface{ HCL2Spec() map[string]hclde
 // The decoded values from this spec will then be applied to a FlatMockDatasource.
 func (*FlatMockDatasource) HCL2Spec() map[string]hcldec.Spec {
 	s := map[string]hcldec.Spec{
-		"foo":                &hcldec.AttrSpec{Name: "foo", Type: cty.String, Required: false},
-		"output_spec_called": &hcldec.AttrSpec{Name: "output_spec_called", Type: cty.Bool, Required: false},
-		"configure_called":   &hcldec.AttrSpec{Name: "configure_called", Type: cty.Bool, Required: false},
-		"configure_configs":  &hcldec.AttrSpec{Name: "configure_configs", Type: cty.Bool, Required: false}, /* TODO(azr): could not find type */
-		"execute_called":     &hcldec.AttrSpec{Name: "execute_called", Type: cty.Bool, Required: false},
+		"foo": &hcldec.AttrSpec{Name: "foo", Type: cty.String, Required: false},
 	}
 	return s
 }
