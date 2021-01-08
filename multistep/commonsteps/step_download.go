@@ -65,6 +65,7 @@ func init() {
 }
 
 func (s *StepDownload) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
+	log.Printf("/////////// NEW RUN CASE/////////////// ")
 	if len(s.Url) == 0 {
 		log.Printf("No URLs were provided to Step Download. Continuing...")
 		return multistep.ActionContinue
