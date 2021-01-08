@@ -22,7 +22,6 @@ import (
 // plugin per plugin type.
 const DEFAULT_NAME = "-packer-default-plugin-name-"
 
-
 // Set is a plugin set. It's API is meant to be very close to what is returned
 // by plugin.Server
 // It can describe itself or run a single plugin using the CLI arguments.
