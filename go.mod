@@ -8,6 +8,7 @@ require (
 	github.com/google/shlex v0.0.0-20150127133951-6f45313302b9
 	github.com/google/uuid v1.1.2
 	github.com/hashicorp/consul/api v1.4.0
+	github.com/hashicorp/go-getter v2.0.0-20200604122502-a6995fa1edad
 	github.com/hashicorp/go-getter/gcs/v2 v2.0.0-20200604122502-a6995fa1edad
 	github.com/hashicorp/go-getter/s3/v2 v2.0.0-20200604122502-a6995fa1edad
 	github.com/hashicorp/go-getter/v2 v2.0.0-20200604122502-a6995fa1edad
