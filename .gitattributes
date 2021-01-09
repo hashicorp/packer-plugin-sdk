@@ -8,4 +8,4 @@
 *.txt text eol=lf
 go.mod text eol=lf
 go.sum text eol=lf
-multistep/commonsteps/test-fixtures/root/* text eol=lf
+multistep/commonsteps/test-fixtures/root/* eol=lf
