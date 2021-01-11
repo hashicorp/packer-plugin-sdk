@@ -42,10 +42,6 @@ func abs(t *testing.T, path string) string {
 }
 
 func TestStepDownload_Run(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Log("skipping download test on windows right now.")
-		return
-	}
 	srvr := httptest.NewServer(http.FileServer(http.Dir("test-fixtures")))
 	defer srvr.Close()
 
