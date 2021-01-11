@@ -1,0 +1,11 @@
+*.go text eol=lf
+*.sh text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.mdx text eol=lf
+*.ps1 text eol=lf
+*.hcl text eol=lf
+*.txt text eol=lf
+go.mod text eol=lf
+go.sum text eol=lf
+multistep/commonsteps/test-fixtures/root/* eol=lf
