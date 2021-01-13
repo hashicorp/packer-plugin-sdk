@@ -1,4 +1,4 @@
-package hcl2
+package hcl2helper
 
 import (
 	"reflect"
