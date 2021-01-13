@@ -37,6 +37,7 @@ type DatasourceTestCase struct {
 	Type string
 }
 
+//nolint:errcheck
 func TestDatasource(t *testing.T, testCase *DatasourceTestCase) {
 	if os.Getenv(TestEnvVar) == "" {
 		t.Skip(fmt.Sprintf(
