@@ -111,10 +111,10 @@ func getSecretValue(s *SecretString, spec *SecretSpec) (string, error) {
 func getStringSecretValue(v interface{}) (string, error) {
 	switch valueType := v.(type) {
 	case string:
-		return v.(string), nil
+		return valueType, nil
 	case float64:
-		return strconv.FormatFloat(v.(float64), 'f', 0, 64), nil
+		return strconv.FormatFloat(valueType, 'f', 0, 64), nil
 	default:
-		return "", fmt.Errorf("Unsupported secret value type: %v", valueType)
+		return "", fmt.Errorf("Unsupported secret value type: %T", valueType)
 	}
 }
