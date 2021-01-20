@@ -25,14 +25,15 @@ function init {
   sed --version > /dev/null || pleaseUseGNUsed
 
   ## Enable GPG Check
-  # gpgKeyCheck
+  if [ "$CI" == true ]; then
+    gpgKeyCheck
+  fi
 
   DATE=`date '+%B %d, %Y'`
   START_DIR=`pwd`
 
   TARGET_VERSION="$(getTargetVersion)"
   TARGET_VERSION_CORE="$(getVersionCore)"
-  TARGET_VERSION_PRERELEASE="$(getVersionPrerelease)"
 }
 
 semverRegex='\([0-9]\+\.[0-9]\+\.[0-9]\+\)\(-\?\)\([0-9a-zA-Z.]\+\)\?'
@@ -81,14 +82,18 @@ function commitChanges {
   git add version/version.go
 
 	## Enable GPG Signing on commits
-	#git commit --gpg-sign="${GPG_KEY_ID}" -m "cut release v${TARGET_VERSION} [skip ci]"
-	#git tag -a -m "v${TARGET_VERSION}" -s -u "${GPG_KEY_ID}" "v${TARGET_VERSION}"
+	if [ "$CI" == true ]; then
+    git commit --gpg-sign="${GPG_KEY_ID}" -m "v${TARGET_VERSION} [skip ci]"
+    git tag -a -m "v${TARGET_VERSION}" -s -u "${GPG_KEY_ID}" "v${TARGET_VERSION}"
+    #git push origin "${CIRCLE_BRANCH}"
+  else
+    printf "Skipping GPG signature on non CI releases...\n"
+    git commit -m "v${TARGET_VERSION} [skip ci]"
+    git tag -a -m "v${TARGET_VERSION}" "v${TARGET_VERSION}"
+    git push origin
+  fi
 
-	git commit -m "cut release v${TARGET_VERSION} [skip ci]"
-	git tag -a -m "v${TARGET_VERSION}" "v${TARGET_VERSION}"
-
-	git push origin "${CIRCLE_BRANCH}"
-  git push origin "v${TARGET_VERSION}"
+  #git push origin "v${TARGET_VERSION}"
 }
 
 function commitMain {
