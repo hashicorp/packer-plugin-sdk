@@ -1,9 +1,8 @@
 module github.com/hashicorp/packer-plugin-sdk
 
 require (
-	github.com/antchfx/xpath v1.1.11 // indirect
-	github.com/antchfx/xquery v0.0.0-20180515051857-ad5b8c7a47b0 // indirect
 	github.com/aws/aws-sdk-go v1.36.5
+	github.com/dylanmei/iso8601 v0.1.0 // indirect
 	github.com/dylanmei/winrmtest v0.0.0-20170819153634-c2fbb09e6c08
 	github.com/gofrs/flock v0.7.3
 	github.com/google/go-cmp v0.5.2
@@ -25,9 +24,11 @@ require (
 	github.com/mitchellh/iochan v1.0.0
 	github.com/mitchellh/mapstructure v1.4.0
 	github.com/mitchellh/reflectwalk v1.0.0
+	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
 	github.com/packer-community/winrmcp v0.0.0-20180921204643-0fd363d6159a
 	github.com/pkg/sftp v0.0.0-20160118190721-e84cc8c755ca
 	github.com/ryanuber/go-glob v1.0.0
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/ugorji/go v0.0.0-20151218193438-646ae4a518c1
 	github.com/zclconf/go-cty v1.7.0
