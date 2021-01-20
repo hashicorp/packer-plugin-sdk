@@ -85,7 +85,7 @@ function commitChanges {
 	if [ "$CI" == true ]; then
     git commit --gpg-sign="${GPG_KEY_ID}" -m "v${TARGET_VERSION} [skip ci]"
     git tag -a -m "v${TARGET_VERSION}" -s -u "${GPG_KEY_ID}" "v${TARGET_VERSION}"
-    #git push origin "${CIRCLE_BRANCH}"
+    git push origin "${CIRCLE_BRANCH}"
   else
     printf "Skipping GPG signature on non CI releases...\n"
     git commit -m "v${TARGET_VERSION} [skip ci]"
