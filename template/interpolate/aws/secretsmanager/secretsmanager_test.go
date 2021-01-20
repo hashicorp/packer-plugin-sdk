@@ -118,6 +118,16 @@ func TestGetSecret(t *testing.T) {
 			want: "ThisIsThePassword",
 			ok:   true,
 		},
+		{
+			description: "input as secret stored with 'String: int' value",
+			arg:         &SecretSpec{Name: "test"},
+			mock: secretsmanager.GetSecretValueOutput{
+				Name:         aws.String("test"),
+				SecretString: aws.String(`{"port": 5432}`),
+			},
+			want: "5432",
+			ok:   true,
+		},
 	}
 
 	for _, test := range testCases {
