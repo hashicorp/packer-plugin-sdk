@@ -25,28 +25,28 @@ function init {
   sed --version > /dev/null || pleaseUseGNUsed
 
   ## Enable GPG Check
-  # gpgKeyCheck
+  if [ "$CI" == true ]; then
+    gpgKeyCheck
+  fi
 
   DATE=`date '+%B %d, %Y'`
   START_DIR=`pwd`
 
   TARGET_VERSION="$(getTargetVersion)"
+
+  if [ -z "${TARGET_VERSION}" ]; then
+   printf "Target version not found in changelog, exiting\n"
+   exit 1
+  fi
+
   TARGET_VERSION_CORE="$(getVersionCore)"
-  TARGET_VERSION_PRERELEASE="$(getVersionPrerelease)"
 }
 
 semverRegex='\([0-9]\+\.[0-9]\+\.[0-9]\+\)\(-\?\)\([0-9a-zA-Z.]\+\)\?'
 
 function getTargetVersion {
   # parse target version from CHANGELOG
-  _version=$(sed -n 's/^## '"$semverRegex"' (Upcoming)$/\1\2\3/p' CHANGELOG.md)
-  if [ -z $_version ]; then
-   echo "Target version not found in changelog, exiting"
-   exit 1
-  fi
-
-  echo $_version
-
+  sed -n 's/^## '"$semverRegex"' (Upcoming)$/\1\2\3/p' CHANGELOG.md
 }
 
 function getVersionCore {
@@ -81,13 +81,17 @@ function commitChanges {
   git add version/version.go
 
 	## Enable GPG Signing on commits
-	#git commit --gpg-sign="${GPG_KEY_ID}" -m "cut release v${TARGET_VERSION} [skip ci]"
-	#git tag -a -m "v${TARGET_VERSION}" -s -u "${GPG_KEY_ID}" "v${TARGET_VERSION}"
+	if [ "$CI" == true ]; then
+    git commit --gpg-sign="${GPG_KEY_ID}" -m "v${TARGET_VERSION} [skip ci]"
+    git tag -a -m "v${TARGET_VERSION}" -s -u "${GPG_KEY_ID}" "v${TARGET_VERSION}"
+    git push origin "${CIRCLE_BRANCH}"
+  else
+    printf "Skipping GPG signature on non CI releases...\n"
+    git commit -m "v${TARGET_VERSION} [skip ci]"
+    git tag -a -m "v${TARGET_VERSION}" "v${TARGET_VERSION}"
+    git push origin main
+  fi
 
-	git commit -m "cut release v${TARGET_VERSION} [skip ci]"
-	git tag -a -m "v${TARGET_VERSION}" "v${TARGET_VERSION}"
-
-	git push origin "${CIRCLE_BRANCH}"
   git push origin "v${TARGET_VERSION}"
 }
 

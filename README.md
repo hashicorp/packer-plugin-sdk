@@ -62,7 +62,7 @@ Releases can be triggered via CircleCI, or the release scripts run from one's ow
 
 `CHANGELOG.md` on the `main` branch must have a line of the following form:
 ```
-# x.y.z (Upcoming)
+## x.y.z (Upcoming)
 ```
 where `x.y.z` is the SDK version you intend to release.
 
