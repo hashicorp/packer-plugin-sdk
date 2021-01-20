@@ -1,4 +1,4 @@
-## 0.0.8 (Upcoming)
+## 0.0.8 (January 20, 2021)
 
 ### Improvements:
 
