@@ -1,14 +1,17 @@
 ## 0.0.8 (Upcoming)
 
 ### Improvements
-* template/interpolate/aws: Add support for getting secrets of type number
-to secretsmanagers function. [GH-18]
+* acctest/datasource: Add Setup function for datasource acceptance testing.
+    [GH-22]
+* template/interpolate/aws: Add support for getting secrets of type number to
+    secretsmanagers function. [GH-18]
 
 ## 0.0.7 (January 15, 2021)
 
 ### Features
 
-* packer/datasource: Add support for new `datasource` plugin type. [GH-6] [GH-9] [GH-15]
+* packer/datasource: Add support for new `datasource` plugin type. [GH-6]
+    [GH-9] [GH-15]
 
 ### Improvements
 
