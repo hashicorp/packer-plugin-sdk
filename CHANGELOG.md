@@ -1,4 +1,4 @@
-## 0.0.8 (Upcoming)
+## 0.0.8 (January 21, 2021)
 
 ### Improvements
 * acctest/datasource: Add Setup function for datasource acceptance testing.
