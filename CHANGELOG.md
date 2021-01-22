@@ -1,4 +1,4 @@
-## 0.0.9 (Upcoming)
+## 0.0.9 (January 22, 2021)
 
 ### Bug fixes
 * rpc/datasource: Fix error return on datasource RPC. [GH-23]
