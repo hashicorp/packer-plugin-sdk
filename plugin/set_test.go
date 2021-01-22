@@ -51,6 +51,7 @@ func TestSet(t *testing.T) {
 	if diff := cmp.Diff(SetDescription{
 		Version:        "1.1.1",
 		SDKVersion:     sdkVersion.String(),
+		APIVersion:     APIVersion,
 		Builders:       []string{"example", "example-2"},
 		PostProcessors: []string{"example", "example-2"},
 		Provisioners:   []string{"example", "example-2"},
