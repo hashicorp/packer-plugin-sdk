@@ -43,7 +43,7 @@ var ErrManuallyStartedPlugin = errors.New(
 
 // Server waits for a connection to this plugin and returns a Packer
 // RPC server that you can use to register components and serve them.
-func Server() (*packrpc.Server, error) {
+func Server() (*packrpc.PluginServer, error) {
 	if os.Getenv(MagicCookieKey) != MagicCookieValue {
 		return nil, ErrManuallyStartedPlugin
 	}
