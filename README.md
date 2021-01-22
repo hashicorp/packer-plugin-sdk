@@ -1,3 +1,5 @@
+[![Go Reference](https://pkg.go.dev/badge/github.com/hashicorp/packer-plugin-sdk/.svg)](https://pkg.go.dev/github.com/hashicorp/packer-plugin-sdk/)
+
 # Packer Plugin SDK
 
 This SDK enables building Packer plugins. This allows Packer's users to use both the officially-supported builders, provisioners, and post-processors, and custom in-house solutions.
@@ -43,7 +45,7 @@ See the [Extending Packer](https://www.packer.io/docs/extending) section on the 
 
 ## Migrating to SDK from built-in SDK
 
-Migrating to the standalone SDK v1 is covered on the [Plugin SDK section](https://www.packer.io/docs/extend/plugin-sdk.html) of the website.
+Migrating to the standalone SDK v1 is covered on the [Plugin SDK section](https://packer-git-master.hashicorp.vercel.app/guides/1.7-plugin-upgrade) of the website.
 
 ## Versioning
 
