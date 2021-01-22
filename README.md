@@ -49,66 +49,6 @@ Migrating to the standalone SDK v1 is covered on the [Plugin SDK section](https:
 
 The Packer Plugin SDK is a [Go module](https://github.com/golang/go/wiki/Modules) versioned using [semantic versioning](https://semver.org/).
 
-## Releasing
-
-The Packer Plugin SDK is distributed as a Go module, so a minimal 'release' is just a git tag on main.
-
-Releases can be triggered via CircleCI, or the release scripts run from one's own machine.
-
-### Releasing via CircleCI
-
-
-#### Changelog
-
-`CHANGELOG.md` on the `main` branch must have a line of the following form:
-```
-## x.y.z (Upcoming)
-```
-where `x.y.z` is the SDK version you intend to release.
-
-
-Underneath the `# x.y.z (Upcoming)` heading, please write human-readable entries describing the changes made in this version.
-
-### Triggering a release
-
-All commits to `main` trigger the `release` workflow on CircleCI, but manual approval is needed to proceed with the workflow.
-
-#### Find all `main` workflows
-
-Go to https://circleci.com/gh/hashicorp/workflows/packer-plugin-sdk/tree/main and click on the latest workflow.
-
-It should show the latest `main` commit, which may be updates to the CHANGELOG.
-
-The status should be `ON HOLD`.
-
-#### Approve the `trigger-release` job
-
-Find the `trigger-release` job on the workflow diagram, click on it, and click Approve.
-
-#### Verify
-
-The workflow will then run several other jobs to test and perform the release.
-
-The main steps performed by the `release.sh` script are:
- - CHANGELOG.md: remove `(Upcoming)` and commit changes
- - tag `vx.y.z`
- - push to `main`
-
-Verify that this has taken place correctly by inspecting the `main` branch once the release is complete.
-### Releasing manually
-
-### Prerequisites
-
-Same as above in the CircleCI process.
-
-### Releasing
-
-Check out `main` locally and pull.
-
-Run `make test` and any other steps you need to satisfy yourself that the release works.
-
-Run `./scripts/release.sh`.
-
 ## Contributing
 
 See [`.github/CONTRIBUTING.md`](https://github.com/hashicorp/packer-plugin-sdk/blob/master/.github/CONTRIBUTING.md)

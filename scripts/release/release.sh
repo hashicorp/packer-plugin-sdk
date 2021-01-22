@@ -70,9 +70,9 @@ function changelogMain {
 
 function modifyVersionFiles {
   printf "Modifying version files..."
-  sed -i "s/const Version =.*/const Version = \"${TARGET_VERSION_CORE}\"/" version/version.go
+  sed -i "s/var Version =.*/var Version = \"${TARGET_VERSION_CORE}\"/" version/version.go
   ## Set pre-release version to empty string
-  sed -i "s/const VersionPrerelease =.*/const VersionPrerelease = \"\"/" version/version.go
+  sed -i "s/var VersionPrerelease =.*/var VersionPrerelease = \"\"/" version/version.go
 }
 
 function commitChanges {
@@ -80,7 +80,6 @@ function commitChanges {
   modifyVersionFiles
   git add version/version.go
 
-	## Enable GPG Signing on commits
 	if [ "$CI" == true ]; then
     git commit --gpg-sign="${GPG_KEY_ID}" -m "v${TARGET_VERSION} [skip ci]"
     git tag -a -m "v${TARGET_VERSION}" -s -u "${GPG_KEY_ID}" "v${TARGET_VERSION}"
