@@ -38,6 +38,9 @@ type PluginTestCase struct {
 	Template string
 	// Type is the type of the plugin.
 	Type string
+	// The extension of the template: .json or .pkr.hcl
+	// Defaults to .pkr.hcl
+	Extension string
 }
 
 //nolint:errcheck
@@ -57,7 +60,11 @@ func TestPlugin(t *testing.T, testCase *PluginTestCase) {
 	}
 
 	logfile := fmt.Sprintf("packer_log_%s.txt", testCase.Name)
-	templatePath := fmt.Sprintf("./%s.pkr.hcl", testCase.Name)
+
+	if testCase.Extension == "" {
+		testCase.Extension = ".pkr.hcl"
+	}
+	templatePath := fmt.Sprintf("./%s%s", testCase.Name, testCase.Extension)
 
 	// Write config hcl2 template
 	out := bytes.NewBuffer(nil)
