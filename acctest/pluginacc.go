@@ -2,6 +2,7 @@ package acctest
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -38,9 +39,6 @@ type PluginTestCase struct {
 	Template string
 	// Type is the type of the plugin.
 	Type string
-	// The extension of the template: .json or .pkr.hcl
-	// Defaults to .pkr.hcl
-	Extension string
 }
 
 //nolint:errcheck
@@ -61,10 +59,11 @@ func TestPlugin(t *testing.T, testCase *PluginTestCase) {
 
 	logfile := fmt.Sprintf("packer_log_%s.txt", testCase.Name)
 
-	if testCase.Extension == "" {
-		testCase.Extension = ".pkr.hcl"
+	extension := ".pkr.hcl"
+	if err := json.Unmarshal([]byte(testCase.Template), &(map[string]interface{}{})); err == nil {
+		extension = ".json"
 	}
-	templatePath := fmt.Sprintf("./%s%s", testCase.Name, testCase.Extension)
+	templatePath := fmt.Sprintf("./%s%s", testCase.Name, extension)
 
 	// Write config hcl2 template
 	out := bytes.NewBuffer(nil)
