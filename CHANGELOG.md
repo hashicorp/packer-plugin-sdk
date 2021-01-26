@@ -1,5 +1,10 @@
 ## 0.0.10 (Upcoming)
 
+### Improvements
+* acctest/pluginacc:  Add a generic plugin acceptance test case structure [GH-28]
+* packer/ui: Update UI mock to keep  output messages [GH-27]
+* plugin: Add `api_version` to the plugin describe command output [GH-24]
+
 ## 0.0.9 (January 22, 2021)
 
 ### Bug fixes
