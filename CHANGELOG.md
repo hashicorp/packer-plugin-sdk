@@ -1,4 +1,4 @@
-## 0.0.10 (Upcoming)
+## 0.0.10 (January 26, 2021)
 
 ### Improvements
 * acctest/pluginacc:  Add a generic plugin acceptance test case structure [GH-28]
