@@ -4,6 +4,11 @@ orbs:
 
 version: 2.1
 
+environment: &ENVIRONMENT
+  EMAIL: 62970560+packer-ci@users.noreply.github.com
+  GIT_AUTHOR_NAME: packer-ci
+  GIT_COMMITTER_NAME: packer-ci
+
 executors:
   golang:
     docker:
@@ -12,6 +17,16 @@ executors:
   darwin:
     macos:
       xcode: "12.0.0"
+
+steps:
+  setup-gpg: &setup-gpg
+    run:
+      name: import base64 GPG key and prime passphrase
+      command: |
+        echo -e "${GPG_KEY}" | base64 -di | gpg --import --batch
+        echo "hello world" > temp.txt
+        gpg --detach-sig --yes -v --output=/dev/null --pinentry-mode loopback --passphrase "${GPG_PASSPHRASE}" temp.txt
+        rm temp.txt
 
 commands:
   install-go-run-tests-unix:
@@ -87,6 +102,18 @@ jobs:
     steps:
       - checkout
       - run: make generate-check
+  release-sdk:
+    executor: golang
+    environment:
+      <<: *ENVIRONMENT
+    steps:
+      - *setup-gpg
+      - add_ssh_keys:
+          fingerprints:
+            - "52:49:7d:88:9b:81:21:fb:71:86:fd:89:c4:4b:95:df" # circleci-key of packer-ci user in GitHub
+      - checkout
+      - run: ./scripts/release/release.sh
+
 
 workflows:
   version: 2
@@ -100,3 +127,27 @@ workflows:
       - check-lint
       - check-fmt
       - check-generate
+  release:
+    jobs:
+      - check-generate
+      - check-fmt
+      - check-lint
+      - test-linux
+      - trigger-release:
+          filters:
+            branches:
+              only:
+                - main
+          type: approval
+      - release-sdk:
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - trigger-release
+            - check-generate
+            - check-fmt
+            - check-lint
+            - test-linux
+
