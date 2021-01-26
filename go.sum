@@ -383,6 +383,7 @@ github.com/hashicorp/packer-plugin-sdk v0.0.6/go.mod h1:Nvh28f+Jmpp2rcaN79bULTou
 github.com/hashicorp/packer-plugin-sdk v0.0.7-0.20210111224258-fd30ebb797f0/go.mod h1:YdWTt5w6cYfaQG7IOi5iorL+3SXnz8hI0gJCi8Db/LI=
 github.com/hashicorp/packer-plugin-sdk v0.0.7-0.20210120105339-f6fd68d2570a/go.mod h1:exN0C+Pe+3zu18l4nxueNjX5cfmslxUX/m/xk4IVmZQ=
 github.com/hashicorp/packer-plugin-sdk v0.0.7-0.20210122130548-45a6ca0a9365/go.mod h1:K7VsU0lfJBDyiUrSNnS/j+zMxSRwwH9WC9QvHv32KsU=
+github.com/hashicorp/packer-plugin-sdk v0.0.7-0.20210125171053-07848ab3fefc/go.mod h1:gUJRyn5t9wqHDxIrm3Qc2rhwj2pV5psSANQLbUfAiEE=
 github.com/hashicorp/serf v0.8.2 h1:YZ7UKsJv+hKjqGVUUbtE3HNj79Eln2oQ75tniF6iPt0=
 github.com/hashicorp/serf v0.8.2/go.mod h1:6hOLApaqBFA1NXqRQAsxw9QxuDEvNxSQRwA/JwenrHc=
 github.com/hashicorp/serf v0.9.2 h1:yJoyfZXo4Pk2p/M/viW+YLibBFiIbKoP79gu7kDAFP0=
@@ -468,6 +469,8 @@ github.com/mattn/go-isatty v0.0.12 h1:wuysRhFDzyxgEmMf5xjvJ2M9dZoWAXNNr5LSBS7uHX
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
 github.com/mattn/go-runewidth v0.0.4 h1:2BvfKmzob6Bmd4YsL0zygOqfdFnK7GR4QL06Do4/p7Y=
 github.com/mattn/go-runewidth v0.0.4/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
+github.com/mattn/go-runewidth v0.0.10 h1:CoZ3S2P7pvtP45xOtBw+/mDL2z0RKI576gSkzRRpdGg=
+github.com/mattn/go-runewidth v0.0.10/go.mod h1:RAqKPSqVFrSLVXbA8x7dzmKdmGzieGRCM46jaSJTDAk=
 github.com/mattn/go-tty v0.0.0-20191112051231-74040eebce08 h1:8YAWbq7rJqfbc6IaAvA2eCQuOQvf6Bs4vHKcOyWw//E=
 github.com/mattn/go-tty v0.0.0-20191112051231-74040eebce08/go.mod h1:XPvLUNfbS4fJH25nqRHfWLMa1ONC8Amw+mIA639KxkE=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
@@ -550,6 +553,8 @@ github.com/prometheus/client_model v0.0.0-20180712105110-5c3871d89910/go.mod h1:
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
 github.com/prometheus/common v0.0.0-20181126121408-4724e9255275/go.mod h1:daVV7qP5qjZbuso7PdcryaAu0sAZbrN9i7WWcTMWvro=
 github.com/prometheus/procfs v0.0.0-20181204211112-1dc9a6cbc91a/go.mod h1:c3At6R/oaqEKCNdg8wHV1ftS6bRYblBhIjjI8uT2IGk=
+github.com/rivo/uniseg v0.1.0 h1:+2KBaVoUmb9XzDsrx/Ct0W/EYOSFf/nWTauy++DprtY=
+github.com/rivo/uniseg v0.1.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/ryanuber/columnize v0.0.0-20160712163229-9b3edd62028f/go.mod h1:sm1tb6uqfes/u+d4ooFouqFdy9/2g9QGwK3SQygK0Ts=
 github.com/ryanuber/columnize v2.1.0+incompatible/go.mod h1:sm1tb6uqfes/u+d4ooFouqFdy9/2g9QGwK3SQygK0Ts=
