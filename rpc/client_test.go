@@ -37,7 +37,7 @@ func testConn(t *testing.T) (net.Conn, net.Conn) {
 	return clientConn, serverConn
 }
 
-func testClientServer(t *testing.T) (*Client, *Server) {
+func testClientServer(t *testing.T) (*Client, *PluginServer) {
 	clientConn, serverConn := testConn(t)
 
 	server, err := NewServer(serverConn)
