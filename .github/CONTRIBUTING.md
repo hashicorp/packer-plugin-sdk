@@ -155,7 +155,7 @@ project. After following the steps in "Setting up Go to work on Packer Plugin SD
 
    For example:
 
-   `git remote add mwhooker https://github.com/mwhooker/packer-plugin-sdk.git`
+   `git remote add $USER https://github.com/mwhooker/packer-plugin-sdk.git`
 
 3. Checkout a feature branch:
 
