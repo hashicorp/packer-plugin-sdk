@@ -1,5 +1,10 @@
 ## 0.0.11 (Upcoming)
 
+### Features                                                                                                                                                                                             
+* plugin: Introduce the concept of APIVersionMajor and APIVersionMinor to the                                                                                                                            
+    RPC address to allow for backward compatible changes with the Packer API                                                                                                                             
+    protocol. [GH-21]
+
 ## 0.0.10 (January 26, 2021)
 
 ### Improvements
