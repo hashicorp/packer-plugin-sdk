@@ -1,4 +1,4 @@
-## 0.0.11 (Upcoming)
+## 0.0.11 (February 04, 2021)
 
 ### Features                                                                                                                                                                                             
 * plugin: Introduce the concept of APIVersionMajor and APIVersionMinor to the                                                                                                                            
