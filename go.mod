@@ -29,7 +29,7 @@ require (
 	github.com/pkg/sftp v0.0.0-20160118190721-e84cc8c755ca
 	github.com/ryanuber/go-glob v1.0.0
 	github.com/stretchr/testify v1.6.1
-	github.com/ugorji/go v0.0.0-20151218193438-646ae4a518c1
+	github.com/ugorji/go/codec v1.2.4
 	github.com/zclconf/go-cty v1.7.0
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
 	golang.org/x/mobile v0.0.0-20201208152944-da85bec010a2
