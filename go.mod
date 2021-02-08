@@ -38,6 +38,4 @@ require (
 	golang.org/x/tools v0.0.0-20201111133315-69daaf961d65
 )
 
-// replace github.com/hashicorp/packer => /Users/azr/go/src/github.com/hashicorp/packer
-
 go 1.14
