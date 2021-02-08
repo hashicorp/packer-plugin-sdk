@@ -16,7 +16,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/hashicorp/go-version v1.2.0
 	github.com/hashicorp/hcl/v2 v2.8.0
-	github.com/hashicorp/packer v1.6.7-0.20210126105722-aef4ced967ec
+	github.com/hashicorp/packer v1.6.7-0.20210208125835-f616955ebcb6
 	github.com/hashicorp/vault/api v1.0.4
 	github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869
@@ -37,7 +37,5 @@ require (
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	golang.org/x/tools v0.0.0-20201111133315-69daaf961d65
 )
-
-// replace github.com/hashicorp/packer => /Users/azr/go/src/github.com/hashicorp/packer
 
 go 1.14
