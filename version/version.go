@@ -31,6 +31,10 @@ var SDKVersion = InitializePluginVersion(Version, VersionPrerelease)
 // versioning and to make sure that plugins which aren't following proper
 // semantic versioning crash immediately rather than later.
 func InitializePluginVersion(vers, versionPrerelease string) *PluginVersion {
+	if vers == "" {
+		// Defaults to "0.0.0". Useful when binary is created for development purpose.
+		vers = "0.0.0"
+	}
 	pv := PluginVersion{
 		version:           vers,
 		versionPrerelease: versionPrerelease,
