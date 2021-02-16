@@ -1,3 +1,8 @@
+## 0.0.12 (Unreleased)
+
+### Features                                                                                                                                                                                             
+* core: Update ugorji/go/codec to v1.2.4 [[GH-31](https://github.com/hashicorp/packer-plugin-sdk/pull/31)]
+
 ## 0.0.11 (February 04, 2021)
 
 ### Features                                                                                                                                                                                             
