@@ -16,7 +16,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/hashicorp/go-version v1.2.0
 	github.com/hashicorp/hcl/v2 v2.8.0
-	github.com/hashicorp/packer v1.6.7-0.20210208125835-f616955ebcb6
+	github.com/hashicorp/packer v1.6.7-0.20210217093213-201869d627bf
 	github.com/hashicorp/vault/api v1.0.4
 	github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869
