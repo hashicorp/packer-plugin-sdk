@@ -1,4 +1,4 @@
-## 0.0.14 (Upcoming)
+## 0.0.14 (February 17, 2021)
 
 ### Features
 
