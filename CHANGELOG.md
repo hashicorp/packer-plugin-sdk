@@ -1,4 +1,9 @@
-## 0.0.13 (February 16, 2021)
+## 0.0.14 (Upcoming)
+
+### Features
+
+* plugin version validation: when no version is passed, default it to 0.0.0 for dev purposes [[GH-36](https://github.com/hashicorp/packer-plugin-sdk/pull/36)]
+* update packer dependency [[GH-37](https://github.com/hashicorp/packer-plugin-sdk/pull/37)]
 
 ## 0.0.12 (February 11, 2021)
 
