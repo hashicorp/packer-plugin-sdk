@@ -18,11 +18,11 @@ Currently, that means Go **1.14** or later must be used when building a provider
 
 ## Getting Started
 
-See the [Extending Packer](https://www.packer.io/docs/extending) docs for a guided tour of plugin development.
+See the [Extending Packer](https://www.packer.io/docs/plugins/creation#extending-packer) docs for a guided tour of plugin development.
 
 ## Documentation
 
-See the [Extending Packer](https://www.packer.io/docs/extending) section on the Packer website.
+See the [Extending Packer](https://www.packer.io/docs/plugins/creation#extending-packer) section on the Packer website.
 
 ## Packer Scope (Plugins VS Core)
 
