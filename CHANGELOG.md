@@ -1,4 +1,4 @@
-## 0.1.0 (Upcoming)
+## 0.1.0 (February 18, 2021)
 
 * core: Update Packer to v1.7.0 [[GH-39](https://github.com/hashicorp/packer-plugin-sdk/pull/39)]
 
