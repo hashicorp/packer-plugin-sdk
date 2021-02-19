@@ -26,7 +26,7 @@ func MapOfInterfaceToMapOfCTY(f reflect.Type, t reflect.Type, v interface{}) (in
 }
 
 // InterfaceToCTY is a similar to hcl2helper.HCL2ValueFromConfigValue
-// but it contains an extra decoding case and is placed here to avoid cyclic dependency.
+// and is placed here to avoid cyclic dependency.
 // It takes a value and turns it into a cty.Value for the config decoder.
 // This for internal usage only, used by the decoder above.
 func InterfaceToCTY(v interface{}) cty.Value {
@@ -55,14 +55,10 @@ func InterfaceToCTY(v interface{}) cty.Value {
 		for k, ev := range tv {
 			vals[k] = InterfaceToCTY(ev)
 		}
-		return cty.ObjectVal(vals)
-	case map[interface{}]interface{}:
-		vals := []cty.Value{}
-		for k, ev := range tv {
-			vals = append(vals, InterfaceToCTY(k))
-			vals = append(vals, InterfaceToCTY(ev))
+		if len(vals) == 0 {
+			return cty.MapValEmpty(cty.String)
 		}
-		return cty.TupleVal(vals)
+		return cty.MapVal(vals)
 	}
 
 	impliedValType, err := gocty.ImpliedType(v)

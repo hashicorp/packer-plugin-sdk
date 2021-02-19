@@ -9,40 +9,30 @@ import (
 
 func TestMapOfInterfaceToMapOfCTY(t *testing.T) {
 	input := map[string]interface{}{
-		"foo": map[interface{}]interface{}{
-			"bar": []uint8("baz"),
+		"foo": map[string]interface{}{
+			"bar": "baz",
 		},
 		"bar": []interface{}{
 			"foo",
-
-			map[interface{}]interface{}{
-				"bar": "baz",
-			},
 		},
 		"bFalse": false,
 		"bTrue":  true,
 		"bNil":   nil,
-		"bStr":   []uint8("bar"),
+		"bStr":   "bar",
 		"bInt":   1,
 		"bFloat": 4.5,
 	}
 
 	expectedOutput := map[string]cty.Value{
-		"foo": cty.TupleVal([]cty.Value{
-			cty.StringVal("bar"),
-			cty.ListVal([]cty.Value{cty.NumberIntVal(98), cty.NumberIntVal(97), cty.NumberIntVal(122)}),
+		"foo": cty.MapVal(map[string]cty.Value{
+			"bar": cty.StringVal("baz"),
 		}),
 		"bar": cty.TupleVal([]cty.Value{
 			cty.StringVal("foo"),
-			cty.TupleVal([]cty.Value{
-				cty.StringVal("bar"),
-				cty.StringVal("baz"),
-			}),
 		}),
 		"bFalse": cty.False,
 		"bTrue":  cty.True,
-		"bNil":   cty.NilVal,
-		"bStr":   cty.ListVal([]cty.Value{cty.NumberIntVal(98), cty.NumberIntVal(97), cty.NumberIntVal(114)}),
+		"bStr":   cty.StringVal("bar"),
 		"bInt":   cty.NumberIntVal(1),
 		"bFloat": cty.NumberFloatVal(4.5),
 	}
