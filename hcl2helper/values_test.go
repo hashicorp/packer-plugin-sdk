@@ -109,6 +109,11 @@ func TestHCL2ValueFromConfigValue(t *testing.T) {
 				cty.StringVal("c"),
 			}),
 		},
+		{
+			Name:  "Empty SliceString",
+			Input: []string{},
+			Want:  cty.ListValEmpty(cty.String),
+		},
 	}
 
 	for _, test := range tests {
