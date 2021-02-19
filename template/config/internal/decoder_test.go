@@ -24,7 +24,7 @@ func TestMapOfInterfaceToMapOfCTY(t *testing.T) {
 	}
 
 	expectedOutput := map[string]cty.Value{
-		"foo": cty.MapVal(map[string]cty.Value{
+		"foo": cty.ObjectVal(map[string]cty.Value{
 			"bar": cty.StringVal("baz"),
 		}),
 		"bar": cty.TupleVal([]cty.Value{
@@ -125,6 +125,11 @@ func TestInterfaceToCTY(t *testing.T) {
 			}),
 		},
 		{
+			Name:  "empty map[string]interface{}",
+			Input: map[string]interface{}{},
+			Want:  cty.EmptyObjectVal,
+		},
+		{
 			Name: "[]interface{} as tuple",
 			Input: []interface{}{
 				"foo",
@@ -134,6 +139,11 @@ func TestInterfaceToCTY(t *testing.T) {
 				cty.StringVal("foo"),
 				cty.True,
 			}),
+		},
+		{
+			Name:  "empty []interface{} as empty tuple",
+			Input: []interface{}{},
+			Want:  cty.EmptyTupleVal,
 		},
 		{
 			Name:  "nil",
@@ -157,24 +167,6 @@ func TestInterfaceToCTY(t *testing.T) {
 			Name:  "Empty SliceString",
 			Input: []string{},
 			Want:  cty.ListValEmpty(cty.String),
-		},
-		{
-			Name: "map[interface{}]interface{}",
-			Input: map[interface{}]interface{}{
-				"name": "Ermintrude",
-				1:      2,
-			},
-			Want: cty.TupleVal([]cty.Value{
-				cty.StringVal("name"),
-				cty.StringVal("Ermintrude"),
-				cty.NumberIntVal(1),
-				cty.NumberIntVal(2),
-			}),
-		},
-		{
-			Name:  "empty map[interface{}]interface{}",
-			Input: map[interface{}]interface{}{},
-			Want:  cty.EmptyTupleVal,
 		},
 	}
 

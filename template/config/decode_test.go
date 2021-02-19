@@ -137,7 +137,7 @@ func TestDecode(t *testing.T) {
 			&Target{
 				MapCtyValue: map[string]cty.Value{
 					"foo": cty.StringVal("bar"),
-					"nested": cty.MapVal(map[string]cty.Value{
+					"nested": cty.ObjectVal(map[string]cty.Value{
 						"nested_foo": cty.StringVal("nested_bar"),
 					}),
 					"number": cty.NumberIntVal(1),
