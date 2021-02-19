@@ -329,6 +329,9 @@ func stringToTrilean(f reflect.Type, t reflect.Type, v interface{}) (interface{}
 	return v, nil
 }
 
+// HCL is not able to decode map[string]interface{}, we must use a map[string]cty.Value instead.
+// mapOfCTYToMapOfInterface will transform the map[string]interface{} decoded from a config
+// to the expected map[string]cty.Value.
 func mapOfCTYToMapOfInterface(f reflect.Type, t reflect.Type, v interface{}) (interface{}, error) {
 	if t == reflect.TypeOf(map[string]cty.Value{}) {
 		to := map[string]cty.Value{}
