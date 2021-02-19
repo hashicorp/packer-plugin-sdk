@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/zclconf/go-cty/cty"
 	"reflect"
 	"strings"
 	"testing"
@@ -11,10 +12,11 @@ import (
 
 func TestDecode(t *testing.T) {
 	type Target struct {
-		Name    string
-		Address string
-		Time    time.Duration
-		Trilean Trilean
+		Name        string
+		Address     string
+		Time        time.Duration
+		Trilean     Trilean
+		MapCtyValue map[string]cty.Value
 	}
 
 	cases := map[string]struct {
@@ -117,6 +119,29 @@ func TestDecode(t *testing.T) {
 			},
 			&Target{
 				Name: "foo",
+			},
+			nil,
+		},
+		"map of cty.Value": {
+			[]interface{}{
+				map[string]interface{}{
+					"mapCtyValue": map[string]interface{}{
+						"foo": "bar",
+						"nested": map[string]interface{}{
+							"nested_foo": "nested_bar",
+						},
+						"number": 1,
+					},
+				},
+			},
+			&Target{
+				MapCtyValue: map[string]cty.Value{
+					"foo": cty.StringVal("bar"),
+					"nested": cty.MapVal(map[string]cty.Value{
+						"nested_foo": cty.StringVal("nested_bar"),
+					}),
+					"number": cty.NumberIntVal(1),
+				},
 			},
 			nil,
 		},
