@@ -36,7 +36,7 @@ type MapServer map[string]string
 func (s MapServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	content, found := s[r.URL.Path]
 	if !found {
-		// TODO: this will be displayed on the remote, here we could implement a
+		// TODO: this will be displayed on stdout, here we could implement a
 		// "did you mean" for helps.
 		http.Error(w, fmt.Sprintf("File %s not found", r.URL.Path), http.StatusNotFound)
 		return
