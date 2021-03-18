@@ -3,6 +3,7 @@ package commonsteps
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"net/http"
 
@@ -40,7 +41,11 @@ func (s MapServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("File %s not found", r.URL.Path), http.StatusNotFound)
 		return
 	}
-	w.Write([]byte(content))
+
+	if _, err := w.Write([]byte(content)); err != nil {
+		// log err in case the file couldn't be 100% transferred for example.
+		log.Printf("http_content serve error: %w", err)
+	}
 }
 
 func (s *StepHTTPServer) Handler() http.Handler {
