@@ -65,7 +65,6 @@ func (s *StepHTTPServer) Run(ctx context.Context, state multistep.StateBag) mult
 	}
 
 	// Find an available TCP port for our HTTP server
-	var httpAddr string
 	var err error
 	s.l, err = net.ListenRangeConfig{
 		Min:     s.HTTPPortMin,
@@ -84,7 +83,7 @@ func (s *StepHTTPServer) Run(ctx context.Context, state multistep.StateBag) mult
 	ui.Say(fmt.Sprintf("Starting HTTP server on port %d", s.l.Port))
 
 	// Start the HTTP server and run it in the background
-	server := &http.Server{Addr: httpAddr, Handler: s.Handler()}
+	server := &http.Server{Addr: "", Handler: s.Handler()}
 	go server.Serve(s.l)
 
 	// Save the address into the state so it can be accessed in the future
