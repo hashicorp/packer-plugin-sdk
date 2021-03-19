@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
-
 	"net/http"
+	"os"
 
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	"github.com/hashicorp/packer-plugin-sdk/net"
@@ -31,6 +31,16 @@ type StepHTTPServer struct {
 	l *net.Listener
 }
 
+func StepHTTPServerFromHTTPConfig(cfg *HTTPConfig) *StepHTTPServer {
+	return &StepHTTPServer{
+		HTTPDir:     cfg.HTTPDir,
+		HTTPContent: cfg.HTTPContent,
+		HTTPPortMin: cfg.HTTPPortMin,
+		HTTPPortMax: cfg.HTTPPortMax,
+		HTTPAddress: cfg.HTTPAddress,
+	}
+}
+
 type MapServer map[string]string
 
 func (s MapServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +54,7 @@ func (s MapServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if _, err := w.Write([]byte(content)); err != nil {
 		// log err in case the file couldn't be 100% transferred for example.
-		log.Printf("http_content serve error: %w", err)
+		log.Printf("http_content serve error: %v", err)
 	}
 }
 
@@ -62,6 +72,15 @@ func (s *StepHTTPServer) Run(ctx context.Context, state multistep.StateBag) mult
 	if s.HTTPDir == "" && len(s.HTTPContent) == 0 {
 		state.Put("http_port", 0)
 		return multistep.ActionContinue
+	}
+
+	if s.HTTPDir != "" {
+		if _, err := os.Stat(s.HTTPDir); err != nil {
+			err := fmt.Errorf("Error finding %q: %s", s.HTTPDir, err)
+			state.Put("error", err)
+			ui.Error(err.Error())
+			return multistep.ActionHalt
+		}
 	}
 
 	// Find an available TCP port for our HTTP server
