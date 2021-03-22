@@ -9,10 +9,10 @@ import (
 	"path"
 	"sort"
 
+	"github.com/hashicorp/packer-plugin-sdk/didyoumean"
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	"github.com/hashicorp/packer-plugin-sdk/net"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
-	"github.com/hashicorp/packer-plugin-sdk/didyoumean"
 )
 
 // This step creates and runs the HTTP server that is serving files from the
@@ -32,6 +32,14 @@ type StepHTTPServer struct {
 	HTTPAddress string
 
 	l *net.Listener
+}
+
+func (s *StepHTTPServer) Handler() http.Handler {
+	if s.HTTPDir != "" {
+		return http.FileServer(http.Dir(s.HTTPDir))
+	}
+
+	return MapServer(s.HTTPContent)
 }
 
 func StepHTTPServerFromHTTPConfig(cfg *HTTPConfig) *StepHTTPServer {
@@ -68,14 +76,6 @@ func (s MapServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// log err in case the file couldn't be 100% transferred for example.
 		log.Printf("http_content serve error: %v", err)
 	}
-}
-
-func (s *StepHTTPServer) Handler() http.Handler {
-	if s.HTTPDir != "" {
-		return http.FileServer(http.Dir(s.HTTPDir))
-	}
-
-	return MapServer(s.HTTPContent)
 }
 
 func (s *StepHTTPServer) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
