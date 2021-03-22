@@ -1,6 +1,7 @@
 module github.com/hashicorp/packer-plugin-sdk
 
 require (
+	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/aws/aws-sdk-go v1.36.5
 	github.com/dylanmei/winrmtest v0.0.0-20170819153634-c2fbb09e6c08
 	github.com/fatih/camelcase v1.0.0
