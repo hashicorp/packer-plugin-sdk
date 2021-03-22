@@ -103,13 +103,7 @@ func (s *StepHTTPServer) Run(ctx context.Context, state multistep.StateBag) mult
 
 	// Start the HTTP server and run it in the background
 	server := &http.Server{Addr: "", Handler: s.Handler()}
-	block := make(chan interface{})
-	go func() {
-		// slightly augment the chances of the server being up before returning
-		close(block)
-		server.Serve(s.l)
-	}()
-	<-block
+	go server.Serve(s.l)
 
 	// Save the address into the state so it can be accessed in the future
 	state.Put("http_port", s.l.Port)
