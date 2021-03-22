@@ -43,12 +43,14 @@ func TestStepHTTPServer_Run(t *testing.T) {
 			},
 		},
 		{
-			&HTTPConfig{HTTPContent: map[string]string{"/foo.txt": "biz", "/foo/bar.txt": "baz"}, HTTPPortMin: 9000},
+			&HTTPConfig{HTTPContent: map[string]string{"/foo.txt": "biz", "/foo/bar.txt": "baz"}, HTTPPortMin: 9001},
 			multistep.ActionContinue,
-			9000,
+			9001,
 			map[string]string{
-				"foo.txt":     "biz",
-				"foo/bar.txt": "baz",
+				"foo.txt":      "biz",
+				"/foo.txt":     "biz",
+				"foo/bar.txt":  "baz",
+				"/foo/bar.txt": "baz",
 			},
 		},
 	}

@@ -6,10 +6,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
+	"sort"
 
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	"github.com/hashicorp/packer-plugin-sdk/net"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
+	"github.com/hashicorp/packer-plugin-sdk/didyoumean"
 )
 
 // This step creates and runs the HTTP server that is serving files from the
@@ -44,11 +47,20 @@ func StepHTTPServerFromHTTPConfig(cfg *HTTPConfig) *StepHTTPServer {
 type MapServer map[string]string
 
 func (s MapServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	content, found := s[r.URL.Path]
+	path := path.Clean(r.URL.Path)
+	content, found := s[path]
 	if !found {
-		// TODO: this will be displayed on stdout, here we could implement a
-		// "did you mean" for helps.
-		http.Error(w, fmt.Sprintf("File %s not found", r.URL.Path), http.StatusNotFound)
+		paths := make([]string, 0, len(s))
+		for k := range s {
+			paths = append(paths, k)
+		}
+		sort.Strings(paths)
+		err := fmt.Sprintf("%s not found.", path)
+		if sug := didyoumean.NameSuggestion(path, paths); sug != "" {
+			err += fmt.Sprintf("Did you mean %q?", sug)
+		}
+
+		http.Error(w, err, http.StatusNotFound)
 		return
 	}
 
@@ -114,6 +126,8 @@ func (s *StepHTTPServer) Run(ctx context.Context, state multistep.StateBag) mult
 func (s *StepHTTPServer) Cleanup(multistep.StateBag) {
 	if s.l != nil {
 		// Close the listener so that the HTTP server stops
-		s.l.Close()
+		if err := s.l.Close(); err != nil {
+			log.Printf("Failed closing http server on port %d: %v", s.l.Port, err)
+		}
 	}
 }
