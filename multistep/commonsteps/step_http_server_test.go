@@ -56,7 +56,7 @@ func TestStepHTTPServer_Run(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%#v", tt.cfg), func(t *testing.T) {
-			s := StepHTTPServerFromHTTPConfig(tt.cfg)
+			s := HTTPServerFromHTTPConfig(tt.cfg)
 			state := testState(t)
 			got := s.Run(context.Background(), state)
 			defer s.Cleanup(state)

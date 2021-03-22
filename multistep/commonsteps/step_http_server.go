@@ -15,6 +15,16 @@ import (
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 )
 
+func HTTPServerFromHTTPConfig(cfg *HTTPConfig) *StepHTTPServer {
+	return &StepHTTPServer{
+		HTTPDir:     cfg.HTTPDir,
+		HTTPContent: cfg.HTTPContent,
+		HTTPPortMin: cfg.HTTPPortMin,
+		HTTPPortMax: cfg.HTTPPortMax,
+		HTTPAddress: cfg.HTTPAddress,
+	}
+}
+
 // This step creates and runs the HTTP server that is serving files from the
 // directory specified by the 'http_directory` configuration parameter in the
 // template.
@@ -40,16 +50,6 @@ func (s *StepHTTPServer) Handler() http.Handler {
 	}
 
 	return MapServer(s.HTTPContent)
-}
-
-func StepHTTPServerFromHTTPConfig(cfg *HTTPConfig) *StepHTTPServer {
-	return &StepHTTPServer{
-		HTTPDir:     cfg.HTTPDir,
-		HTTPContent: cfg.HTTPContent,
-		HTTPPortMin: cfg.HTTPPortMin,
-		HTTPPortMax: cfg.HTTPPortMax,
-		HTTPAddress: cfg.HTTPAddress,
-	}
 }
 
 type MapServer map[string]string
