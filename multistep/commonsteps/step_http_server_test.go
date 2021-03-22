@@ -39,7 +39,7 @@ func TestStepHTTPServer_Run(t *testing.T) {
 			multistep.ActionContinue,
 			9000,
 			map[string]string{
-				"Somedir/myfile.txt": "",
+				"SomeDir/myfile.txt": "",
 			},
 		},
 		{
