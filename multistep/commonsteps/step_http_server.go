@@ -97,6 +97,7 @@ func (s *StepHTTPServer) Run(ctx context.Context, state multistep.StateBag) mult
 
 	// Find an available TCP port for our HTTP server
 	var err error
+	var httpAddr string
 	s.l, err = net.ListenRangeConfig{
 		Min:     s.HTTPPortMin,
 		Max:     s.HTTPPortMax,
@@ -111,12 +112,12 @@ func (s *StepHTTPServer) Run(ctx context.Context, state multistep.StateBag) mult
 		return multistep.ActionHalt
 	}
 
-	httpAddr, present = state.GetOK("http_ip")
-	if present {
-		if httpAddr.(string) == "" {
-			httpAddr = s.HTTPAddress
-		}
-        }
+	httpAddr = s.HTTPAddress
+	httpAddrIface, present := state.GetOk("http_ip")
+	if present && httpAddrIface.(string) != "" {
+		httpAddr = httpAddrIface.(string)
+	}
+
 	ui.Say(fmt.Sprintf("Starting HTTP server on address %s and port %d", httpAddr, s.l.Port))
 
 	// Start the HTTP server and run it in the background
