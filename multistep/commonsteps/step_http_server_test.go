@@ -1,5 +1,3 @@
-//go:generate mapstructure-to-hcl2 -type TestHttpConfig
-
 package commonsteps
 
 import (
