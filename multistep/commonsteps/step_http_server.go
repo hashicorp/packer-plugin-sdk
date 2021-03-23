@@ -65,7 +65,7 @@ func (s MapServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		sort.Strings(paths)
 		err := fmt.Sprintf("%s not found.", path)
 		if sug := didyoumean.NameSuggestion(path, paths); sug != "" {
-			err += fmt.Sprintf("Did you mean %q?", sug)
+			err += fmt.Sprintf(" Did you mean %q?", sug)
 		}
 
 		http.Error(w, err, http.StatusNotFound)
