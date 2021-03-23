@@ -77,7 +77,7 @@ func (c *HTTPConfig) Prepare(ctx *interpolate.Context) []error {
 
 	if len(c.HTTPContent) > 0 && len(c.HTTPDir) > 0 {
 		errs = append(errs,
-			errors.New("http_content cannot be used in conjunction with http_dir, consider using the file function"))
+			errors.New("http_content cannot be used in conjunction with http_dir. Consider using the file function to load file in memory and serve them with http_content: https://www.packer.io/docs/templates/hcl_templates/functions/file/file"))
 	}
 
 	return errs
