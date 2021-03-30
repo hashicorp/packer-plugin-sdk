@@ -20,6 +20,16 @@ func TestUSBDriver(t *testing.T) {
 			false,
 		},
 		{
+			"<pageUp>",
+			key.CodePageUp,
+			false,
+		},
+		{
+			"<pageDown>",
+			key.CodePageDown,
+			false,
+		},
+		{
 			"<leftShiftOff>",
 			key.CodeLeftShift,
 			false,
