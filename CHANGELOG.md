@@ -6,7 +6,7 @@
     alternative method for serving static HTTP content. This option works
     similar to `http_directory` but has the ability to serve files that include
     Go templating variables that can be interpolated at runtime by Packer core.
-    [[GH-43]()https://github.com/hashicorp/packer-plugin-sdk/pull/43]
+    [[GH-43](https://github.com/hashicorp/packer-plugin-sdk/pull/43)]
 
 ### Bugs fixes
 
