@@ -1,5 +1,13 @@
 ## 0.1.1 (Upcoming)
 
+### Notes
+
+In release v0.0.12 a backwards incompatible change was introduced to the
+    packer-plugin-sdk with the update to v1.2.4 for the ugorji/go/codec
+    package. Plugins built with a version of the Packer SDK prior to v0.0.12
+    are encouraged to update to the latest possible version of the SDK to
+    prevent potential codec marshalling issues with Packer v1.7.0 and higher.
+
 ### Features
 
 * commonsteps/http_config: Add `http_content` configuration option as an
@@ -7,6 +15,12 @@
     similar to `http_directory` but has the ability to serve files that include
     Go templating variables that can be interpolated at runtime by Packer core.
     [[GH-43](https://github.com/hashicorp/packer-plugin-sdk/pull/43)]
+
+### Improvements
+
+* didyoumean: Add a "did you mean" package to help find a name from a set of
+    predefined suggestions. [[GH-43](https://github.com/hashicorp/packer-
+    plugin- sdk/pull/43)]
 
 ### Bugs fixes
 
