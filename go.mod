@@ -2,22 +2,22 @@ module github.com/hashicorp/packer-plugin-sdk
 
 require (
 	github.com/agext/levenshtein v1.2.1
-	github.com/aws/aws-sdk-go v1.36.5
+	github.com/aws/aws-sdk-go v1.38.0
 	github.com/dylanmei/winrmtest v0.0.0-20170819153634-c2fbb09e6c08
-	github.com/fatih/camelcase v1.0.0
-	github.com/fatih/structtag v1.0.0
 	github.com/gofrs/flock v0.7.3
-	github.com/google/go-cmp v0.5.2
+	github.com/google/go-cmp v0.5.5
 	github.com/google/shlex v0.0.0-20150127133951-6f45313302b9
 	github.com/google/uuid v1.1.2
 	github.com/hashicorp/consul/api v1.4.0
 	github.com/hashicorp/go-getter/gcs/v2 v2.0.0-20200604122502-a6995fa1edad
 	github.com/hashicorp/go-getter/s3/v2 v2.0.0-20200604122502-a6995fa1edad
 	github.com/hashicorp/go-getter/v2 v2.0.0-20200604122502-a6995fa1edad
-	github.com/hashicorp/go-multierror v1.1.0
+	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-version v1.2.0
-	github.com/hashicorp/hcl/v2 v2.8.0
-	github.com/hashicorp/packer v1.7.0
+	github.com/hashicorp/hcl/v2 v2.9.1
+	github.com/hashicorp/packer v1.7.1
+	github.com/hashicorp/packer-plugin-amazon v0.0.1
+	github.com/hashicorp/packer-plugin-docker v0.0.7
 	github.com/hashicorp/vault/api v1.0.4
 	github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869
@@ -29,14 +29,13 @@ require (
 	github.com/packer-community/winrmcp v0.0.0-20180921204643-0fd363d6159a
 	github.com/pkg/sftp v0.0.0-20160118190721-e84cc8c755ca
 	github.com/ryanuber/go-glob v1.0.0
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	github.com/ugorji/go/codec v1.2.4
-	github.com/zclconf/go-cty v1.7.0
-	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
+	github.com/zclconf/go-cty v1.8.1
+	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	golang.org/x/mobile v0.0.0-20201208152944-da85bec010a2
-	golang.org/x/net v0.0.0-20201209123823-ac852fbbde11
+	golang.org/x/net v0.0.0-20210119194325-5f4716e94777
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
-	golang.org/x/tools v0.0.0-20201111133315-69daaf961d65
 )
 
 go 1.14
