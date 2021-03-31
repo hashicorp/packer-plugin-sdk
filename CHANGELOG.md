@@ -1,5 +1,18 @@
 ## 0.1.1 (Upcoming)
 
+### Features
+
+* commonsteps/http_config: Add `http_content` configuration option as an
+    alternative method for serving static HTTP content. This option works
+    similar to `http_directory` but has the ability to serve files that include
+    Go templating variables that can be interpolated at runtime by Packer core.
+    [[GH-43]()https://github.com/hashicorp/packer-plugin-sdk/pull/43]
+
+### Bugs fixes
+
+* bootcommand: Fix pageUp and pageDown boot command usb key strokes.
+    [[GH-46](https://github.com/hashicorp/packer-plugin-sdk/pull/46)]
+
 ## 0.1.0 (February 18, 2021)
 
 * core: Update Packer to v1.7.0 [[GH-39](https://github.com/hashicorp/packer-plugin-sdk/pull/39)]
@@ -13,14 +26,14 @@
 
 ## 0.0.12 (February 11, 2021)
 
-### Features                                                                                                                                                                                             
+### Features
 * core: Update ugorji/go/codec to v1.2.4 [[GH-31](https://github.com/hashicorp/packer-plugin-sdk/pull/31)]
 
 ## 0.0.11 (February 04, 2021)
 
-### Features                                                                                                                                                                                             
-* plugin: Introduce the concept of APIVersionMajor and APIVersionMinor to the                                                                                                                            
-    RPC address to allow for backward compatible changes with the Packer API                                                                                                                             
+### Features
+* plugin: Introduce the concept of APIVersionMajor and APIVersionMinor to the
+    RPC address to allow for backward compatible changes with the Packer API
     protocol. [GH-21]
 
 ## 0.0.10 (January 26, 2021)
