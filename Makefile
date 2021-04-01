@@ -18,17 +18,9 @@ install-gen-deps: ## Install dependencies for code generation
 	@(cd $(TEMPDIR) && GO111MODULE=on go get github.com/alvaroloes/enumer@master)
 
 	# grab files from github and install them using go install, then remove files again.
-	@mkdir cmd
-	@mkdir cmd/struct-markdown
-	@curl -sSfL -q https://raw.githubusercontent.com/hashicorp/packer/master/cmd/struct-markdown/main.go -o cmd/struct-markdown/main.go
-	@curl -sSfL -q https://raw.githubusercontent.com/hashicorp/packer/master/cmd/struct-markdown/template.go -o cmd/struct-markdown/template.go
-	@go install ./cmd/struct-markdown # in the packer repo
+	@go install github.com/hashicorp/packer/cmd/struct-markdown@latest # in the packer repo
 
-	@mkdir cmd/mapstructure-to-hcl2
-	@curl -sSfL -q https://raw.githubusercontent.com/hashicorp/packer/master/cmd/mapstructure-to-hcl2/mapstructure-to-hcl2.go -o cmd/mapstructure-to-hcl2/mapstructure-to-hcl2.go
-	@go install ./cmd/mapstructure-to-hcl2 # in the packer repo
-
-	@rm -rf cmd
+	@go install github.com/hashicorp/packer/cmd/mapstructure-to-hcl2@latest # in the packer repo
 
 install-lint-deps: ## Install linter dependencies
 	# Pinning golangci-lint at v1.23.8 as --new-from-rev seems to work properly; the latest 1.24.0 has caused issues with memory consumption
