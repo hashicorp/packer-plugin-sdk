@@ -1,5 +1,7 @@
 ## 0.1.2 (Upcoming)
 
+* core: Update Packer to v1.7.1
+
 ## 0.1.1 (March 31, 2021)
 
 ### Notes
