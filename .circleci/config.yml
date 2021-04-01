@@ -12,7 +12,7 @@ environment: &ENVIRONMENT
 executors:
   golang:
     docker:
-      - image: docker.mirror.hashicorp.services/circleci/golang:1.15
+      - image: docker.mirror.hashicorp.services/circleci/golang:1.16
     resource_class: medium+
   darwin:
     macos:
