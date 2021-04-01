@@ -1,3 +1,5 @@
+## 0.1.3 (Upcoming)
+
 ## 0.1.2 (April 01, 2021)
 
 * core: Pin SDK to Golang 1.16 [[GH-48](https://github.com/hashicorp/packer-plugin-sdk/pull/48)]
