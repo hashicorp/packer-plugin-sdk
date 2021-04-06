@@ -39,6 +39,46 @@ func Test_vncSpecialLookup(t *testing.T) {
 	assert.Equal(t, expected, s.e)
 }
 
+func Test_vncShiftSequence(t *testing.T) {
+	in := "AbC"
+	expected := []event{
+		{0xFFE1, true},
+		{0x041, true},
+		{0x041, false},
+		{0xFFE1, false},
+		{0x062, true},
+		{0x062, false},
+		{0xFFE1, true},
+		{0x043, true},
+		{0x043, false},
+		{0xFFE1, false},
+	}
+	s := &sender{}
+	d := NewVNCDriver(s, time.Duration(0))
+	seq, err := GenerateExpressionSequence(in)
+	assert.NoError(t, err)
+	err = seq.Do(context.Background(), d)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, s.e)
+}
+
+func Test_vncShiftSingle(t *testing.T) {
+	in := "<Aon><Aoff>"
+	expected := []event{
+		{0xFFE1, true},
+		{0x041, true},
+		{0x041, false},
+		{0xFFE1, false},
+	}
+	s := &sender{}
+	d := NewVNCDriver(s, time.Duration(0))
+	seq, err := GenerateExpressionSequence(in)
+	assert.NoError(t, err)
+	err = seq.Do(context.Background(), d)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, s.e)
+}
+
 func Test_vncIntervalNotGiven(t *testing.T) {
 	s := &sender{}
 	d := NewVNCDriver(s, time.Duration(0))
