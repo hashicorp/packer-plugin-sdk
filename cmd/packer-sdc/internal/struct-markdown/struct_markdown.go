@@ -54,7 +54,7 @@ func (cmd *Command) Run(args []string) int {
 		if strings.HasPrefix(base, "packer-plugin-") {
 			projectRoot = dir
 			filePath, _ = filepath.Rel(projectRoot, absFilePath)
-			docsFolder = filepath.Join("docs", "partials")
+			docsFolder = filepath.Join("docs-partials")
 			break
 		}
 	}
