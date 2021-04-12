@@ -8,6 +8,7 @@ require (
 	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/hashicorp/hcl/v2 v2.9.1
 	github.com/mitchellh/cli v1.1.2
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/zclconf/go-cty v1.8.1
 	golang.org/x/tools v0.1.0
 )
