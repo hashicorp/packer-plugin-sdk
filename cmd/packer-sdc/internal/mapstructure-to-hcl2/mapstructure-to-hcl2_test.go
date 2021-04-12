@@ -24,6 +24,8 @@ package mapstructure_to_hcl2
 import (
 	"fmt"
 	"testing"
+
+	. "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/cmd"
 )
 
 func TestCMD_Run(t *testing.T) {
@@ -34,15 +36,24 @@ func TestCMD_Run(t *testing.T) {
 	tests := []struct {
 		args []string
 		want int
+		FileCheck
 	}{
-		{[]string{"-type", "Config,CustomerEncryptionKey", "test-data/packer-plugin-google/builder/happycloud/"}, 0},
+		{
+			[]string{"-type", "Config,CustomerEncryptionKey", "test-data/packer-plugin-google/builder/happycloud/config.go"},
+			0,
+			FileCheck{
+				Expected: []string{"test-data/packer-plugin-google/builder/happycloud/config.hcl2spec.go"},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s", tt.args), func(t *testing.T) {
+			defer tt.FileCheck.cleanup(t)
 			cmd := &CMD{}
 			if got := cmd.Run(tt.args); got != tt.want {
 				t.Errorf("CMD.Run() = %v, want %v", got, tt.want)
 			}
+			tt.FileCheck.verify(t, ".")
 		})
 	}
 }
