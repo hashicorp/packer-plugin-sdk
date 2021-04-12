@@ -39,10 +39,10 @@ func TestCMD_Run(t *testing.T) {
 		FileCheck
 	}{
 		{
-			[]string{"-type", "Config,CustomerEncryptionKey", "test-data/packer-plugin-google/builder/happycloud/config.go"},
+			[]string{"-type", "Config,CustomerEncryptionKey", "../test-data/packer-plugin-google/builder/happycloud/config.go"},
 			0,
 			FileCheck{
-				Expected: []string{"test-data/packer-plugin-google/builder/happycloud/config.hcl2spec.go"},
+				Expected: []string{"../test-data/packer-plugin-google/builder/happycloud/config.hcl2spec.go"},
 			},
 		},
 	}

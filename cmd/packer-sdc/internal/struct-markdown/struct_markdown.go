@@ -15,16 +15,16 @@ import (
 	"github.com/fatih/structtag"
 )
 
-type StructMarkdownCMD struct {
+type Command struct {
 }
 
-func (cmd *StructMarkdownCMD) Help() string {
+func (cmd *Command) Help() string {
 	return `
 	Usage: stuct-markdown file
 	`
 }
 
-func (cmd *StructMarkdownCMD) Run(args []string) int {
+func (cmd *Command) Run(args []string) int {
 	if len(args) == 0 {
 		// Default: process the file
 		args = []string{os.Getenv("GOFILE")}
@@ -198,6 +198,6 @@ func (cmd *StructMarkdownCMD) Run(args []string) int {
 	return 0
 }
 
-func (cmd *StructMarkdownCMD) Synopsis() string {
+func (cmd *Command) Synopsis() string {
 	return "Generates a markdown file from the comments contained in a struct config."
 }
