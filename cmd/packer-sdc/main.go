@@ -5,7 +5,9 @@ import (
 	"os"
 
 	"github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/generate"
+	mapstructure_to_hcl2 "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/mapstructure-to-hcl2"
 	se "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/snippet-extractor"
+	struct_markdown "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/struct-markdown"
 	"github.com/mitchellh/cli"
 )
 
