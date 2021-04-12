@@ -48,12 +48,12 @@ func TestCMD_Run(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s", tt.args), func(t *testing.T) {
-			defer tt.FileCheck.cleanup(t)
+			defer tt.FileCheck.Cleanup(t)
 			cmd := &CMD{}
 			if got := cmd.Run(tt.args); got != tt.want {
 				t.Errorf("CMD.Run() = %v, want %v", got, tt.want)
 			}
-			tt.FileCheck.verify(t, ".")
+			tt.FileCheck.Verify(t, ".")
 		})
 	}
 }

@@ -14,8 +14,8 @@ type FileCheck struct {
 	ExpectedContent       map[string]string
 }
 
-func (fc FileCheck) cleanup(t *testing.T) {
-	for _, file := range fc.expectedFiles() {
+func (fc FileCheck) Cleanup(t *testing.T) {
+	for _, file := range fc.ExpectedFiles() {
 		t.Logf("removing %v", file)
 		if err := os.Remove(file); err != nil {
 			t.Errorf("failed to remove file %s: %v", file, err)
@@ -23,7 +23,7 @@ func (fc FileCheck) cleanup(t *testing.T) {
 	}
 }
 
-func (fc FileCheck) expectedFiles() []string {
+func (fc FileCheck) ExpectedFiles() []string {
 	expected := fc.Expected
 	for file := range fc.ExpectedContent {
 		expected = append(expected, file)
@@ -31,8 +31,8 @@ func (fc FileCheck) expectedFiles() []string {
 	return expected
 }
 
-func (fc FileCheck) verify(t *testing.T, dir string) {
-	for _, f := range fc.expectedFiles() {
+func (fc FileCheck) Verify(t *testing.T, dir string) {
+	for _, f := range fc.ExpectedFiles() {
 		if _, err := os.Stat(filepath.Join(dir, f)); err != nil {
 			t.Errorf("Expected to find %s: %v", f, err)
 		}

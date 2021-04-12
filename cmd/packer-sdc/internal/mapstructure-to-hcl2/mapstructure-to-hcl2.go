@@ -29,6 +29,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -100,6 +101,14 @@ func (cmd *CMD) Run(args []string) int {
 	outputPath := strings.ToLower(typeNames[0]) + ".hcl2spec.go"
 	if goFile := os.Getenv("GOFILE"); goFile != "" {
 		outputPath = goFile[:len(goFile)-2] + "hcl2spec.go"
+	} else {
+		fi, err := os.Stat(args[0])
+		if err != nil {
+			log.Fatalf("Stat: %s", err)
+		}
+		if fi.IsDir() {
+			outputPath = filepath.Join(args[0], outputPath)
+		}
 	}
 	log.SetPrefix(fmt.Sprintf(cmdPrefix+": %s.%v: ", os.Getenv("GOPACKAGE"), typeNames))
 
