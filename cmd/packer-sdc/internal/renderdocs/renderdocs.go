@@ -18,7 +18,7 @@ func (cmd *Command) Flags() *flag.FlagSet {
 	fs := flag.NewFlagSet(cmdPrefix, flag.ExitOnError)
 	fs.StringVar(&cmd.SrcDir, "src", "docs", "docs/ folder to copy from.")
 	fs.StringVar(&cmd.PartialsDir, "partials", "docs-partials", "docs-partials/ folder containing all mdx partials.")
-	fs.StringVar(&cmd.DstDir, "dst", ".docs/", "output folder")
+	fs.StringVar(&cmd.DstDir, "dst", ".docs", "output folder.")
 	return fs
 }
 
