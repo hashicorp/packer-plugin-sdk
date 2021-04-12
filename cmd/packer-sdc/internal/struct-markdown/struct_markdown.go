@@ -15,7 +15,10 @@ import (
 	"github.com/fatih/structtag"
 )
 
+const cmdPrefix = "struct-markdown"
+
 type Command struct {
+	outputDir string
 }
 
 func (cmd *Command) Help() string {
@@ -36,17 +39,31 @@ func (cmd *Command) Run(args []string) int {
 		log.Printf(err.Error())
 	}
 
-	projectRoot := os.Getenv("PROJECT_ROOT")
-	var paths []string
-	if projectRoot == "" {
-		// fall back to the packer root.
-		paths = strings.SplitAfter(absFilePath, "packer"+string(os.PathSeparator))
-		projectRoot = paths[0]
-	} else {
-		paths = strings.SplitAfter(absFilePath, projectRoot+string(os.PathSeparator))
+	var projectRoot, docsFolder, filePath string
+
+	for dir := filepath.Dir(absFilePath); len(dir) > 0; dir = filepath.Dir(dir) {
+		base := filepath.Base(dir)
+		log.Printf("base %s", base)
+		switch base {
+		case "packer", "packer-plugin-sdk":
+			projectRoot = dir
+			filePath, _ = filepath.Rel(projectRoot, absFilePath)
+			docsFolder = filepath.Join("website", "content", "partials")
+			break
+		}
+		if strings.HasPrefix(base, "packer-plugin-") {
+			projectRoot = dir
+			filePath, _ = filepath.Rel(projectRoot, absFilePath)
+			docsFolder = filepath.Join("docs", "partials")
+			break
+		}
 	}
-	builderName, _ := filepath.Split(paths[1])
-	builderName = strings.Trim(builderName, string(os.PathSeparator))
+
+	log.Printf("%s %v %s", projectRoot, filePath, docsFolder)
+
+	if projectRoot == "" {
+		log.Fatal("Failed to guess project ROOT. Is this a `packer-plugin-*` named project ?")
+	}
 
 	b, err := ioutil.ReadFile(fname)
 	if err != nil {
@@ -76,25 +93,24 @@ func (cmd *Command) Run(args []string) int {
 		}
 
 		fields := structDecl.Fields.List
-		sourcePath := filepath.ToSlash(paths[1])
 		header := Struct{
-			SourcePath: sourcePath,
+			SourcePath: filePath,
 			Name:       typeSpec.Name.Name,
 			Filename:   typeSpec.Name.Name + ".mdx",
 			Header:     strings.TrimSpace(typeDecl.Doc.Text()),
 		}
 		dataSourceOutput := Struct{
-			SourcePath: sourcePath,
+			SourcePath: filePath,
 			Name:       typeSpec.Name.Name,
 			Filename:   typeSpec.Name.Name + ".mdx",
 		}
 		required := Struct{
-			SourcePath: sourcePath,
+			SourcePath: filePath,
 			Name:       typeSpec.Name.Name,
 			Filename:   typeSpec.Name.Name + "-required.mdx",
 		}
 		notRequired := Struct{
-			SourcePath: sourcePath,
+			SourcePath: filePath,
 			Name:       typeSpec.Name.Name,
 			Filename:   typeSpec.Name.Name + "-not-required.mdx",
 		}
@@ -171,7 +187,8 @@ func (cmd *Command) Run(args []string) int {
 			}
 		}
 
-		dir := filepath.Join(projectRoot, "website", "content", "partials", builderName)
+		dir := filepath.Join(projectRoot, docsFolder, filepath.Dir(filePath))
+		log.Printf("dir: %q", dir)
 		os.MkdirAll(dir, 0755)
 
 		for _, str := range []Struct{header, dataSourceOutput, required, notRequired} {

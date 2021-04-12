@@ -64,7 +64,7 @@ func (cmd *CMD) Help() string {
 }
 
 func (cmd *CMD) Flags() *flag.FlagSet {
-	fs := flag.NewFlagSet("mapstructure-to-hcl2", flag.ExitOnError)
+	fs := flag.NewFlagSet(cmdPrefix, flag.ExitOnError)
 	fs.StringVar(&cmd.typeNames, "type", "", "comma-separated list of type names; must be set")
 	fs.StringVar(&cmd.output, "output", "", "output file name; default srcdir/<type>_hcl2.go")
 	fs.StringVar(&cmd.trimprefix, "trimprefix", "", "trim the `prefix` from the generated constant names")
