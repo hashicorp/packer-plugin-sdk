@@ -6,17 +6,16 @@ import (
 	"go/parser"
 	"go/token"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/fatih/camelcase"
 	"github.com/fatih/structtag"
-	"github.com/mitchellh/cli"
 )
 
 type StructMarkdownCMD struct {
-	Ui cli.Ui
 }
 
 func (cmd *StructMarkdownCMD) Help() string {
@@ -34,7 +33,7 @@ func (cmd *StructMarkdownCMD) Run(args []string) int {
 
 	absFilePath, err := filepath.Abs(fname)
 	if err != nil {
-		cmd.Ui.Error(err.Error())
+		log.Printf(err.Error())
 	}
 
 	projectRoot := os.Getenv("PROJECT_ROOT")
@@ -51,14 +50,14 @@ func (cmd *StructMarkdownCMD) Run(args []string) int {
 
 	b, err := ioutil.ReadFile(fname)
 	if err != nil {
-		cmd.Ui.Error(fmt.Sprintf("ReadFile: %+v", err))
+		log.Printf(fmt.Sprintf("ReadFile: %+v", err))
 		return 1
 	}
 
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, fname, b, parser.ParseComments)
 	if err != nil {
-		cmd.Ui.Error(fmt.Sprintf("ParseFile: %+v", err))
+		log.Printf(fmt.Sprintf("ParseFile: %+v", err))
 		return 1
 	}
 
@@ -108,7 +107,7 @@ func (cmd *StructMarkdownCMD) Run(args []string) int {
 			tag = tag[:len(tag)-1]
 			tags, err := structtag.Parse(tag)
 			if err != nil {
-				cmd.Ui.Error(fmt.Sprintf("structtag.Parse(%s): err: %v", field.Tag.Value, err))
+				log.Printf(fmt.Sprintf("structtag.Parse(%s): err: %v", field.Tag.Value, err))
 				return 1
 			}
 
@@ -183,14 +182,14 @@ func (cmd *StructMarkdownCMD) Run(args []string) int {
 
 			outputFile, err := os.Create(outputPath)
 			if err != nil {
-				cmd.Ui.Error(err.Error())
+				log.Printf(err.Error())
 				return 1
 			}
 			defer outputFile.Close()
 
 			err = structDocsTemplate.Execute(outputFile, str)
 			if err != nil {
-				cmd.Ui.Error(err.Error())
+				log.Printf(err.Error())
 				return 1
 			}
 		}

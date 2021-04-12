@@ -2,12 +2,9 @@ package generate
 
 import (
 	"flag"
-
-	"github.com/mitchellh/cli"
 )
 
 type GenerateDocsCMD struct {
-	Ui        cli.Ui
 	outputDir string
 	extension string
 }

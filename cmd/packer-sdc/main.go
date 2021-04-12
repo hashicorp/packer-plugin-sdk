@@ -12,35 +12,23 @@ import (
 )
 
 func main() {
-	ui := &cli.ColoredUi{
-		ErrorColor: cli.UiColorRed,
-		WarnColor:  cli.UiColorYellow,
-
-		Ui: &cli.BasicUi{
-			Reader:      os.Stdin,
-			Writer:      os.Stdout,
-			ErrorWriter: os.Stderr,
-		},
-	}
 
 	c := cli.NewCLI("packer-sdc", "1.0.0")
 
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
 		"struct-markdown": func() (cli.Command, error) {
-			cmd := md.StructMarkdownCMD{
-				Ui: ui,
-			}
+			cmd := md.StructMarkdownCMD{}
 			return &cmd, nil
 		},
 		"mapstructure-to-hcl2": func() (cli.Command, error) {
-			return &ms.MapstructureToHCL2{Ui: ui}, nil
+			return &ms.CMD{}, nil
 		},
 		"generate-docs": func() (cli.Command, error) {
-			return &generate.GenerateDocsCMD{Ui: ui}, nil
+			return &generate.GenerateDocsCMD{}, nil
 		},
 		"snippet-extractor": func() (cli.Command, error) {
-			return &se.SnippetExtractorCMD{Ui: ui}, nil
+			return &se.SnippetExtractorCMD{}, nil
 		},
 	}
 
