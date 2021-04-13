@@ -40,7 +40,7 @@ func (cmd *Command) Run(args []string) int {
 
 	var projectRoot, docsFolder, filePath string
 
-	for dir := filepath.Dir(absFilePath); len(dir) > 0; dir = filepath.Dir(dir) {
+	for dir := filepath.Dir(absFilePath); len(dir) > 0 && projectRoot == ""; dir = filepath.Dir(dir) {
 		base := filepath.Base(dir)
 		log.Printf("base %s", base)
 		switch base {
@@ -48,13 +48,11 @@ func (cmd *Command) Run(args []string) int {
 			projectRoot = dir
 			filePath, _ = filepath.Rel(projectRoot, absFilePath)
 			docsFolder = filepath.Join("website", "content", "partials")
-			break
 		}
 		if strings.HasPrefix(base, "packer-plugin-") {
 			projectRoot = dir
 			filePath, _ = filepath.Rel(projectRoot, absFilePath)
 			docsFolder = filepath.Join("docs-partials")
-			break
 		}
 	}
 
