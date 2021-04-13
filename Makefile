@@ -17,7 +17,6 @@ install-gen-deps: ## Install dependencies for code generation
 	@(cd $(TEMPDIR) && GO111MODULE=on go get github.com/mna/pigeon@master)
 	@(cd $(TEMPDIR) && GO111MODULE=on go get github.com/alvaroloes/enumer@master)
 
-	# grab files from github and install them using go install, then remove files again.
 	@go install github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc # in the packer repo
 
 install-lint-deps: ## Install linter dependencies
