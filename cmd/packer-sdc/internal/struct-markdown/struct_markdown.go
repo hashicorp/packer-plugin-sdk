@@ -49,13 +49,14 @@ func (cmd *Command) Run(args []string) int {
 		if base == "packer-plugin-sdk" && filepath.Base(filepath.Dir(dir)) == "hashicorp" {
 			projectRoot = dir
 			filePath, _ = filepath.Rel(projectRoot, absFilePath)
-			docsFolder = filepath.Join("docs-partials", "packer-plugin-sdk")
+			docsFolder = filepath.Join("cmd", "packer-sdc", "internal", "renderdocs", "docs-partials", "packer-plugin-sdk")
 			break
 		}
 		if strings.HasPrefix(base, "packer-plugin-") {
 			projectRoot = dir
 			filePath, _ = filepath.Rel(projectRoot, absFilePath)
 			docsFolder = filepath.Join("docs-partials")
+			break
 		}
 	}
 

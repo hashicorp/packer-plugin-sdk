@@ -2,6 +2,7 @@ package renderdocs
 
 import (
 	"bytes"
+	"embed"
 	"flag"
 	"io/ioutil"
 	"log"
@@ -102,7 +103,7 @@ func renderDocsFile(filePath, partialsDir string) error {
 			log.Printf("Unclosed @include quote at %d in %s", ii, filePath)
 		}
 		partialPath := string(f[i+len(includeStr) : ii])
-		partial, err := os.ReadFile(filepath.Join(partialsDir, partialPath))
+		partial, err := getPartial(partialsDir, partialPath)
 		if err != nil {
 			return err
 		}
@@ -110,6 +111,16 @@ func renderDocsFile(filePath, partialsDir string) error {
 	}
 
 	return os.WriteFile(filePath, f, 0)
+}
+
+//go:embed docs-partials/*
+var partialFiles embed.FS
+
+func getPartial(partialsDir, partialPath string) ([]byte, error) {
+	if partial, err := partialFiles.ReadFile(filepath.Join("docs-partials", partialPath)); err == nil {
+		return partial, nil
+	}
+	return os.ReadFile(filepath.Join(partialsDir, partialPath))
 }
 
 func (cmd *Command) Synopsis() string {
