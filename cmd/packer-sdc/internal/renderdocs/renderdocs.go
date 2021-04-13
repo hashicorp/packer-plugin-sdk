@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	fs "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/fs"
 	"github.com/pkg/errors"
@@ -117,7 +118,7 @@ func renderDocsFile(filePath, partialsDir string) error {
 var partialFiles embed.FS
 
 func getPartial(partialsDir, partialPath string) ([]byte, error) {
-	if partial, err := partialFiles.ReadFile(filepath.Join("docs-partials", partialPath)); err == nil {
+	if partial, err := partialFiles.ReadFile(strings.Join([]string{"docs-partials", partialPath}, "/")); err == nil {
 		return partial, nil
 	}
 	return os.ReadFile(filepath.Join(partialsDir, partialPath))
