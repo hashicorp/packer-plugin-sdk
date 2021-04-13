@@ -114,7 +114,7 @@ func (cmd *CMD) Run(args []string) int {
 		return 1
 	}
 	if len(pkgs) != 1 {
-		log.Printf(fmt.Sprintf("error: %d packages found", len(pkgs)))
+		log.Printf("error: %d packages found", len(pkgs))
 		return 1
 	}
 	topPkg := pkgs[0]
