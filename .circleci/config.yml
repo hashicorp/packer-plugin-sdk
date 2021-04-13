@@ -59,7 +59,7 @@ jobs:
     working_directory: /go/src/github.com/hashicorp/packer-plugin-sdk
     steps:
       - checkout
-      - run: TESTARGS="-coverprofile=coverage.txt  -covermode=atomic" make ci
+      - run: TESTARGS="-coverprofile=coverage.txt -covermode=atomic" make ci
       - codecov/upload:
           file: coverage.txt
   test-darwin:
@@ -70,7 +70,7 @@ jobs:
     steps:
       - install-go-run-tests-unix:
           GOOS: darwin
-          GOVERSION: "1.15"
+          GOVERSION: "1.16"
       - codecov/upload:
           file: coverage.txt
   test-windows:
@@ -79,7 +79,7 @@ jobs:
       shell: bash.exe
     steps:
       - install-go-run-tests-windows:
-          GOVERSION: "1.15"
+          GOVERSION: "1.16"
       - codecov/upload:
           file: coverage.txt
   check-lint:
