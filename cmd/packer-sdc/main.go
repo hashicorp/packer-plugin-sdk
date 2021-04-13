@@ -5,6 +5,7 @@ import (
 	"os"
 
 	mapstructure_to_hcl2 "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/mapstructure-to-hcl2"
+	"github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/renderdocs"
 	struct_markdown "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/struct-markdown"
 	"github.com/mitchellh/cli"
 )
@@ -21,6 +22,9 @@ func main() {
 		},
 		"mapstructure-to-hcl2": func() (cli.Command, error) {
 			return &mapstructure_to_hcl2.CMD{}, nil
+		},
+		"renderdocs": func() (cli.Command, error) {
+			return &renderdocs.Command{}, nil
 		},
 	}
 
