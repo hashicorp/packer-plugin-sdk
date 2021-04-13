@@ -63,7 +63,7 @@ func (cmd *SnippetExtractorCMD) Run(args []string) int {
 
 	wd, _ := os.Getwd()
 	fmt.Printf("working from %s\n", wd)
-	cmd.Filenames = extactFilenames(fs.Args())
+	cmd.Filenames = extractFilenames(fs.Args())
 	for _, filename := range cmd.Filenames {
 		cmd.Ui.Info("processing " + filename)
 		ext := filepath.Ext(filename)
@@ -148,7 +148,7 @@ func matches(s, prefix string) string {
 }
 
 // if an entry is a directory all files from directory will be listed.
-func extactFilenames(in []string) []string {
+func extractFilenames(in []string) []string {
 	out := []string{}
 	for _, path := range in {
 		fi, err := os.Stat(path)
@@ -170,5 +170,5 @@ func extactFilenames(in []string) []string {
 			out = append(out, file.Name())
 		}
 	}
-	return in
+	return out
 }
