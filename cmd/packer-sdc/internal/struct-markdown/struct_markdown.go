@@ -44,6 +44,13 @@ func (cmd *Command) Run(args []string) int {
 			projectRoot = dir
 			filePath, _ = filepath.Rel(projectRoot, absFilePath)
 			docsFolder = filepath.Join("website", "content", "partials")
+			break
+		}
+		if base == "packer-plugin-sdk" && filepath.Base(filepath.Dir(dir)) == "hashicorp" {
+			projectRoot = dir
+			filePath, _ = filepath.Rel(projectRoot, absFilePath)
+			docsFolder = filepath.Join("docs-partials", "packer-plugin-sdk")
+			break
 		}
 		if strings.HasPrefix(base, "packer-plugin-") {
 			projectRoot = dir
@@ -52,7 +59,7 @@ func (cmd *Command) Run(args []string) int {
 		}
 	}
 
-	log.Printf("%s %v %s", projectRoot, filePath, docsFolder)
+	log.Printf("projectRoot=%s filePath=%v docsFolder=%s", projectRoot, filePath, docsFolder)
 
 	if projectRoot == "" {
 		log.Fatal("Failed to guess project ROOT. Is this a `packer-plugin-*` named project ?")
