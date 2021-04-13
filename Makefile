@@ -75,10 +75,10 @@ generate-check: generate ## Check go code generation is on par
 		exit 1; \
 	fi
 
-test: vet ## Run unit tests
+test:
 	@go test -count $(COUNT) $(TEST) $(TESTARGS) -timeout=3m
 
-testrace: vet ## Test with race detection enabled
+testrace:
 	GO111MODULE=on go test -count $(COUNT) -race $(TEST) $(TESTARGS) -timeout=3m -p=8
 
 # Runs code coverage and open a html page with report

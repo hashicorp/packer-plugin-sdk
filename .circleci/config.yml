@@ -59,6 +59,7 @@ jobs:
     working_directory: /go/src/github.com/hashicorp/packer-plugin-sdk
     steps:
       - checkout
+      - make vet
       - run: TESTARGS="-coverprofile=coverage.txt -covermode=atomic" make ci
       - codecov/upload:
           file: coverage.txt
