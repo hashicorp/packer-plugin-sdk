@@ -39,7 +39,6 @@ func (cmd *Command) Run(args []string) int {
 
 	for dir := filepath.Dir(absFilePath); len(dir) > 0 && projectRoot == ""; dir = filepath.Dir(dir) {
 		base := filepath.Base(dir)
-		log.Printf("base %s", base)
 		if base == "packer" && filepath.Base(filepath.Dir(dir)) == "hashicorp" {
 			projectRoot = dir
 			filePath, _ = filepath.Rel(projectRoot, absFilePath)
@@ -59,8 +58,6 @@ func (cmd *Command) Run(args []string) int {
 			break
 		}
 	}
-
-	log.Printf("projectRoot=%s filePath=%v docsFolder=%s", projectRoot, filePath, docsFolder)
 
 	if projectRoot == "" {
 		log.Fatal("Failed to guess project ROOT. Is this a `packer-plugin-*` named project ?")
@@ -186,7 +183,6 @@ func (cmd *Command) Run(args []string) int {
 		}
 
 		dir := filepath.Join(projectRoot, docsFolder, filepath.Dir(filePath))
-		log.Printf("dir: %q", dir)
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			log.Fatalf("mkdir of %q failed: %v", dir, err)
 		}
