@@ -18,7 +18,6 @@ import (
 const cmdPrefix = "struct-markdown"
 
 type Command struct {
-	outputDir string
 }
 
 func (cmd *Command) Help() string {
