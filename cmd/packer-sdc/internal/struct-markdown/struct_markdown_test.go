@@ -9,9 +9,6 @@ import (
 
 func TestCommand_Run(t *testing.T) {
 
-	type args struct {
-		args []string
-	}
 	tests := []struct {
 		args []string
 		want int
