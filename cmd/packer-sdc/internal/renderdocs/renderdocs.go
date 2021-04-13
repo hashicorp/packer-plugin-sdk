@@ -65,7 +65,7 @@ func RenderDocsFolder(folder, partials string) error {
 		entryPath := filepath.Join(folder, entry.Name())
 		if entry.IsDir() {
 			if err = RenderDocsFolder(entryPath, partials); err != nil {
-				return errors.Wrap(err, "copying directory failed")
+				return err
 			}
 		} else {
 			if err = renderDocsFile(entryPath, partials); err != nil {
