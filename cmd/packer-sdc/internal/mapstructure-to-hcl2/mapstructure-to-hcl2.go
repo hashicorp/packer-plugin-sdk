@@ -110,8 +110,7 @@ func (cmd *CMD) Run(args []string) int {
 	}
 	pkgs, err := packages.Load(cfg, args...)
 	if err != nil {
-		log.Printf(err.Error())
-		return 1
+		log.Fatalf("package.Load: %v", err)
 	}
 	if len(pkgs) != 1 {
 		log.Printf("error: %d packages found", len(pkgs))
