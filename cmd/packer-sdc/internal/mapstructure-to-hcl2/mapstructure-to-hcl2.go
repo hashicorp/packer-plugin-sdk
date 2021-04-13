@@ -438,7 +438,7 @@ func addCtyTagToStruct(s *types.Struct) *types.Struct {
 				ctyAccessor = ms.Name
 			}
 		}
-		st.Set(&structtag.Tag{Key: "cty", Name: ctyAccessor})
+		_ = st.Set(&structtag.Tag{Key: "cty", Name: ctyAccessor})
 		_ = st.Set(&structtag.Tag{Key: "hcl", Name: ctyAccessor})
 		tags[i] = st.String()
 	}
