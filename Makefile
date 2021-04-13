@@ -17,7 +17,7 @@ install-gen-deps: ## Install dependencies for code generation
 	@(cd $(TEMPDIR) && GO111MODULE=on go get github.com/mna/pigeon@master)
 	@(cd $(TEMPDIR) && GO111MODULE=on go get github.com/alvaroloes/enumer@master)
 
-	@go install github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc # in the packer repo
+	@go install github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc
 
 install-lint-deps: ## Install linter dependencies
 	# Pinning golangci-lint at v1.23.8 as --new-from-rev seems to work properly; the latest 1.24.0 has caused issues with memory consumption
