@@ -105,7 +105,7 @@ func (cmd *CMD) Run(args []string) int {
 	log.SetPrefix(fmt.Sprintf(cmdPrefix+": %s.%v: ", os.Getenv("GOPACKAGE"), typeNames))
 
 	cfg := &packages.Config{
-		Mode: packages.LoadImports | packages.NeedTypes | packages.NeedSyntax | packages.NeedTypesInfo,
+		Mode: packages.NeedName | packages.NeedImports | packages.NeedTypes | packages.NeedSyntax | packages.NeedTypesInfo,
 	}
 	pkgs, err := packages.Load(cfg, args...)
 	if err != nil {
