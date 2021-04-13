@@ -35,7 +35,6 @@ import (
 
 	"github.com/fatih/structtag"
 	"github.com/hashicorp/hcl/v2/hcldec"
-	. "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/cmd"
 	"github.com/zclconf/go-cty/cty"
 
 	"golang.org/x/tools/go/packages"
@@ -45,7 +44,6 @@ import (
 const cmdPrefix = "mapstructure-to-hcl2"
 
 type CMD struct {
-	Meta
 	typeNames  string
 	output     string
 	trimprefix string
