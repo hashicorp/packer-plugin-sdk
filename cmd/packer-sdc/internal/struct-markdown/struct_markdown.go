@@ -15,8 +15,6 @@ import (
 	"github.com/fatih/structtag"
 )
 
-const cmdPrefix = "struct-markdown"
-
 type Command struct {
 }
 
