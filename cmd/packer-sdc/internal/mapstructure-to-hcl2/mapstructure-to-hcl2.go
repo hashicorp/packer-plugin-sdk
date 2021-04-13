@@ -261,7 +261,7 @@ func outputHCL2SpecField(w io.Writer, accessor string, fieldType types.Type, tag
 	spec, _ := goFieldToCtyType(accessor, fieldType)
 	switch spec := spec.(type) {
 	case string:
-		fmt.Fprintf(w, spec)
+		fmt.Fprint(w, spec)
 	default:
 		fmt.Fprintf(w, `%#v`, spec)
 	}
