@@ -198,8 +198,7 @@ func (cmd *Command) Run(args []string) int {
 
 			err = structDocsTemplate.Execute(outputFile, str)
 			if err != nil {
-				log.Printf(err.Error())
-				return 1
+				log.Fatalf("%v", err)
 			}
 		}
 	}
