@@ -48,7 +48,10 @@ func TestCMD_Run(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s", tt.args), func(t *testing.T) {
-			defer tt.FileCheck.Cleanup(t)
+			// remove files before actually generating them; because our ci
+			// generates files all the time. This fails if the expected files
+			// are not present
+			tt.FileCheck.Cleanup(t)
 			cmd := &CMD{}
 			if got := cmd.Run(tt.args); got != tt.want {
 				t.Errorf("CMD.Run() = %v, want %v", got, tt.want)
