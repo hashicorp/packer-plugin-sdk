@@ -32,7 +32,7 @@ func (cmd *Command) Run(args []string) int {
 
 	absFilePath, err := filepath.Abs(fname)
 	if err != nil {
-		log.Printf(err.Error())
+		log.Fatalf("%v", err)
 	}
 
 	var projectRoot, docsFolder, filePath string
