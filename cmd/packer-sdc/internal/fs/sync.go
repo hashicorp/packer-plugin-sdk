@@ -14,7 +14,6 @@ import (
 
 var (
 	errSrcNotDir = errors.New("source is not a directory")
-	errDstExist  = errors.New("destination already exists")
 )
 
 // SyncDir recursively copies a directory tree, but tries to do nothing when not
