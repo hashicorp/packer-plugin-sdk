@@ -10,5 +10,6 @@ require (
 	github.com/mitchellh/cli v1.1.2
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/zclconf/go-cty v1.8.1
+	golang.org/x/mod v0.3.0 // indirect
 	golang.org/x/tools v0.1.0
 )

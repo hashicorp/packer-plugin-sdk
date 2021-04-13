@@ -34,7 +34,7 @@ func SyncDir(src, dst string) error {
 	}
 
 	_, err = os.Stat(dst)
-	if err != nil {
+	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
 
