@@ -1,7 +1,6 @@
 package struct_markdown
 
 import (
-	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -61,15 +60,13 @@ func (cmd *Command) Run(args []string) int {
 
 	b, err := ioutil.ReadFile(fname)
 	if err != nil {
-		log.Printf(fmt.Sprintf("ReadFile: %+v", err))
-		return 1
+		log.Fatalf("ReadFile: %+v", err)
 	}
 
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, fname, b, parser.ParseComments)
 	if err != nil {
-		log.Printf(fmt.Sprintf("ParseFile: %+v", err))
-		return 1
+		log.Fatalf("ParseFile: %+v", err)
 	}
 
 	for _, decl := range f.Decls {
@@ -117,8 +114,7 @@ func (cmd *Command) Run(args []string) int {
 			tag = tag[:len(tag)-1]
 			tags, err := structtag.Parse(tag)
 			if err != nil {
-				log.Printf(fmt.Sprintf("structtag.Parse(%s): err: %v", field.Tag.Value, err))
-				return 1
+				log.Fatalf("structtag.Parse(%s): err: %v", field.Tag.Value, err)
 			}
 
 			// Leave undocumented tags out of markdown. This is useful for
@@ -195,7 +191,7 @@ func (cmd *Command) Run(args []string) int {
 
 			outputFile, err := os.Create(outputPath)
 			if err != nil {
-				log.Printf(err.Error())
+				log.Fatalf(err.Error())
 				return 1
 			}
 			defer outputFile.Close()

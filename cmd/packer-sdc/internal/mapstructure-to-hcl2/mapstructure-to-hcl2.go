@@ -213,14 +213,12 @@ func (cmd *CMD) Run(args []string) int {
 
 	outputFile, err := os.Create(outputPath)
 	if err != nil {
-		log.Printf(fmt.Sprintf("os.Create: %v", err))
-		return 1
+		log.Fatalf("os.Create: %v", err)
 	}
 
 	_, err = outputFile.Write(goFmt(outputFile.Name(), out.Bytes()))
 	if err != nil {
-		log.Printf(fmt.Sprintf("failed to write file: %v", err))
-		return 1
+		log.Fatalf("failed to write file: %v", err)
 	}
 
 	return 0
