@@ -10,6 +10,8 @@ require (
 	github.com/aws/aws-sdk-go v1.38.0
 	github.com/dylanmei/iso8601 v0.1.0 // indirect
 	github.com/dylanmei/winrmtest v0.0.0-20170819153634-c2fbb09e6c08
+	github.com/fatih/camelcase v1.0.0
+	github.com/fatih/structtag v1.2.0
 	github.com/gofrs/flock v0.7.3
 	github.com/gofrs/uuid v4.0.0+incompatible // indirect
 	github.com/google/go-cmp v0.5.5
@@ -35,6 +37,7 @@ require (
 	github.com/masterzen/simplexml v0.0.0-20190410153822-31eea3082786 // indirect
 	github.com/masterzen/winrm v0.0.0-20201030141608-56ca5c5f2380
 	github.com/mattn/go-colorable v0.1.8 // indirect
+	github.com/mitchellh/cli v1.1.0
 	github.com/mitchellh/go-fs v0.0.0-20180402234041-7b48fa161ea7
 	github.com/mitchellh/go-testing-interface v1.0.3 // indirect
 	github.com/mitchellh/iochan v1.0.0
@@ -42,6 +45,7 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.0
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
 	github.com/packer-community/winrmcp v0.0.0-20180921204643-0fd363d6159a
+	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v0.0.0-20160118190721-e84cc8c755ca
 	github.com/ryanuber/go-glob v1.0.0
 	github.com/satori/go.uuid v1.2.0 // indirect
@@ -50,10 +54,11 @@ require (
 	github.com/zclconf/go-cty v1.8.1
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	golang.org/x/mobile v0.0.0-20201208152944-da85bec010a2
+	golang.org/x/mod v0.3.0
 	golang.org/x/net v0.0.0-20210119194325-5f4716e94777
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	golang.org/x/sys v0.0.0-20210319071255-635bc2c9138d // indirect
-	golang.org/x/tools v0.0.0-20201111133315-69daaf961d65 // indirect
+	golang.org/x/tools v0.0.0-20201111133315-69daaf961d65
 	google.golang.org/api v0.32.0 // indirect
 	google.golang.org/genproto v0.0.0-20200918140846-d0d605568037 // indirect
 	google.golang.org/grpc v1.32.0 // indirect
