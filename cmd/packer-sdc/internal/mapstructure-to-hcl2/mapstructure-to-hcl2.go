@@ -79,8 +79,7 @@ func (cmd *CMD) Run(args []string) int {
 	fs := cmd.Flags()
 	err := fs.Parse(args)
 	if err != nil {
-		log.Printf(fmt.Sprintf("unable to parse flags: %s", err))
-		return 1
+		log.Fatalf("unable to parse flags: %s", err)
 	}
 	args = fs.Args()
 
