@@ -1,3 +1,5 @@
+//go:generate packer-sdc struct-markdown
+
 package commonsteps
 
 import (
