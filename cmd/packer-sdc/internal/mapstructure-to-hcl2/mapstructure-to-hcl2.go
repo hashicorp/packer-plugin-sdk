@@ -43,14 +43,14 @@ import (
 
 const cmdPrefix = "mapstructure-to-hcl2"
 
-type CMD struct {
+type Command struct {
 	typeNames  string
 	output     string
 	trimprefix string
 }
 
 // Usage is a replacement usage function for the flags package.
-func (cmd *CMD) Help() string {
+func (cmd *Command) Help() string {
 	return fmt.Sprintf(`
 	Usage of %s:
 	%[1]s [flags] -type T[,T...] pkg
@@ -61,7 +61,7 @@ func (cmd *CMD) Help() string {
 	`, cmdPrefix)
 }
 
-func (cmd *CMD) Flags() *flag.FlagSet {
+func (cmd *Command) Flags() *flag.FlagSet {
 	fs := flag.NewFlagSet(cmdPrefix, flag.ExitOnError)
 	fs.StringVar(&cmd.typeNames, "type", "", "comma-separated list of type names; must be set")
 	fs.StringVar(&cmd.output, "output", "", "output file name; default srcdir/<type>_hcl2.go")
@@ -69,11 +69,11 @@ func (cmd *CMD) Flags() *flag.FlagSet {
 	return fs
 }
 
-func (cmd *CMD) Synopsis() string {
+func (cmd *Command) Synopsis() string {
 	return ""
 }
 
-func (cmd *CMD) Run(args []string) int {
+func (cmd *Command) Run(args []string) int {
 	fs := cmd.Flags()
 	err := fs.Parse(args)
 	if err != nil {

@@ -28,7 +28,7 @@ import (
 	. "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/cmd"
 )
 
-func TestCMD_Run(t *testing.T) {
+func TestCommand_Run(t *testing.T) {
 
 	tests := []struct {
 		args []string
@@ -49,7 +49,7 @@ func TestCMD_Run(t *testing.T) {
 			// generates files all the time. This fails if the expected files
 			// are not present
 			tt.FileCheck.Cleanup(t)
-			cmd := &CMD{}
+			cmd := &Command{}
 			if got := cmd.Run(tt.args); got != tt.want {
 				t.Errorf("CMD.Run() = %v, want %v", got, tt.want)
 			}
