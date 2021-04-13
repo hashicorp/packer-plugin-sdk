@@ -3,8 +3,6 @@ package renderdocs
 import (
 	"bytes"
 	"flag"
-	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -83,99 +81,35 @@ var (
 )
 
 func renderDocsFile(filePath, partialsDir string) error {
-	file, err := os.OpenFile(filePath, os.O_RDWR, 0)
+	f, err := os.ReadFile(filePath)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
-	fileStat, err := file.Stat()
-	if err != nil {
-		return err
-	}
-
-	i := int64(0)
-	for ; i < fileStat.Size(); i++ {
-		ctt := make([]byte, 1)
-		if _, err = file.ReadAt(ctt, i); err != nil {
-			return err
-		}
-
-		// byte by byte, look for an '@'
-		if ctt[0] != '@' {
+	for i := 0; i+len(includeStr) < len(f); i++ {
+		if f[i] != '@' {
 			continue
 		}
-		//detected an @
-		found := make([]byte, len(includeStr))
-		if _, err := file.ReadAt(found, i); err != nil {
+		if diff := bytes.Compare(f[i:i+len(includeStr)], includeStr); diff != 0 {
 			continue
 		}
-		if diff := bytes.Compare(includeStr, found); diff != 0 {
-			continue
-		}
-		// found `@include '`
-		var path []byte
-		ii := i + int64(len(includeStr))
-		for i < fileStat.Size() {
-			if _, err = file.ReadAt(ctt, ii); err != nil {
-				return err
-			}
-			if ctt[0] == '\'' {
-				ii++
-				// found end of path
+		ii := i + len(includeStr)
+		for ; ii < len(f); ii++ {
+			if f[ii] == '\'' {
 				break
 			}
-			if ctt[0] == '\n' {
-				return fmt.Errorf("Unclosed @include quote at %d in %s", ii, filePath)
-			}
-			path = append(path, ctt...)
-			ii++
-			if ii == fileStat.Size() {
-				return fmt.Errorf("Unclosed @include quote at %d in %s", ii, filePath)
-			}
 		}
-		partialPath := string(path)
-		partialFile, err := os.Open(filepath.Join(partialsDir, partialPath))
-		if err != nil {
-			return errors.Wrapf(err, "Failed to open partial at %q", partialPath)
+		if ii == len(includeStr) || f[ii] != '\'' {
+			log.Printf("Unclosed @include quote at %d in %s", ii, filePath)
 		}
-		partialFileStat, err := partialFile.Stat()
+		partialPath := string(f[i+len(includeStr) : ii])
+		partial, err := os.ReadFile(filepath.Join(partialsDir, partialPath))
 		if err != nil {
 			return err
 		}
-
-		// copy rest of text from after @include '...' backwards onto file
-		offset := partialFileStat.Size() - int64(len(includeStr)+len(partialPath)+1)
-		for iii := fileStat.Size() - 1; ii < iii; iii-- {
-			if _, err = file.ReadAt(ctt, iii); err != nil {
-				return err
-			}
-			if _, err := file.WriteAt(ctt, iii+offset); err != nil {
-				return err
-			}
-		}
-		if err := file.Sync(); err != nil {
-			return err
-		}
-		fileStat, err = file.Stat()
-		if err != nil {
-			return err
-		}
-
-		// Write content of partial here
-		if _, err := file.Seek(i, 0); err != nil {
-			return err
-		}
-		if _, err := io.Copy(file, partialFile); err != nil {
-			return err
-		}
-		if err := file.Sync(); err != nil {
-			return err
-		}
-
-		i += partialFileStat.Size()
+		f = append(f[:i], append(partial, f[ii+1:]...)...)
 	}
 
-	return nil
+	return os.WriteFile(filePath, f, 0)
 }
 
 func (cmd *Command) Synopsis() string {
