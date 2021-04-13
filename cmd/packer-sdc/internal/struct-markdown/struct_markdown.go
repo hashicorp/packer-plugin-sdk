@@ -43,8 +43,7 @@ func (cmd *Command) Run(args []string) int {
 	for dir := filepath.Dir(absFilePath); len(dir) > 0 && projectRoot == ""; dir = filepath.Dir(dir) {
 		base := filepath.Base(dir)
 		log.Printf("base %s", base)
-		switch base {
-		case "packer", "packer-plugin-sdk":
+		if base == "packer" && filepath.Base(filepath.Dir(dir)) == "hashicorp" {
 			projectRoot = dir
 			filePath, _ = filepath.Rel(projectRoot, absFilePath)
 			docsFolder = filepath.Join("website", "content", "partials")
