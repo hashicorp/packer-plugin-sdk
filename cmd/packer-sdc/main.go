@@ -21,7 +21,7 @@ func main() {
 			return &cmd, nil
 		},
 		"mapstructure-to-hcl2": func() (cli.Command, error) {
-			return &mapstructure_to_hcl2.CMD{}, nil
+			return &mapstructure_to_hcl2.Command{}, nil
 		},
 		"renderdocs": func() (cli.Command, error) {
 			return &renderdocs.Command{}, nil
