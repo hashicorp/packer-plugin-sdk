@@ -130,6 +130,7 @@ func syncFile(src, dst string) error {
 	}
 
 	var diff int
+	// byte by byte, diff the file
 	i := int64(0)
 	for ; i < inS.Size() && i < outS.Size(); i++ {
 		inCtt, outCtt := make([]byte, 1), make([]byte, 1)
@@ -145,10 +146,13 @@ func syncFile(src, dst string) error {
 		}
 	}
 	if i == inS.Size() {
+		// We have reached the end of the src file, truncating the dst file in
+		// case.
 		if err := out.Truncate(i); err != nil {
 			return err
 		}
 	} else if i < inS.Size() {
+		// Files differ from i, lets copy dst onto src from i
 		if _, err := in.Seek(i, 0); err != nil {
 			return err
 		}
