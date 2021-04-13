@@ -189,7 +189,9 @@ func (cmd *Command) Run(args []string) int {
 
 		dir := filepath.Join(projectRoot, docsFolder, filepath.Dir(filePath))
 		log.Printf("dir: %q", dir)
-		os.MkdirAll(dir, 0755)
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			log.Fatalf("mkdir of %q failed: %v", dir, err)
+		}
 
 		for _, str := range []Struct{header, dataSourceOutput, required, notRequired} {
 			if len(str.Fields) == 0 && len(str.Header) == 0 {
