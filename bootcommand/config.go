@@ -1,5 +1,3 @@
-//go:generate packer-sdc struct-markdown
-
 package bootcommand
 
 import (
