@@ -4,9 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/generate"
 	mapstructure_to_hcl2 "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/mapstructure-to-hcl2"
-	se "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/snippet-extractor"
 	struct_markdown "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/struct-markdown"
 	"github.com/mitchellh/cli"
 )
@@ -23,12 +21,6 @@ func main() {
 		},
 		"mapstructure-to-hcl2": func() (cli.Command, error) {
 			return &mapstructure_to_hcl2.CMD{}, nil
-		},
-		"generate-docs": func() (cli.Command, error) {
-			return &generate.GenerateDocsCMD{}, nil
-		},
-		"snippet-extractor": func() (cli.Command, error) {
-			return &se.SnippetExtractorCMD{}, nil
 		},
 	}
 
