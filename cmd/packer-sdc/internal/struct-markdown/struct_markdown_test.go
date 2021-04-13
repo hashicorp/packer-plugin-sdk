@@ -22,11 +22,11 @@ func TestCommand_Run(t *testing.T) {
 			0,
 			FileCheck{
 				Expected: []string{
-					"../test-data/packer-plugin-google/docs/partials/builder/happycloud/Config-not-required.mdx",
-					"../test-data/packer-plugin-google/docs/partials/builder/happycloud/Config.mdx",
-					"../test-data/packer-plugin-google/docs/partials/builder/happycloud/Config-required.mdx",
-					"../test-data/packer-plugin-google/docs/partials/builder/happycloud/CustomerEncryptionKey-not-required.mdx",
-					"../test-data/packer-plugin-google/docs/partials/builder/happycloud/CustomerEncryptionKey.mdx",
+					"../test-data/packer-plugin-google/docs-partials/builder/happycloud/Config-not-required.mdx",
+					"../test-data/packer-plugin-google/docs-partials/builder/happycloud/Config.mdx",
+					"../test-data/packer-plugin-google/docs-partials/builder/happycloud/Config-required.mdx",
+					"../test-data/packer-plugin-google/docs-partials/builder/happycloud/CustomerEncryptionKey-not-required.mdx",
+					"../test-data/packer-plugin-google/docs-partials/builder/happycloud/CustomerEncryptionKey.mdx",
 				},
 			},
 		},
