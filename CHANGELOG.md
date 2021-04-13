@@ -1,4 +1,9 @@
-## 0.1.3 (Upcoming)
+## 0.1.4 (Upcoming)
+
+## 0.1.3 (April 07, 2021)
+
+* Merge pull request #51 from hashicorp/cleanup_acctests
+* Remove packer core dependencies
 
 ## 0.1.2 (April 01, 2021)
 
