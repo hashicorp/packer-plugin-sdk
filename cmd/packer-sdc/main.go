@@ -17,8 +17,7 @@ func main() {
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
 		"struct-markdown": func() (cli.Command, error) {
-			cmd := struct_markdown.Command{}
-			return &cmd, nil
+			return &struct_markdown.Command{}, nil
 		},
 		"mapstructure-to-hcl2": func() (cli.Command, error) {
 			return &mapstructure_to_hcl2.Command{}, nil
