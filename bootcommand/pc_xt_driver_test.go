@@ -104,6 +104,22 @@ func Test_pcxtSpecial(t *testing.T) {
 	assert.Equal(t, expected, codes)
 }
 
+func Test_pcxtShift(t *testing.T) {
+	in := "AbC"
+	expected := []string{"2a", "1e", "9e", "aa", "30", "b0", "2a", "2e", "ae", "aa"}
+	var codes []string
+	sendCodes := func(c []string) error {
+		codes = c
+		return nil
+	}
+	d := NewPCXTDriver(sendCodes, -1, time.Duration(0))
+	seq, err := GenerateExpressionSequence(in)
+	assert.NoError(t, err)
+	err = seq.Do(context.Background(), d)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, codes)
+}
+
 func Test_flushes(t *testing.T) {
 	in := "abc123<wait>098"
 	expected := [][]string{
