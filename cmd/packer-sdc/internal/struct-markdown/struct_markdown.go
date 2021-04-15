@@ -60,7 +60,7 @@ func (cmd *Command) Run(args []string) int {
 	}
 
 	if projectRoot == "" {
-		log.Fatal("Failed to guess project ROOT. Is this a `packer-plugin-*` named project ?")
+		log.Fatal("Failed to guess project ROOT. If this is a Packer plugin project please make sure the root directory begins with`packer-plugin-*`")
 	}
 
 	b, err := ioutil.ReadFile(fname)
