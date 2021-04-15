@@ -211,5 +211,5 @@ func (cmd *Command) Run(args []string) int {
 }
 
 func (cmd *Command) Synopsis() string {
-	return "Generates a markdown file from the comments contained in a struct config."
+	return "[//go:generate command] Generates markdown files from the comments of in a struct config."
 }

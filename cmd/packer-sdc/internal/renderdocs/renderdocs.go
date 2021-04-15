@@ -130,5 +130,5 @@ func getPartial(partialsDir, partialPath string) ([]byte, error) {
 }
 
 func (cmd *Command) Synopsis() string {
-	return ""
+	return "From a src directory and a partials directory, generate the end result docs into a folder."
 }

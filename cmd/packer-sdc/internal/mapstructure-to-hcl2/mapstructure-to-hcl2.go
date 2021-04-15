@@ -70,7 +70,7 @@ func (cmd *Command) Flags() *flag.FlagSet {
 }
 
 func (cmd *Command) Synopsis() string {
-	return ""
+	return "[//go:generate command] Generates the code necessary for a packer-plugin to 'speak' HCL2."
 }
 
 func (cmd *Command) Run(args []string) int {
