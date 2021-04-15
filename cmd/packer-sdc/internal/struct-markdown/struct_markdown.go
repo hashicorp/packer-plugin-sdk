@@ -1,6 +1,7 @@
 package struct_markdown
 
 import (
+	_ "embed"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -14,13 +15,18 @@ import (
 	"github.com/fatih/structtag"
 )
 
+var (
+	//go:embed README.md
+	readme string
+)
+
 type Command struct {
 }
 
 func (cmd *Command) Help() string {
-	return `
-	Usage: stuct-markdown file
-	`
+	return `Usage: packer-sdc struct-markdown
+
+` + readme
 }
 
 func (cmd *Command) Run(args []string) int {

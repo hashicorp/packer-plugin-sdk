@@ -14,7 +14,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-const cmdPrefix = "renderdocs"
+var (
+	cmdPrefix = "renderdocs"
+
+	//go:embed README.md
+	readme string
+)
 
 type Command struct {
 	SrcDir      string
@@ -24,14 +29,15 @@ type Command struct {
 
 func (cmd *Command) Flags() *flag.FlagSet {
 	fs := flag.NewFlagSet(cmdPrefix, flag.ExitOnError)
-	fs.StringVar(&cmd.SrcDir, "src", "docs", "docs/ folder to copy from.")
-	fs.StringVar(&cmd.PartialsDir, "partials", "docs-partials", "docs-partials/ folder containing all mdx partials.")
-	fs.StringVar(&cmd.DstDir, "dst", ".docs", "output folder.")
+	fs.StringVar(&cmd.SrcDir, "src", "docs-src", "folder to copy docs from.")
+	fs.StringVar(&cmd.PartialsDir, "docs-partials", "docs-partials", "folder containing all mdx partials.")
+	fs.StringVar(&cmd.DstDir, "dst", "docs-rendered", "output folder.")
 	return fs
 }
 
 func (cmd *Command) Help() string {
-	return "Renders .mdx docs from static files and partials."
+	cmd.Flags().Usage()
+	return "\n" + readme
 }
 
 func (cmd *Command) Run(args []string) int {

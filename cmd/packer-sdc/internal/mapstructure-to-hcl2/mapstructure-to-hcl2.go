@@ -23,6 +23,7 @@ package mapstructure_to_hcl2
 
 import (
 	"bytes"
+	_ "embed"
 	"flag"
 	"fmt"
 	"go/types"
@@ -41,31 +42,28 @@ import (
 	"golang.org/x/tools/imports"
 )
 
-const cmdPrefix = "mapstructure-to-hcl2"
+var (
+	cmdPrefix = "mapstructure-to-hcl2"
+
+	//go:embed README.md
+	readme string
+)
 
 type Command struct {
-	typeNames  string
-	output     string
-	trimprefix string
+	typeNames string
+	output    string
 }
 
 // Usage is a replacement usage function for the flags package.
 func (cmd *Command) Help() string {
-	return fmt.Sprintf(`
-	Usage of %s:
-	%[1]s [flags] -type T[,T...] pkg
-	Flags:
-	 -type
-	 -output
-	 -trimprefix
-	`, cmdPrefix)
+	cmd.Flags().Usage()
+	return "\n" + readme
 }
 
 func (cmd *Command) Flags() *flag.FlagSet {
 	fs := flag.NewFlagSet(cmdPrefix, flag.ExitOnError)
 	fs.StringVar(&cmd.typeNames, "type", "", "comma-separated list of type names; must be set")
 	fs.StringVar(&cmd.output, "output", "", "output file name; default srcdir/<type>_hcl2.go")
-	fs.StringVar(&cmd.trimprefix, "trimprefix", "", "trim the `prefix` from the generated constant names")
 	return fs
 }
 

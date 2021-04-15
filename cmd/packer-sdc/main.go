@@ -24,7 +24,7 @@ func main() {
 	c.Args = os.Args[1:]
 	c.HelpFunc = func(m map[string]cli.CommandFactory) string {
 		str := cli.BasicHelpFunc(app)(m)
-		return str + readme
+		return str + "\n" + readme
 	}
 	c.Commands = map[string]cli.CommandFactory{
 		"struct-markdown": func() (cli.Command, error) {
