@@ -39,6 +39,8 @@ Config is the common configuration a builder uses to define and configure a Pack
 communicator. Embed this struct in your builder config to implement
 communicator support.
 
+<!-- End of code generated from the comments of the Config struct in communicator/config.go; -->
+
 
 End of file
 `,
