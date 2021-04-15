@@ -63,6 +63,7 @@ func SyncDir(src, dst string) error {
 		}
 	}
 
+	// Remove files in dst that aren't in src
 	entries, err = ioutil.ReadDir(dst)
 	if err != nil {
 		return errors.Wrapf(err, "cannot read directory %s", dst)
