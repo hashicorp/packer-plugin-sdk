@@ -52,7 +52,7 @@ func (cmd *Command) run(args []string) error {
 	if err := fs.SyncDir(cmd.SrcDir, cmd.DstDir); err != nil {
 		return errors.Wrap(err, "SyncDir failed")
 	}
-	log.Printf("Replacing @import '...' calls in %s", cmd.DstDir)
+	log.Printf("Replacing @include '...' calls in %s", cmd.DstDir)
 
 	return RenderDocsFolder(cmd.DstDir, cmd.PartialsDir)
 }
