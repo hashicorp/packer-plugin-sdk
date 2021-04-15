@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"log"
 	"os"
 
@@ -10,11 +11,21 @@ import (
 	"github.com/mitchellh/cli"
 )
 
-func main() {
+var (
+	app = "packer-sdc"
 
-	c := cli.NewCLI("packer-sdc", "1.0.0")
+	//go:embed README.md
+	readme string
+)
+
+func main() {
+	c := cli.NewCLI(app, "1.0.0")
 
 	c.Args = os.Args[1:]
+	c.HelpFunc = func(m map[string]cli.CommandFactory) string {
+		str := cli.BasicHelpFunc(app)(m)
+		return str + readme
+	}
 	c.Commands = map[string]cli.CommandFactory{
 		"struct-markdown": func() (cli.Command, error) {
 			return &struct_markdown.Command{}, nil
