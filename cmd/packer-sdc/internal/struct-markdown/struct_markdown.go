@@ -39,13 +39,13 @@ func (cmd *Command) Run(args []string) int {
 
 	for dir := filepath.Dir(absFilePath); len(dir) > 0 && projectRoot == ""; dir = filepath.Dir(dir) {
 		base := filepath.Base(dir)
-		if base == "packer" && filepath.Base(filepath.Dir(dir)) == "hashicorp" {
+		if base == "packer" {
 			projectRoot = dir
 			filePath, _ = filepath.Rel(projectRoot, absFilePath)
 			docsFolder = filepath.Join("website", "content", "partials")
 			break
 		}
-		if base == "packer-plugin-sdk" && filepath.Base(filepath.Dir(dir)) == "hashicorp" {
+		if base == "packer-plugin-sdk" {
 			projectRoot = dir
 			filePath, _ = filepath.Rel(projectRoot, absFilePath)
 			docsFolder = filepath.Join("cmd", "packer-sdc", "internal", "renderdocs", "docs-partials", "packer-plugin-sdk")
