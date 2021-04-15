@@ -1,0 +1,16 @@
+<!-- Code generated from the comments of the Config struct in builder/happycloud/config.go; DO NOT EDIT MANUALLY -->
+
+- `account_file` (string) - The JSON file containing your account credentials. Not required if you
+  run Packer on a GCE instance with a service account. Instructions for
+  creating the file or using service accounts are above.
+
+- `accelerator_count` (int64) - Number of guest accelerator cards to add to the launched instance.
+
+- `address` (string) - The name of a pre-allocated static external IP address. Note, must be the
+  name and not the actual IP address.
+
+- `disable_default_service_account` (bool) - If true, the default service account will not be used if
+  service_account_email is not specified. Set this value to true and omit
+  service_account_email to provision a VM with no service account.
+
+<!-- End of code generated from the comments of the Config struct in builder/happycloud/config.go; -->

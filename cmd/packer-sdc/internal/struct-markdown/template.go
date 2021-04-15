@@ -29,7 +29,9 @@ var structDocsTemplate = template.Must(template.New("structDocsTemplate").
 {{ end -}}
 {{ range .Fields }}
 - ` + "`" + `{{ .Name}}` + "`" + ` ({{ .Type }}) - {{ .Docs | indent 2 }}
-{{ end }}`))
+{{ end }}
+<!-- End of code generated from the comments of the {{ .Name }} struct in {{ .SourcePath }}; -->
+`))
 
 func indent(spaces int, v string) string {
 	pad := strings.Repeat(" ", spaces)
