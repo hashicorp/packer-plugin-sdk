@@ -30,7 +30,7 @@ type Command struct {
 func (cmd *Command) Flags() *flag.FlagSet {
 	fs := flag.NewFlagSet(cmdPrefix, flag.ExitOnError)
 	fs.StringVar(&cmd.SrcDir, "src", "docs-src", "folder to copy docs from.")
-	fs.StringVar(&cmd.PartialsDir, "docs-partials", "docs-partials", "folder containing all mdx partials.")
+	fs.StringVar(&cmd.PartialsDir, "partials", "docs-partials", "folder containing all mdx partials.")
 	fs.StringVar(&cmd.DstDir, "dst", "docs-rendered", "output folder.")
 	return fs
 }
