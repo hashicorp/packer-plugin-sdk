@@ -153,7 +153,7 @@ func syncFile(src, dst string) error {
 			return err
 		}
 	} else if i < inS.Size() {
-		// Files differ from i, lets copy dst onto src from i
+		// Files differ from i, lets copy src onto dst from i
 		if _, err := in.Seek(i, 0); err != nil {
 			return err
 		}
