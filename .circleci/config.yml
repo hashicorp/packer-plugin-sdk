@@ -38,7 +38,7 @@ commands:
     steps:
       - checkout
       - run: curl https://dl.google.com/go/go<< parameters.GOVERSION >>.<< parameters.GOOS >>-amd64.tar.gz | tar -C ~/ -xz
-      - run: GO111MODULE=on ~/go/bin/go test ./... -coverprofile=coverage.txt  -covermode=atomic
+      - run: GO111MODULE=on PATH="$PATH:$HOME/go/bin/" ~/go/bin/go test ./... -race -coverprofile=coverage.txt  -covermode=atomic
   install-go-run-tests-windows:
     parameters:
       GOVERSION:
@@ -47,7 +47,7 @@ commands:
       - checkout
       - run: curl https://dl.google.com/go/go<< parameters.GOVERSION >>.windows-amd64.zip --output ~/go<< parameters.GOVERSION >>.windows-amd64.zip
       - run: unzip ~/go<< parameters.GOVERSION >>.windows-amd64.zip -d ~/
-      - run: GO111MODULE=on ~/go/bin/go test ./... -coverprofile=coverage.txt  -covermode=atomic
+      - run: GO111MODULE=on PATH="$PATH:$HOME/go/bin/" ~/go/bin/go test ./... -coverprofile=coverage.txt  -covermode=atomic
 
 # Golang CircleCI 2.0 configuration file
 #
@@ -59,7 +59,8 @@ jobs:
     working_directory: /go/src/github.com/hashicorp/packer-plugin-sdk
     steps:
       - checkout
-      - run: TESTARGS="-coverprofile=coverage.txt  -covermode=atomic" make ci
+      - run: make vet
+      - run: TESTARGS="-coverprofile=coverage.txt -covermode=atomic" make ci
       - codecov/upload:
           file: coverage.txt
   test-darwin:
@@ -70,7 +71,7 @@ jobs:
     steps:
       - install-go-run-tests-unix:
           GOOS: darwin
-          GOVERSION: "1.15"
+          GOVERSION: "1.16"
       - codecov/upload:
           file: coverage.txt
   test-windows:
@@ -79,7 +80,7 @@ jobs:
       shell: bash.exe
     steps:
       - install-go-run-tests-windows:
-          GOVERSION: "1.15"
+          GOVERSION: "1.16"
       - codecov/upload:
           file: coverage.txt
   check-lint:

@@ -17,10 +17,7 @@ install-gen-deps: ## Install dependencies for code generation
 	@(cd $(TEMPDIR) && GO111MODULE=on go get github.com/mna/pigeon@master)
 	@(cd $(TEMPDIR) && GO111MODULE=on go get github.com/alvaroloes/enumer@master)
 
-	# grab files from github and install them using go install, then remove files again.
-	@go install github.com/hashicorp/packer/cmd/struct-markdown@latest # in the packer repo
-
-	@go install github.com/hashicorp/packer/cmd/mapstructure-to-hcl2@latest # in the packer repo
+	@go install github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc
 
 install-lint-deps: ## Install linter dependencies
 	# Pinning golangci-lint at v1.23.8 as --new-from-rev seems to work properly; the latest 1.24.0 has caused issues with memory consumption
@@ -78,10 +75,10 @@ generate-check: generate ## Check go code generation is on par
 		exit 1; \
 	fi
 
-test: vet ## Run unit tests
+test:
 	@go test -count $(COUNT) $(TEST) $(TESTARGS) -timeout=3m
 
-testrace: vet ## Test with race detection enabled
+testrace:
 	GO111MODULE=on go test -count $(COUNT) -race $(TEST) $(TESTARGS) -timeout=3m -p=8
 
 # Runs code coverage and open a html page with report
