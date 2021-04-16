@@ -11,7 +11,7 @@ tag, for Example:
 type Config struct {
 
 	// The JSON file containing your account credentials. Not required if you
-	// run Packer on a GCE instance with a service account. Instructions for
+	// run Packer on a HappyCloud instance with a service account. Instructions for
 	// creating the file or using service accounts are above.
 	AccountFile string `mapstructure:"account_file" required:"false"`
 
