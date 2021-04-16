@@ -1,4 +1,4 @@
-## 0.2.0 (Upcoming)
+## 0.2.0 (April 16, 2021)
 
 * Add packer-sdc command that will help Plugin maintainers and Packer maintainers 
     to generate the docs and the HCL2 glue code.
