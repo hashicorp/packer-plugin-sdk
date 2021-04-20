@@ -33,7 +33,8 @@ type HTTPConfig struct {
 	// Example:
 	// ```hcl
 	//   http_content = {
-	//     "/a/b" = "content
+	//     "/a/b"     = file("http/b")
+	//     "/foo/bar" = templatefile("${path.root}/preseed.cfg", { packages = ["nginx"] })
 	//   }
 	// ```
 	HTTPContent map[string]string `mapstructure:"http_content"`
