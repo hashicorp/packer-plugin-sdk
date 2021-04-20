@@ -8,6 +8,7 @@ import (
 	mapstructure_to_hcl2 "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/mapstructure-to-hcl2"
 	"github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/renderdocs"
 	struct_markdown "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/struct-markdown"
+	"github.com/hashicorp/packer-plugin-sdk/version"
 	"github.com/mitchellh/cli"
 )
 
@@ -19,7 +20,7 @@ var (
 )
 
 func main() {
-	c := cli.NewCLI(app, "1.0.0")
+	c := cli.NewCLI(app, version.SDKVersion.String())
 
 	c.Args = os.Args[1:]
 	c.HelpFunc = func(m map[string]cli.CommandFactory) string {
