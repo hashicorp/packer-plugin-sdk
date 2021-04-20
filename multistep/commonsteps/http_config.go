@@ -31,11 +31,11 @@ type HTTPConfig struct {
 	// address and port of the HTTP server will be available as variables in
 	// `boot_command`. This is covered in more detail below.
 	// Example:
-	//  ```hcl
+	// ```hcl
 	//   http_content = {
-	//    "/a/b" = "content
-	//  }
-	//  ```
+	//     "/a/b" = "content
+	//   }
+	// ```
 	HTTPContent map[string]string `mapstructure:"http_content"`
 	// These are the minimum and maximum port to use for the HTTP server
 	// started to serve the `http_directory`. Because Packer often runs in
