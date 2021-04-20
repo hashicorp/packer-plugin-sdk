@@ -32,7 +32,7 @@ type HTTPConfig struct {
 	// `boot_command`. This is covered in more detail below.
 	// Example:
 	//  ```hcl
-	//.  http_content = {
+	//   http_content = {
 	//    "/a/b" = "content
 	//  }
 	//  ```
