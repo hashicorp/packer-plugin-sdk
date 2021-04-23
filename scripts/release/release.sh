@@ -80,7 +80,7 @@ function commitChanges {
   modifyVersionFiles
   git add version/version.go
 
-	if [ "$CI" == true ]; then
+  if [ "$CI" == true ]; then
     git commit --gpg-sign="${RELEASES_GPG_KEY_ID}" -m "v${TARGET_VERSION} [skip ci]"
     git tag -a -m "v${TARGET_VERSION}" -s -u "${RELEASES_GPG_KEY_ID}" "v${TARGET_VERSION}"
     git push origin "${CIRCLE_BRANCH}"
