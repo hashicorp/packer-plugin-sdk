@@ -23,9 +23,9 @@ steps:
     run:
       name: import base64 GPG key and prime passphrase
       command: |
-        echo -e "${GPG_KEY}" | base64 -di | gpg --import --batch
+        echo -e "${RELEASES_GPG_PRIV_KEY_B64}" | base64 -di | gpg --import --batch
         echo "hello world" > temp.txt
-        gpg --detach-sig --yes -v --output=/dev/null --pinentry-mode loopback --passphrase "${GPG_PASSPHRASE}" temp.txt
+        gpg --detach-sig --yes -v --output=/dev/null --pinentry-mode loopback --passphrase "${RELEASES_GPG_PASSPHRASE}" temp.txt
         rm temp.txt
 
 commands:
@@ -141,6 +141,9 @@ workflows:
                 - main
           type: approval
       - release-sdk:
+          context:
+            - releases-gpg-private-signing-key
+            - releases-gpg-public-signing-key
           filters:
             branches:
               only:

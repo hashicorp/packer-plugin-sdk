@@ -15,8 +15,8 @@ function pleaseUseGNUsed {
 }
 
 function gpgKeyCheck {
-  if [ -z "${GPG_KEY_ID}" ]; then
-    printf "A valid GPG_KEY_ID is needed to sign the release...exiting\n"
+  if [ -z "${RELEASES_GPG_KEY_ID}" ]; then
+    printf "A valid RELEASES_GPG_KEY_ID is needed to sign the release...exiting\n"
 		exit 1
   fi
 }
@@ -80,9 +80,9 @@ function commitChanges {
   modifyVersionFiles
   git add version/version.go
 
-	if [ "$CI" == true ]; then
-    git commit --gpg-sign="${GPG_KEY_ID}" -m "v${TARGET_VERSION} [skip ci]"
-    git tag -a -m "v${TARGET_VERSION}" -s -u "${GPG_KEY_ID}" "v${TARGET_VERSION}"
+  if [ "$CI" == true ]; then
+    git commit --gpg-sign="${RELEASES_GPG_KEY_ID}" -m "v${TARGET_VERSION} [skip ci]"
+    git tag -a -m "v${TARGET_VERSION}" -s -u "${RELEASES_GPG_KEY_ID}" "v${TARGET_VERSION}"
     git push origin "${CIRCLE_BRANCH}"
   else
     printf "Skipping GPG signature on non CI releases...\n"
