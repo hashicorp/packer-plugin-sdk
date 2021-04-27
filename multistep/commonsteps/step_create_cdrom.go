@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -22,8 +23,9 @@ type StepCreateCD struct {
 	// Files can be either files or directories. Any files provided here will
 	// be written to the root of the CD. Directories will be written to the
 	// root of the CD as well, but will retain their subdirectory structure.
-	Files []string
-	Label string
+	Files   []string
+	Content map[string]string
+	Label   string
 
 	CDPath string
 
@@ -31,7 +33,7 @@ type StepCreateCD struct {
 }
 
 func (s *StepCreateCD) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
-	if len(s.Files) == 0 {
+	if len(s.Files) == 0 && len(s.Content) == 0 {
 		log.Println("No CD files specified. CD disk will not be made.")
 		return multistep.ActionContinue
 	}
@@ -72,6 +74,15 @@ func (s *StepCreateCD) Run(ctx context.Context, state multistep.StateBag) multis
 
 	for _, toAdd := range s.Files {
 		err = s.AddFile(rootFolder, toAdd)
+		if err != nil {
+			state.Put("error",
+				fmt.Errorf("Error creating temporary file for CD: %s", err))
+			return multistep.ActionHalt
+		}
+	}
+
+	for path, content := range s.Content {
+		err = s.AddContent(rootFolder, path, content)
 		if err != nil {
 			state.Put("error",
 				fmt.Errorf("Error creating temporary file for CD: %s", err))
@@ -290,4 +301,20 @@ func (s *StepCreateCD) AddFile(dst, src string) error {
 	}
 
 	return filepath.Walk(src, visit)
+}
+
+func (s *StepCreateCD) AddContent(dst, path, content string) error {
+	// Clean the path so we can join it without path traversal issues. Converting it to an
+	// absolute path removes any leading ".."
+	dstPath := filepath.Join(dst, filepath.Clean(string(filepath.Separator)+path))
+	dstDir := filepath.Dir(dstPath)
+	err := os.MkdirAll(dstDir, 0777)
+	if err != nil {
+		return fmt.Errorf("error creating new directory %s: %s", dstDir, err)
+	}
+	err = ioutil.WriteFile(dstPath, []byte(content), 0666)
+	if err != nil {
+		return fmt.Errorf("Error writing file %s on CD: %s", path, err)
+	}
+	return nil
 }
