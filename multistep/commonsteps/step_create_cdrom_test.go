@@ -6,7 +6,6 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"testing"
 
@@ -31,10 +30,21 @@ func testStepCreateCDState(t *testing.T) multistep.StateBag {
 	return state
 }
 
+func createFiles(t *testing.T, rootFolder string, expected map[string]string) {
+	for fname, content := range expected {
+		path := filepath.Join(rootFolder, fname)
+		os.MkdirAll(filepath.Dir(path), 0777)
+		err := ioutil.WriteFile(path, []byte(content), 0666)
+		if err != nil {
+			t.Fatalf("writing file: %s", err)
+		}
+	}
+}
+
 func checkFiles(t *testing.T, rootFolder string, expected map[string]string) {
 	filepath.WalkDir(rootFolder, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
-			t.Fatalf("err: %s", err)
+			t.Fatalf("walking folder: %s", err)
 		}
 
 		if !d.IsDir() {
@@ -77,20 +87,18 @@ func TestStepCreateCD(t *testing.T) {
 	}
 	defer os.RemoveAll(dir)
 
-	files := make([]string, 3)
+	createFiles(t, dir, map[string]string{
+		"test_cd_roms.tmp":    "",
+		"test cd files.tmp":   "",
+		"Test-Test-Test5.tmp": "",
+	})
 
-	tempFileNames := []string{"test_cd_roms.tmp", "test cd files.tmp",
-		"Test-Test-Test5.tmp"}
-	for i, fname := range tempFileNames {
-		files[i] = path.Join(dir, fname)
+	files := []string{"test_cd_roms.tmp", "test cd files.tmp", "Test-Test-Test5.tmp"}
 
-		_, err := os.Create(files[i])
-		if err != nil {
-			t.Fatalf("err: %s", err)
-		}
+	step.Files = make([]string, len(files))
+	for i, fname := range files {
+		step.Files[i] = filepath.Join(dir, fname)
 	}
-
-	step.Files = files
 	action := step.Run(context.Background(), state)
 
 	if err, ok := state.GetOk("error"); ok {
