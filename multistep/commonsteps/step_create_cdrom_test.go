@@ -3,9 +3,11 @@ package commonsteps
 import (
 	"bytes"
 	"context"
+	"io/fs"
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 	"testing"
 
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
@@ -27,6 +29,39 @@ func testStepCreateCDState(t *testing.T) multistep.StateBag {
 		Writer: new(bytes.Buffer),
 	})
 	return state
+}
+
+func checkFiles(t *testing.T, rootFolder string, expected map[string]string) {
+	filepath.WalkDir(rootFolder, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			t.Fatalf("err: %s", err)
+		}
+
+		if !d.IsDir() {
+			name, _ := filepath.Rel(rootFolder, path)
+
+			expectedContent, ok := expected[name]
+			if !ok {
+				t.Fatalf("unexpected file: %s", name)
+			}
+
+			content, err := ioutil.ReadFile(path)
+			if err != nil {
+				t.Fatalf("reading file: %s", err)
+			}
+			if string(content) != expectedContent {
+				t.Fatalf("unexpected content: %s", name)
+			}
+
+			delete(expected, name)
+		}
+
+		return nil
+	})
+
+	if len(expected) != 0 {
+		t.Fatalf("missing files: %v", expected)
+	}
 }
 
 func TestStepCreateCD(t *testing.T) {
@@ -72,9 +107,11 @@ func TestStepCreateCD(t *testing.T) {
 		t.Fatalf("file not found: %s for %v", CD_path, step.Files)
 	}
 
-	if len(step.filesAdded) != 3 {
-		t.Fatalf("expected 3 files, found %d for %v", len(step.filesAdded), step.Files)
-	}
+	checkFiles(t, step.rootFolder, map[string]string{
+		"test_cd_roms.tmp":    "",
+		"test cd files.tmp":   "",
+		"Test-Test-Test5.tmp": "",
+	})
 
 	step.Cleanup(state)
 
@@ -99,8 +136,6 @@ func TestStepCreateCD_missing(t *testing.T) {
 	}
 	defer os.RemoveAll(dir)
 
-	expected := 0
-
 	step.Files = []string{"missing file.tmp"}
 	if action := step.Run(context.Background(), state); action != multistep.ActionHalt {
 		t.Fatalf("bad action: %#v for %v", action, step.Files)
@@ -116,8 +151,12 @@ func TestStepCreateCD_missing(t *testing.T) {
 		t.Fatalf("CD_path is not nil for %v", step.Files)
 	}
 
-	if len(step.filesAdded) != expected {
-		t.Fatalf("expected %d, found %d for %v", expected, len(step.filesAdded), step.Files)
+	checkFiles(t, step.rootFolder, nil)
+
+	step.Cleanup(state)
+
+	if _, err := os.Stat(step.rootFolder); err == nil {
+		t.Fatalf("folder found: %s", step.rootFolder)
 	}
 
 	step.Cleanup(state)

@@ -27,7 +27,6 @@ type StepCreateCD struct {
 
 	CDPath string
 
-	filesAdded map[string]bool
 	rootFolder string
 }
 
@@ -45,9 +44,6 @@ func (s *StepCreateCD) Run(ctx context.Context, state multistep.StateBag) multis
 	} else {
 		log.Printf("CD label is set to %s", s.Label)
 	}
-
-	// Track what files are added. Used for testing step.
-	s.filesAdded = make(map[string]bool)
 
 	// Create a temporary file to be our CD drive
 	CDF, err := tmp.File("packer*.iso")
@@ -236,7 +232,6 @@ func (s *StepCreateCD) AddFile(dst, src string) error {
 		if err != nil {
 			return fmt.Errorf("Error copying %s to CD root", src)
 		}
-		s.filesAdded[src] = true
 		log.Printf("Wrote %d bytes to %s", nBytes, finfo.Name())
 		return err
 	}
@@ -278,7 +273,6 @@ func (s *StepCreateCD) AddFile(dst, src string) error {
 			if err != nil {
 				return fmt.Errorf("Error copying %s to CD: %s", dstPath, err)
 			}
-			s.filesAdded[dstPath] = true
 			log.Printf("Wrote %d bytes to %s", nBytes, dstPath)
 			return err
 		}
