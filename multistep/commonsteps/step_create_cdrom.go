@@ -28,6 +28,7 @@ type StepCreateCD struct {
 	CDPath string
 
 	filesAdded map[string]bool
+	rootFolder string
 }
 
 func (s *StepCreateCD) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
@@ -71,6 +72,7 @@ func (s *StepCreateCD) Run(ctx context.Context, state multistep.StateBag) multis
 			fmt.Errorf("Error creating temporary file for CD: %s", err))
 		return multistep.ActionHalt
 	}
+	s.rootFolder = rootFolder
 
 	for _, toAdd := range s.Files {
 		err = s.AddFile(rootFolder, toAdd)
@@ -107,6 +109,9 @@ func (s *StepCreateCD) Run(ctx context.Context, state multistep.StateBag) multis
 }
 
 func (s *StepCreateCD) Cleanup(multistep.StateBag) {
+	if s.rootFolder != "" {
+		os.RemoveAll(s.rootFolder)
+	}
 	if s.CDPath != "" {
 		log.Printf("Deleting CD disk: %s", s.CDPath)
 		os.Remove(s.CDPath)

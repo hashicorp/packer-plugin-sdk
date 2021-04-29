@@ -81,6 +81,9 @@ func TestStepCreateCD(t *testing.T) {
 	if _, err := os.Stat(CD_path); err == nil {
 		t.Fatalf("file found: %s for %v", CD_path, step.Files)
 	}
+	if _, err := os.Stat(step.rootFolder); err == nil {
+		t.Fatalf("folder found: %s", step.rootFolder)
+	}
 }
 
 func TestStepCreateCD_missing(t *testing.T) {
@@ -115,5 +118,11 @@ func TestStepCreateCD_missing(t *testing.T) {
 
 	if len(step.filesAdded) != expected {
 		t.Fatalf("expected %d, found %d for %v", expected, len(step.filesAdded), step.Files)
+	}
+
+	step.Cleanup(state)
+
+	if _, err := os.Stat(step.rootFolder); err == nil {
+		t.Fatalf("folder found: %s", step.rootFolder)
 	}
 }
