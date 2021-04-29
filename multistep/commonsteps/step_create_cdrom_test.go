@@ -87,13 +87,17 @@ func TestStepCreateCD(t *testing.T) {
 	}
 	defer os.RemoveAll(dir)
 
-	createFiles(t, dir, map[string]string{
-		"test_cd_roms.tmp":    "",
-		"test cd files.tmp":   "",
-		"Test-Test-Test5.tmp": "",
-	})
+	expected := map[string]string{
+		"test folder/b/test1": "1",
+		"test folder/b/test2": "2",
+		"test folder 2/x":     "3",
+		"test_cd_roms.tmp":    "4",
+		"test cd files.tmp":   "5",
+		"Test-Test-Test5.tmp": "6",
+	}
 
-	files := []string{"test_cd_roms.tmp", "test cd files.tmp", "Test-Test-Test5.tmp"}
+	createFiles(t, dir, expected)
+	files := []string{"test folder", "test folder 2/", "test_cd_roms.tmp", "test cd files.tmp", "Test-Test-Test5.tmp"}
 
 	step.Files = make([]string, len(files))
 	for i, fname := range files {
@@ -115,11 +119,7 @@ func TestStepCreateCD(t *testing.T) {
 		t.Fatalf("file not found: %s for %v", CD_path, step.Files)
 	}
 
-	checkFiles(t, step.rootFolder, map[string]string{
-		"test_cd_roms.tmp":    "",
-		"test cd files.tmp":   "",
-		"Test-Test-Test5.tmp": "",
-	})
+	checkFiles(t, step.rootFolder, expected)
 
 	step.Cleanup(state)
 
