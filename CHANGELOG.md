@@ -1,4 +1,4 @@
-## 0.2.1 (upcoming)
+## 0.2.1 (Upcoming)
 
 * Update go-getter to v2.0.0 to fix godep compilation issue 
 
