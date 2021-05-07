@@ -1,4 +1,4 @@
-## 0.2.1 (Upcoming)
+## 0.2.1 (May 07, 2021)
 
 * Update go-getter to v2.0.0 to fix godep compilation issue 
 
