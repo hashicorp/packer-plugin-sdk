@@ -1,3 +1,7 @@
+## 0.2.1 (upcoming)
+
+* Update go-getter to v2.0.0 to fix godep compilation issue 
+
 ## 0.2.0 (April 16, 2021)
 
 * Add packer-sdc command that will help Plugin maintainers and Packer maintainers 
