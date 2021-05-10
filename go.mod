@@ -35,7 +35,7 @@ require (
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869
 	github.com/kr/fs v0.1.0 // indirect
 	github.com/masterzen/simplexml v0.0.0-20190410153822-31eea3082786 // indirect
-	github.com/masterzen/winrm v0.0.0-20201030141608-56ca5c5f2380
+	github.com/masterzen/winrm v0.0.0-20210504160029-28ed956f5227
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mitchellh/cli v1.1.0
 	github.com/mitchellh/go-fs v0.0.0-20180402234041-7b48fa161ea7
