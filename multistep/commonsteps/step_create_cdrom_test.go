@@ -42,7 +42,7 @@ func createFiles(t *testing.T, rootFolder string, expected map[string]string) {
 }
 
 func checkFiles(t *testing.T, rootFolder string, expected map[string]string) {
-	filepath.WalkDir(rootFolder, func(path string, d fs.DirEntry, err error) error {
+	err := filepath.WalkDir(rootFolder, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			t.Fatalf("walking folder: %s", err)
 		}
@@ -68,7 +68,9 @@ func checkFiles(t *testing.T, rootFolder string, expected map[string]string) {
 
 		return nil
 	})
-
+	if err != nil {
+		t.Fatalf("WalkDir: %v", err)
+	}
 	if len(expected) != 0 {
 		t.Fatalf("missing files: %v", expected)
 	}
