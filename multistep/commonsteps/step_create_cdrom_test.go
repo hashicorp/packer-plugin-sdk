@@ -33,8 +33,11 @@ func testStepCreateCDState(t *testing.T) multistep.StateBag {
 func createFiles(t *testing.T, rootFolder string, expected map[string]string) {
 	for fname, content := range expected {
 		path := filepath.Join(rootFolder, fname)
-		os.MkdirAll(filepath.Dir(path), 0777)
-		err := ioutil.WriteFile(path, []byte(content), 0666)
+		err := os.MkdirAll(filepath.Dir(path), 0777)
+		if err != nil {
+			t.Fatalf("mkdir -p: %s", err)
+		}
+		err = ioutil.WriteFile(path, []byte(content), 0666)
 		if err != nil {
 			t.Fatalf("writing file: %s", err)
 		}
