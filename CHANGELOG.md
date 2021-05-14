@@ -1,5 +1,6 @@
 ## 0.2.2 (Upcoming)
 * Update masterzen/winrm dependency to allow NTLM support for winrm_no_proxy [GH-66]
+* StepCreateCD: Clean up temporary directory and add more robust tests [GH-62]
 
 ## 0.2.1 (May 07, 2021)
 
