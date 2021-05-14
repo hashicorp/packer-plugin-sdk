@@ -1,10 +1,13 @@
+## 0.2.2 (Upcoming)
+* Update masterzen/winrm dependency to allow NTLM support for winrm_no_proxy [GH-66]
+
 ## 0.2.1 (May 07, 2021)
 
-* Update go-getter to v2.0.0 to fix godep compilation issue 
+* Update go-getter to v2.0.0 to fix godep compilation issue
 
 ## 0.2.0 (April 16, 2021)
 
-* Add packer-sdc command that will help Plugin maintainers and Packer maintainers 
+* Add packer-sdc command that will help Plugin maintainers and Packer maintainers
     to generate the docs and the HCL2 glue code.
 
 ## 0.1.3 (April 07, 2021)
