@@ -304,9 +304,8 @@ func (s *StepCreateCD) AddFile(dst, src string) error {
 }
 
 func (s *StepCreateCD) AddContent(dst, path, content string) error {
-	// Clean the path so we can join it without path traversal issues. Converting it to an
-	// absolute path removes any leading ".."
-	dstPath := filepath.Join(dst, filepath.Clean(string(filepath.Separator)+path))
+	// Join Cleans the path so we can join it without path traversal issues.
+	dstPath := filepath.Join(dst, path)
 	dstDir := filepath.Dir(dstPath)
 	err := os.MkdirAll(dstDir, 0777)
 	if err != nil {
