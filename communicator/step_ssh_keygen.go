@@ -3,6 +3,7 @@ package communicator
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/packer-plugin-sdk/communicator/sshkey"
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
@@ -46,7 +47,7 @@ func (s *StepSSHKeyGen) Run(ctx context.Context, state multistep.StateBag) multi
 		return multistep.ActionHalt
 	}
 
-	ui.Say(fmt.Sprintf("Creating temporary %s SSH key for instance...", a.String()))
+	ui.Say(fmt.Sprintf("Creating temporary %s SSH key for instance...", strings.ToUpper(a.String())))
 	pair, err := sshkey.GeneratePair(a, nil, s.SSHTemporaryKeyPairBits)
 	if err != nil {
 		err := fmt.Errorf("Error creating temporary ssh key: %s", err)
