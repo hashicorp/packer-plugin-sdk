@@ -50,7 +50,7 @@ func (s *StepSSHKeyGen) Run(ctx context.Context, state multistep.StateBag) multi
 	ui.Say(fmt.Sprintf("Creating temporary %s SSH key for instance...", strings.ToUpper(a.String())))
 	pair, err := sshkey.GeneratePair(a, nil, s.SSHTemporaryKeyPairBits)
 	if err != nil {
-		err := fmt.Errorf("Error creating temporary ssh key: %s", err)
+		err := fmt.Errorf("Error creating temporary SSH key: %s", err)
 		state.Put("error", err)
 		ui.Error(err.Error())
 		return multistep.ActionHalt
