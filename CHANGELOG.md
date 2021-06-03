@@ -1,5 +1,5 @@
 ## 0.2.3 (Upcoming)
-* CDConfig: Add `cd_content` for file templating [#61](https://github.com/hashicorp/packer-plugin-sdk/pull/61)
+* CDConfig: Add `cd_content` field for file templating for cd files [#61](https://github.com/hashicorp/packer-plugin-sdk/pull/61)
 
 ## 0.2.2 (May 14, 2021)
 * Update masterzen/winrm dependency to allow NTLM support for winrm_no_proxy [GH-66]
