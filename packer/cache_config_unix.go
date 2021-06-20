@@ -1,24 +1,19 @@
 // +build darwin freebsd linux netbsd openbsd solaris
 
-package pathing
+package packer
 
 import (
 	"os"
 	"path/filepath"
 )
 
-const (
-	defaultConfigFile = "packer"
-)
-
-func getDefaultConfigDir() string {
-
+func getDefaultCacheDir() string {
 	var defaultConfigFileDir string
 
 	if xdgConfigHome := os.Getenv("XDG_CONFIG_HOME"); xdgConfigHome != "" {
 		defaultConfigFileDir = xdgConfigHome
 	} else {
-		defaultConfigFileDir = filepath.Join(os.Getenv("HOME"), "config")
+		defaultConfigFileDir = filepath.Join(os.Getenv("HOME"), "cache")
 	}
 
 	return filepath.Join(defaultConfigFileDir, "packer")

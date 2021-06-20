@@ -67,10 +67,11 @@ func configFile() (string, error) {
 		}
 		dir = homedir
 	}
+
 	return filepath.Join(dir, defaultConfigFile), nil
 }
 
-func configDir() (string, error) {
+func configDir() (path string, err error) {
 	var dir string
 	if cd := os.Getenv("PACKER_CONFIG_DIR"); cd != "" {
 		log.Printf("Detected config directory from env var: %s", cd)
@@ -83,7 +84,7 @@ func configDir() (string, error) {
 		dir = homedir
 	}
 
-	return filepath.Join(dir, defaultConfigDir), nil
+	return filepath.Join(dir, getDefaultConfigDir()), nil
 }
 
 // Given a path, check to see if it's using ~ to reference a user directory.
