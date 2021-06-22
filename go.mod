@@ -51,7 +51,7 @@ require (
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/ugorji/go/codec v1.2.4
-	github.com/zclconf/go-cty v1.8.3
+	github.com/zclconf/go-cty v1.8.4
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	golang.org/x/mobile v0.0.0-20201208152944-da85bec010a2
 	golang.org/x/mod v0.3.0
