@@ -56,35 +56,41 @@ func homeDir() (string, error) {
 }
 
 func configFile() (string, error) {
-	var dir string
-	if cd := os.Getenv("PACKER_CONFIG_DIR"); cd != "" {
-		log.Printf("Detected config directory from env var: %s", cd)
-		dir = cd
-	} else {
-		homedir, err := homeDir()
-		if err != nil {
-			return "", err
-		}
-		dir = homedir
+	dir, err := configFile()
+	if err != nil {
+		return "", err
 	}
-
 	return filepath.Join(dir, defaultConfigFile), nil
+}
+
+func hasPackerXdgConfigHomeConfig() bool {
+	xdgConfigHome := os.Getenv("XDG_CONFIG_HOME")
+	if xdgConfigHome != "" {
+		_, err := os.Stat(filepath.Join(xdgConfigHome, ".config", defaultConfigFile))
+		if err == nil {
+			return true
+		}
+	}
+	return false
 }
 
 func configDir() (path string, err error) {
 	var dir string
 	if cd := os.Getenv("PACKER_CONFIG_DIR"); cd != "" {
 		log.Printf("Detected config directory from env var: %s", cd)
-		dir = cd
+		dir = filepath.Join(cd, defaultConfigDir)
+	} else if hasPackerXdgConfigHomeConfig() {
+		xdgConfigHome := os.Getenv("XDG_CONFIG_HOME")
+		dir = filepath.Join(xdgConfigHome, ".config")
 	} else {
 		homedir, err := homeDir()
 		if err != nil {
 			return "", err
 		}
-		dir = homedir
+		dir = filepath.Join(homedir, defaultConfigDir)
 	}
 
-	return filepath.Join(dir, getDefaultConfigDir()), nil
+	return dir, nil
 }
 
 // Given a path, check to see if it's using ~ to reference a user directory.

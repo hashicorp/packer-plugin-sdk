@@ -4,8 +4,5 @@ package pathing
 
 const (
 	defaultConfigFile = "packer.config"
+	defaultConfigDir  = "packer.d"
 )
-
-func getDefaultConfigDir() string {
-	return "packer.d"
-}

@@ -11,10 +11,10 @@ func getDefaultCacheDir() string {
 	var defaultConfigFileDir string
 
 	if xdgCacheHome := os.Getenv("XDG_CACHE_HOME"); xdgCacheHome != "" {
-		defaultConfigFileDir = xdgCacheHome
+		defaultConfigFileDir = filepath.Join(xdgCacheHome, "packer")
 	} else {
-		defaultConfigFileDir = filepath.Join(os.Getenv("HOME"), "cache")
+		defaultConfigFileDir = "packer_cache"
 	}
 
-	return filepath.Join(defaultConfigFileDir, "packer")
+	return defaultConfigFileDir
 }
