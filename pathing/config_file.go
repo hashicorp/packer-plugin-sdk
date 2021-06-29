@@ -56,7 +56,7 @@ func homeDir() (string, error) {
 }
 
 func configFile() (string, error) {
-	dir, err := configFile()
+	dir, err := configDir()
 	if err != nil {
 		return "", err
 	}
