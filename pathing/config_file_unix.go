@@ -36,9 +36,8 @@ func configDir() (path string, err error) {
 }
 
 func hasDefaultConfigFileLocation(homedir string) bool {
-	_, err := os.Stat(filepath.Join(homedir, defaultConfigDir))
-	if err == nil {
-		return true
+	if _, err := os.Stat(filepath.Join(homedir, defaultConfigDir)); err != nil {
+		return false
 	}
-	return false
+	return true
 }
