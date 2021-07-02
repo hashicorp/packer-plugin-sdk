@@ -2,6 +2,12 @@
 
 package pathing
 
+import (
+	"log"
+	"os"
+	"path/filepath"
+)
+
 const (
 	defaultConfigFile = "packer.config"
 	defaultConfigDir  = "packer.d"
