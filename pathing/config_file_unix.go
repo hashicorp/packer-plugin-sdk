@@ -29,7 +29,7 @@ func configDir() (path string, err error) {
 		log.Printf("Detected xdg config directory from env var: %s", xdgConfigHome)
 		dir = xdgConfigHome
 	} else {
-		dir = filepath.Join(homedir, ".config")
+		dir = filepath.Join(homedir, ".config", "packer")
 	}
 
 	return dir, nil
