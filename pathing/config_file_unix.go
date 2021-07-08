@@ -27,7 +27,7 @@ func configDir() (path string, err error) {
 		log.Printf("Old default config directory found: %s", dir)
 	} else if xdgConfigHome := os.Getenv("XDG_CONFIG_HOME"); xdgConfigHome != "" {
 		log.Printf("Detected xdg config directory from env var: %s", xdgConfigHome)
-		dir = xdgConfigHome
+		dir = filepath.Join(xdgConfigHome, "packer")
 	} else {
 		dir = filepath.Join(homedir, ".config", "packer")
 	}
