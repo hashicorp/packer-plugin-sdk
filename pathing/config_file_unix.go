@@ -3,6 +3,7 @@
 package pathing
 
 import (
+	"errors"
 	"log"
 	"os"
 	"path/filepath"
@@ -14,15 +15,20 @@ const (
 )
 
 func configDir() (path string, err error) {
-	var dir string
-	homedir := os.Getenv("HOME")
-	if homedir == "" {
-		return "", err
-	}
+
 	if cd := os.Getenv("PACKER_CONFIG_DIR"); cd != "" {
 		log.Printf("Detected config directory from env var: %s", cd)
-		dir = filepath.Join(cd, defaultConfigDir)
-	} else if hasDefaultConfigFileLocation(homedir) {
+		return filepath.Join(cd, defaultConfigDir), nil
+	}
+
+	var dir string
+	homedir := os.Getenv("HOME")
+
+	if homedir == "" {
+		return "", errors.New("No $HOME environment variable found, required to set Config Directory")
+	}
+
+	if hasDefaultConfigFileLocation(homedir) {
 		dir = filepath.Join(homedir, defaultConfigDir)
 		log.Printf("Old default config directory found: %s", dir)
 	} else if xdgConfigHome := os.Getenv("XDG_CONFIG_HOME"); xdgConfigHome != "" {
