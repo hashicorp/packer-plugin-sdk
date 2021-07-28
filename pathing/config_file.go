@@ -70,22 +70,6 @@ func configFile() (string, error) {
 	return filepath.Join(dir, defaultConfigFile), nil
 }
 
-func configDir() (string, error) {
-	var dir string
-	if cd := os.Getenv("PACKER_CONFIG_DIR"); cd != "" {
-		log.Printf("Detected config directory from env var: %s", cd)
-		dir = cd
-	} else {
-		homedir, err := homeDir()
-		if err != nil {
-			return "", err
-		}
-		dir = homedir
-	}
-
-	return filepath.Join(dir, defaultConfigDir), nil
-}
-
 // Given a path, check to see if it's using ~ to reference a user directory.
 // If so, then replace that component with the requested user directory.
 // In "~/", "~" gets replaced by current user's home dir.
