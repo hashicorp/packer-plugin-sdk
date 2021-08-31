@@ -1,3 +1,8 @@
+## 0.2.4 (Upcoming)
+
+* sdk: Use xdg basedir spec on unix [#68](https://github.com/hashicorp/packer-plugin-sdk/pull/68) [#73](https://github.com/hashicorp/packer-plugin-sdk/pull/73)
+* packer-sdc: add provisioner templates to for docs [#77](https://github.com/hashicorp/packer-plugin-sdk/pull/77)
+
 ## 0.2.3 (June 03, 2021)
 * CDConfig: Add `cd_content` field for file templating for cd files [#61](https://github.com/hashicorp/packer-plugin-sdk/pull/61)
 
