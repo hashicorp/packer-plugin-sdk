@@ -134,6 +134,10 @@ func WithRegion(region string) func(*Image) error {
 // for manipulating and setting Image metadata.
 func SetLabels(md map[string]interface{}) func(*Image) error {
 	return func(img *Image) error {
+		if img.Labels == nil {
+			img.Labels = make(map[string]string)
+		}
+
 		for k, v := range md {
 			v, ok := v.(string)
 			if !ok {
