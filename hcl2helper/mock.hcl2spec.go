@@ -7,6 +7,36 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
+// FlatMapOfNestedMockConfig is an auto-generated flat version of MapOfNestedMockConfig.
+// Where the contents of a field with a `mapstructure:,squash` tag are bubbled up.
+type FlatMapOfNestedMockConfig struct {
+	Nested map[string]FlatSimpleNestedMockConfig `mapstructure:"nested" cty:"nested" hcl:"nested"`
+}
+
+// FlatMapstructure returns a new FlatMapOfNestedMockConfig.
+// FlatMapOfNestedMockConfig is an auto-generated flat version of MapOfNestedMockConfig.
+// Where the contents a fields with a `mapstructure:,squash` tag are bubbled up.
+func (*MapOfNestedMockConfig) FlatMapstructure() interface{ HCL2Spec() map[string]hcldec.Spec } {
+	return new(FlatMapOfNestedMockConfig)
+}
+
+// HCL2Spec returns the hcl spec of a MapOfNestedMockConfig.
+// This spec is used by HCL to read the fields of MapOfNestedMockConfig.
+// The decoded values from this spec will then be applied to a FlatMapOfNestedMockConfig.
+func (*FlatMapOfNestedMockConfig) HCL2Spec() map[string]hcldec.Spec {
+	s := map[string]hcldec.Spec{
+		// This one requires the map keys pre-defined. Without it skips whatever the key and return null map. See next definition.
+		"nested": &hcldec.BlockMapSpec{TypeName: "nested", Nested: hcldec.ObjectSpec((*FlatSimpleNestedMockConfig)(nil).HCL2Spec())},
+
+		// This one requires the map keys pre-defined. Not possible as this is dynamic like 'us-east-1'
+		//"nested": &hcldec.BlockMapSpec{TypeName: "nested", LabelNames: []string{"mock"},Nested: hcldec.ObjectSpec((*FlatNestedMockConfig)(nil).HCL2Spec())},
+
+		// This one requires the type of the map which is no possible. Empty object will always be empty in this case.
+		//"nested": &hcldec.AttrSpec{Name: "nested", Type: cty.Map(cty.EmptyObject), Required: false},
+	}
+	return s
+}
+
 // FlatMockConfig is an auto-generated flat version of MockConfig.
 // Where the contents of a field with a `mapstructure:,squash` tag are bubbled up.
 type FlatMockConfig struct {
@@ -128,6 +158,29 @@ func (*FlatNestedMockConfig) HCL2Spec() map[string]hcldec.Spec {
 		"named_string":            &hcldec.AttrSpec{Name: "named_string", Type: cty.String, Required: false},
 		"tag":                     &hcldec.BlockListSpec{TypeName: "tag", Nested: hcldec.ObjectSpec((*FlatMockTag)(nil).HCL2Spec())},
 		"data_source":             &hcldec.AttrSpec{Name: "data_source", Type: cty.String, Required: false},
+	}
+	return s
+}
+
+// FlatSimpleNestedMockConfig is an auto-generated flat version of SimpleNestedMockConfig.
+// Where the contents of a field with a `mapstructure:,squash` tag are bubbled up.
+type FlatSimpleNestedMockConfig struct {
+	String *string `mapstructure:"string" cty:"string" hcl:"string"`
+}
+
+// FlatMapstructure returns a new FlatSimpleNestedMockConfig.
+// FlatSimpleNestedMockConfig is an auto-generated flat version of SimpleNestedMockConfig.
+// Where the contents a fields with a `mapstructure:,squash` tag are bubbled up.
+func (*SimpleNestedMockConfig) FlatMapstructure() interface{ HCL2Spec() map[string]hcldec.Spec } {
+	return new(FlatSimpleNestedMockConfig)
+}
+
+// HCL2Spec returns the hcl spec of a SimpleNestedMockConfig.
+// This spec is used by HCL to read the fields of SimpleNestedMockConfig.
+// The decoded values from this spec will then be applied to a FlatSimpleNestedMockConfig.
+func (*FlatSimpleNestedMockConfig) HCL2Spec() map[string]hcldec.Spec {
+	s := map[string]hcldec.Spec{
+		"string": &hcldec.AttrSpec{Name: "string", Type: cty.String, Required: false},
 	}
 	return s
 }

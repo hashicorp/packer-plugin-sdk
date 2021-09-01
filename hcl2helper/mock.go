@@ -1,4 +1,4 @@
-//go:generate packer-sdc mapstructure-to-hcl2 -type MockConfig,NestedMockConfig,MockTag
+//go:generate packer-sdc mapstructure-to-hcl2 -type MapOfNestedMockConfig,MockConfig,NestedMockConfig,MockTag,SimpleNestedMockConfig
 
 package hcl2helper
 
@@ -24,6 +24,10 @@ type NestedMockConfig struct {
 	Datasource           string               `mapstructure:"data_source"`
 }
 
+type SimpleNestedMockConfig struct {
+	String               string               `mapstructure:"string"`
+}
+
 type MockTag struct {
 	Key   string `mapstructure:"key"`
 	Value string `mapstructure:"value"`
@@ -34,6 +38,10 @@ type MockConfig struct {
 	NestedMockConfig `mapstructure:",squash"`
 	Nested           NestedMockConfig   `mapstructure:"nested"`
 	NestedSlice      []NestedMockConfig `mapstructure:"nested_slice"`
+}
+
+type MapOfNestedMockConfig struct {
+	Nested           map[string]SimpleNestedMockConfig   `mapstructure:"nested"`
 }
 
 type NamedMapStringString map[string]string

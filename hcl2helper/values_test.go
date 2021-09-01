@@ -307,6 +307,24 @@ func TestHCL2ValueFromConfig(t *testing.T) {
 				}),
 			}),
 		},
+		{
+			Name: "test",
+			Input: MapOfNestedMockConfig{Nested: map[string]SimpleNestedMockConfig{
+				"mock":  {String: "one"},
+				"mock2":  {String: "two"},
+			}},
+			Spec: new(MapOfNestedMockConfig).FlatMapstructure().HCL2Spec(),
+			Want: cty.ObjectVal(map[string]cty.Value{
+				"nested": cty.MapVal(map[string]cty.Value{
+					"mock": cty.ObjectVal(map[string]cty.Value{
+						"string":            cty.StringVal("one"),
+					}),
+					"mock2": cty.ObjectVal(map[string]cty.Value{
+						"string":            cty.StringVal("two"),
+					}),
+				}),
+			}),
+		},
 	}
 
 	for _, test := range tests {
