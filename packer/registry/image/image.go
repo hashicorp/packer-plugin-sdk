@@ -22,17 +22,17 @@ type ArtifactOverrideFunc func(*Image) error
 type Image struct {
 	// ImageID is a unique reference identifier stored on the HCP Packer registry
 	// that can be used to get back the built artifact of a builder or post-processor.
-	ImageID string `mapstructure:"image_id"`
+	ImageID string
 	// ProviderName represents the name of the top level cloud or service where the built artifact resides.
 	// For example "aws, azure, docker, gcp, and vsphere".
-	ProviderName string `mapstructure:"provider_name"`
+	ProviderName string
 	// ProviderRegion represents the location of the built artifact.
 	// For cloud providers region usually maps to a cloud region or zone, but for things like the file builder,
 	// S3 bucket or vsphere cluster region can represent a path on the upstream datastore, or cluster.
-	ProviderRegion string `mapstructure:"provider_region"`
+	ProviderRegion string
 	// Labels represents additional details about an image that a builder or post-processor may with to provide for a given build.
 	// Any additional metadata will be made available as build labels within a HCP Packer registry iteration.
-	Labels map[string]string `mapstructure:"labels"`
+	Labels map[string]string
 }
 
 // Validate checks that the Image i contains a non-empty ImageID and ProviderName.
