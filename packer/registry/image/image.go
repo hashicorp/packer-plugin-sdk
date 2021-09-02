@@ -1,3 +1,5 @@
+/* Package image allows for the management of image metadata that can be stored in a HCP Packer registry.
+ */
 package image
 
 import (
@@ -7,7 +9,7 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/packer"
 )
 
-// ArtifactStateURI represents the key used by Packer when querying an packersdk.Artifact
+// ArtifactStateURI represents the key used by Packer when querying a packersdk.Artifact
 // for Image metadata that a particular component would like to have stored on the HCP Packer Registry.
 const ArtifactStateURI = "par.artifact.metadata"
 
@@ -19,20 +21,30 @@ type ArtifactOverrideFunc func(*Image) error
 type Image struct {
 	// ImageID is a unique reference identifier stored on the HCP Packer registry
 	// that can be used to get back the built artifact of a builder or post-processor.
-	ImageID string
+	ImageID string `mapstructure:"image_id"`
 	// ProviderName represents the name of the top level cloud or service where the built artifact resides.
 	// For example "aws, azure, docker, gcp, and vsphere".
+	ProviderName string `mapstructure:"provider_name"`
 	// ProviderRegion represents the location of the built artifact.
 	// For cloud providers region usually maps to a cloud region or zone, but for things like the file builder,
 	// S3 bucket or vsphere cluster region can represent a path on the upstream datastore, or cluster.
-	ProviderName, ProviderRegion string
+	ProviderRegion string `mapstructure:"provider_region"`
 	// Labels represents additional details about an image that a builder or post-processor may with to provide for a given build.
 	// Any additional metadata will be made available as build labels within a HCP Packer registry iteration.
 	Labels map[string]string `mapstructure:"labels"`
 }
 
-func New() *Image {
-	return &Image{}
+// Validate checks that the Image i contains a non-empty ImageID and ProviderName.
+func (i *Image) Validate() error {
+	if i.ImageID == "" {
+		return errors.New("error registry image does not contain a valid ImageId")
+	}
+
+	if i.ProviderName == "" {
+		return errors.New("error registry image does not contain a valid ProviderName")
+	}
+
+	return nil
 }
 
 // FromMappedData calls f sequentially for each key and value present in mappedData to create a []*Image
@@ -63,29 +75,28 @@ func FromMappedData(mappedData interface{}, f func(key, value interface{}) (*Ima
 }
 
 // FromArtifact returns an *Image that can be used by Packer core for publishing to the HCP Packer Registry.
-// By default FromArtifact will use the a.BuilderID as the Image Provider, and the a.Id() as the ImageID that
-// should be tracked within the HCP Packer Registry. No Region is selected by default as region varies per build.
+// By default FromArtifact will use the a.BuilderID() as the ProviderName, and the a.Id() as the ImageID that
+// should be tracked within the HCP Packer Registry. No Region is selected by default as region varies per builder.
 // The use of one or more ArtifactOverrideFunc can be used to override any of the defaults used.
 func FromArtifact(a packer.Artifact, opts ...ArtifactOverrideFunc) (*Image, error) {
 	if a == nil {
 		return nil, errors.New("unable to create Image from nil artifact")
 	}
 
-	img := &Image{
+	img := Image{
 		ProviderName: a.BuilderId(),
 		ImageID:      a.Id(),
 		Labels:       make(map[string]string),
 	}
 
-	// Let's grab some state data
 	for _, opt := range opts {
-		err := opt(img)
+		err := opt(&img)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return img, nil
+	return &img, nil
 }
 
 // WithProvider takes a name, and returns a ArtifactOverrideFunc that can be
