@@ -4,6 +4,7 @@ package image
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 
 	"github.com/hashicorp/packer-plugin-sdk/packer"
@@ -45,6 +46,11 @@ func (i *Image) Validate() error {
 	}
 
 	return nil
+}
+
+// String returns string representation of Image
+func (i *Image) String() string {
+	return fmt.Sprintf("provider:%s, image:%s, region:%s", i.ProviderName, i.ImageID, i.ProviderRegion)
 }
 
 // FromMappedData calls f sequentially for each key and value present in mappedData to create a []*Image
