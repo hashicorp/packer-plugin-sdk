@@ -1,3 +1,8 @@
+## 0.2.5 (Upcoming)
+
+* sdk: Bump SDK to Go 1.17
+* sdk: Add `registry/image` package to support the creation of HCP Packer registry images from Packer Artifacts. [#76](https://github.com/hashicorp/packer-plugin-sdk/pull/76)
+
 ## 0.2.4 (August 31, 2021)
 
 * sdk: Use xdg basedir spec on unix [#68](https://github.com/hashicorp/packer-plugin-sdk/pull/68) [#73](https://github.com/hashicorp/packer-plugin-sdk/pull/73)
