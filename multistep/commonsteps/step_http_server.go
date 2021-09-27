@@ -16,13 +16,23 @@ import (
 )
 
 func HTTPServerFromHTTPConfig(cfg *HTTPConfig) *StepHTTPServer {
-	return &StepHTTPServer{
+	server := StepHTTPServer{
 		HTTPDir:     cfg.HTTPDir,
 		HTTPContent: cfg.HTTPContent,
 		HTTPPortMin: cfg.HTTPPortMin,
 		HTTPPortMax: cfg.HTTPPortMax,
 		HTTPAddress: cfg.HTTPAddress,
 	}
+
+	server.httpWrapper = server.wrapper()
+
+	server.AddCallback(logRequest)
+
+	return &server
+}
+
+func logRequest(r *http.Request) {
+	log.Printf("http_server: hit %s - \"%s HTTP/%d.%d %s\"", r.RemoteAddr, r.Method, r.ProtoMajor, r.ProtoMinor, r.URL.Path)
 }
 
 // This step creates and runs the HTTP server that is serving files from the
@@ -41,15 +51,37 @@ type StepHTTPServer struct {
 	HTTPPortMax int
 	HTTPAddress string
 
-	l *net.Listener
+	httpWrapper HTTPWrapper
+	l           *net.Listener
 }
 
-func (s *StepHTTPServer) Handler() http.Handler {
+func (s *StepHTTPServer) AddCallback(callback func(r *http.Request)) {
+	s.httpWrapper.Callbacks = append(s.httpWrapper.Callbacks, callback)
+}
+
+func (s *StepHTTPServer) wrapper() HTTPWrapper {
 	if s.HTTPDir != "" {
-		return http.FileServer(http.Dir(s.HTTPDir))
+		return HTTPWrapper{
+			HTTPHandler: http.FileServer(http.Dir(s.HTTPDir)),
+		}
 	}
 
-	return MapServer(s.HTTPContent)
+	return HTTPWrapper{
+		HTTPHandler: MapServer(s.HTTPContent),
+	}
+}
+
+type HTTPWrapper struct {
+	HTTPHandler http.Handler
+	Callbacks   []func(r *http.Request)
+}
+
+func (s HTTPWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	for _, callback := range s.Callbacks {
+		callback(r)
+	}
+
+	s.HTTPHandler.ServeHTTP(w, r)
 }
 
 type MapServer map[string]string
@@ -114,7 +146,7 @@ func (s *StepHTTPServer) Run(ctx context.Context, state multistep.StateBag) mult
 	ui.Say(fmt.Sprintf("Starting HTTP server on port %d", s.l.Port))
 
 	// Start the HTTP server and run it in the background
-	server := &http.Server{Addr: "", Handler: s.Handler()}
+	server := &http.Server{Addr: "", Handler: s.httpWrapper}
 	go server.Serve(s.l)
 
 	// Save the address into the state so it can be accessed in the future
