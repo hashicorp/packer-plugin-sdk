@@ -55,6 +55,18 @@ func TestStepHTTPServer_Run(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%#v", tt.cfg), func(t *testing.T) {
 			s := HTTPServerFromHTTPConfig(tt.cfg)
+
+			firstCalled := false
+			secondCalled := false
+
+			s.AddCallback(func(r *http.Request) {
+				firstCalled = true
+			})
+
+			s.AddCallback(func(r *http.Request) {
+				secondCalled = true
+			})
+
 			state := testState(t)
 			got := s.Run(context.Background(), state)
 			defer s.Cleanup(state)
@@ -66,6 +78,9 @@ func TestStepHTTPServer_Run(t *testing.T) {
 				t.Errorf("StepHTTPServer.Run() unexpected port = %v, want %v", gotPort, tt.wantPort)
 			}
 			for k, wantResponse := range tt.wantContent {
+				firstCalled = false
+				secondCalled = false
+
 				resp, err := http.Get(fmt.Sprintf("http://:%d/%s", gotPort, k))
 				if err != nil {
 					t.Fatalf("http.Get: %v", err)
@@ -77,6 +92,10 @@ func TestStepHTTPServer_Run(t *testing.T) {
 				gotResponse := string(b)
 				if diff := cmp.Diff(wantResponse, gotResponse); diff != "" {
 					t.Fatalf("Unexpected %q content: %s", k, diff)
+				}
+
+				if !firstCalled || !secondCalled {
+					t.Errorf("Callbacks not invoked. First: %t Second: %t", firstCalled, secondCalled)
 				}
 			}
 		})
