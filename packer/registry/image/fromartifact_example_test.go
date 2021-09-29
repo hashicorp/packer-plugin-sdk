@@ -43,7 +43,7 @@ func ExampleFromArtifact() {
 	hcimage, _ := image.FromArtifact(a)
 	fmt.Printf("%#v", *hcimage)
 	// Output:
-	// image.Image{ImageID:"service-id-123", ProviderName:"example.happycloud", ProviderRegion:"", Labels:map[string]string{}}
+	// image.Image{ImageID:"service-id-123", ProviderName:"example.happycloud", ProviderRegion:"", Labels:map[string]string{}, SourceImageID:""}
 }
 
 func ExampleWithProvider() {
@@ -55,7 +55,7 @@ func ExampleWithProvider() {
 	hcimage, _ := image.FromArtifact(a, image.WithProvider("happycloud"), image.WithRegion("west"))
 	fmt.Printf("%#v", *hcimage)
 	// Output:
-	// image.Image{ImageID:"service-id-123", ProviderName:"happycloud", ProviderRegion:"west", Labels:map[string]string{}}
+	// image.Image{ImageID:"service-id-123", ProviderName:"happycloud", ProviderRegion:"west", Labels:map[string]string{}, SourceImageID:""}
 }
 
 func ExampleSetLabels() {

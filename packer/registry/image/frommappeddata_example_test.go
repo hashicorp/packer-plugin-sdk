@@ -69,6 +69,6 @@ func ExampleFromMappedData() {
 		fmt.Printf("%#v\n", *hcimage)
 	}
 	// Unordered output:
-	// image.Image{ImageID:"happycloud-1", ProviderName:"happycloud", ProviderRegion:"west", Labels:map[string]string(nil)}
-	// image.Image{ImageID:"happycloud-2", ProviderName:"happycloud", ProviderRegion:"east", Labels:map[string]string(nil)}
+	// image.Image{ImageID:"happycloud-1", ProviderName:"happycloud", ProviderRegion:"west", Labels:map[string]string(nil), SourceImageID:""}
+	// image.Image{ImageID:"happycloud-2", ProviderName:"happycloud", ProviderRegion:"east", Labels:map[string]string(nil), SourceImageID:""}
 }
