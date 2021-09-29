@@ -58,6 +58,18 @@ func ExampleWithProvider() {
 	// image.Image{ImageID:"service-id-123", ProviderName:"happycloud", ProviderRegion:"west", Labels:map[string]string{}, SourceImageID:""}
 }
 
+func ExampleWithSourceImageImageID() {
+	a := &simpleArtifact{
+		image_id: "service-id-123",
+	}
+
+	// This example also includes an override for the ProviderRegion to illustrate how ArtifactOverrideFunc(s) can be chained.
+	hcimage, _ := image.FromArtifact(a, image.WithProvider("happycloud"), image.WithRegion("west"), image.WithSourceID("ami-12345"))
+	fmt.Printf("%#v", *hcimage)
+	// Output:
+	// image.Image{ImageID:"service-id-123", ProviderName:"happycloud", ProviderRegion:"west", Labels:map[string]string{}, SourceImageID:"ami-12345"}
+}
+
 func ExampleSetLabels() {
 	a := &simpleArtifact{
 		image_id: "service-id-123",
