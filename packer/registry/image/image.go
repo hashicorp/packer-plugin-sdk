@@ -33,6 +33,11 @@ type Image struct {
 	// Labels represents additional details about an image that a builder or post-processor may with to provide for a given build.
 	// Any additional metadata will be made available as build labels within a HCP Packer registry iteration.
 	Labels map[string]string
+	// SourceImageID is the cloud image id of the image that was used as the
+	// source for this image. If set, the HCP Packer registry will be able
+	// link the parent and child images for ancestry visualizations and
+	// dependency tracking.
+	SourceImageID string
 }
 
 // Validate checks that the Image i contains a non-empty ImageID and ProviderName.
@@ -127,6 +132,19 @@ func WithID(id string) func(*Image) error {
 		}
 
 		img.ImageID = id
+		return nil
+	}
+}
+
+// WithSourceID takes a id, and returns a ArtifactOverrideFunc that can be
+// used to override the SourceImageId for an existing Image.
+func WithSourceID(id string) func(*Image) error {
+	return func(img *Image) error {
+		if img == nil {
+			return errors.New("no go on empty image")
+		}
+
+		img.SourceImageID = id
 		return nil
 	}
 }
