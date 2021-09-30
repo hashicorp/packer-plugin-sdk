@@ -58,7 +58,7 @@ func ExampleWithProvider() {
 	// image.Image{ImageID:"service-id-123", ProviderName:"happycloud", ProviderRegion:"west", Labels:map[string]string{}, SourceImageID:""}
 }
 
-func ExampleWithSourceImageImageID() {
+func ExampleWithSourceID() {
 	a := &simpleArtifact{
 		image_id: "service-id-123",
 	}
