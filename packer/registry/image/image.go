@@ -50,6 +50,10 @@ func (i *Image) Validate() error {
 		return errors.New("error registry image does not contain a valid ProviderName")
 	}
 
+	if i.SourceImageID == "" {
+		return errors.New("error registry image does not contain a valid SourceImageID")
+	}
+
 	return nil
 }
 
