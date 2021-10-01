@@ -278,3 +278,42 @@ func TestStepCreateFloppyDirectories(t *testing.T) {
 		}
 	}
 }
+
+func TestStepCreateFloppyContent(t *testing.T) {
+	// create a new state and step
+	state := testStepCreateFloppyState(t)
+	step := new(StepCreateFloppy)
+
+	step.Content = map[string]string{
+		"subfolder/meta-data": "subfolder/meta-data from content",
+		"user-data":           "user-data from content",
+	}
+
+	// run the step
+	if action := step.Run(context.Background(), state); action != multistep.ActionContinue {
+		t.Fatalf("bad action: %#v for %v : %v", action, step.Content, state.Get("error"))
+	}
+
+	if _, ok := state.GetOk("error"); ok {
+		t.Fatalf("state should be ok for %v : %v", step.Content, state.Get("error"))
+	}
+
+	floppy_path := state.Get("floppy_path").(string)
+	if _, err := os.Stat(floppy_path); err != nil {
+		t.Fatalf("file not found: %s for %v : %v", floppy_path, step.Content, err)
+	}
+
+	// check the FilesAdded array to see if it matches
+	for path, _ := range step.Content {
+		if !step.FilesAdded[path] {
+			t.Fatalf("unable to find file: %s for %v", path, step.Content)
+		}
+	}
+
+	// cleanup the step
+	step.Cleanup(state)
+
+	if _, err := os.Stat(floppy_path); err == nil {
+		t.Fatalf("file found: %s for %v", floppy_path, step.Content)
+	}
+}
