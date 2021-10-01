@@ -304,7 +304,7 @@ func TestStepCreateFloppyContent(t *testing.T) {
 	}
 
 	// check the FilesAdded array to see if it matches
-	for path, _ := range step.Content {
+	for path := range step.Content {
 		if !step.FilesAdded[path] {
 			t.Fatalf("unable to find file: %s for %v", path, step.Content)
 		}
