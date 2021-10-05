@@ -42,6 +42,8 @@ type StepConnect struct {
 	// existing types.
 	CustomConnect map[string]multistep.Step
 
+	TakeScreenshot func(path string) error
+
 	substep multistep.Step
 }
 
@@ -114,6 +116,12 @@ func (s *StepConnect) Run(ctx context.Context, state multistep.StateBag) multist
 	s.substep = step
 	action := s.substep.Run(ctx, state)
 	if action == multistep.ActionHalt {
+		if !s.Config.ScreenshotSkip && s.TakeScreenshot != nil {
+			screenshotErr := s.TakeScreenshot(s.Config.ScreenshotDirectory)
+			err := fmt.Errorf("Failed to take screenshot: %s", screenshotErr)
+			state.Put("error", err)
+			ui.Error(err.Error())
+		}
 		return action
 	}
 

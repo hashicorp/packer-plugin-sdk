@@ -12,6 +12,7 @@ import (
 type FlatConfig struct {
 	Type                      *string  `mapstructure:"communicator" cty:"communicator" hcl:"communicator"`
 	PauseBeforeConnect        *string  `mapstructure:"pause_before_connecting" cty:"pause_before_connecting" hcl:"pause_before_connecting"`
+	ScreenshotDirectory       *string  `mapstructure:"screenshot_dir" cty:"screenshot_dir" hcl:"screenshot_dir"`
 	SSHHost                   *string  `mapstructure:"ssh_host" cty:"ssh_host" hcl:"ssh_host"`
 	SSHPort                   *int     `mapstructure:"ssh_port" cty:"ssh_port" hcl:"ssh_port"`
 	SSHUsername               *string  `mapstructure:"ssh_username" cty:"ssh_username" hcl:"ssh_username"`
@@ -75,6 +76,7 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 	s := map[string]hcldec.Spec{
 		"communicator":                 &hcldec.AttrSpec{Name: "communicator", Type: cty.String, Required: false},
 		"pause_before_connecting":      &hcldec.AttrSpec{Name: "pause_before_connecting", Type: cty.String, Required: false},
+		"screenshot_dir":               &hcldec.AttrSpec{Name: "screenshot_dir", Type: cty.String, Required: false},
 		"ssh_host":                     &hcldec.AttrSpec{Name: "ssh_host", Type: cty.String, Required: false},
 		"ssh_port":                     &hcldec.AttrSpec{Name: "ssh_port", Type: cty.Number, Required: false},
 		"ssh_username":                 &hcldec.AttrSpec{Name: "ssh_username", Type: cty.String, Required: false},
@@ -244,6 +246,29 @@ func (*FlatSSHTemporaryKeyPair) HCL2Spec() map[string]hcldec.Spec {
 	s := map[string]hcldec.Spec{
 		"temporary_key_pair_type": &hcldec.AttrSpec{Name: "temporary_key_pair_type", Type: cty.String, Required: false},
 		"temporary_key_pair_bits": &hcldec.AttrSpec{Name: "temporary_key_pair_bits", Type: cty.Number, Required: false},
+	}
+	return s
+}
+
+// FlatScreenshotConfig is an auto-generated flat version of ScreenshotConfig.
+// Where the contents of a field with a `mapstructure:,squash` tag are bubbled up.
+type FlatScreenshotConfig struct {
+	ScreenshotDirectory *string `mapstructure:"screenshot_dir" cty:"screenshot_dir" hcl:"screenshot_dir"`
+}
+
+// FlatMapstructure returns a new FlatScreenshotConfig.
+// FlatScreenshotConfig is an auto-generated flat version of ScreenshotConfig.
+// Where the contents a fields with a `mapstructure:,squash` tag are bubbled up.
+func (*ScreenshotConfig) FlatMapstructure() interface{ HCL2Spec() map[string]hcldec.Spec } {
+	return new(FlatScreenshotConfig)
+}
+
+// HCL2Spec returns the hcl spec of a ScreenshotConfig.
+// This spec is used by HCL to read the fields of ScreenshotConfig.
+// The decoded values from this spec will then be applied to a FlatScreenshotConfig.
+func (*FlatScreenshotConfig) HCL2Spec() map[string]hcldec.Spec {
+	s := map[string]hcldec.Spec{
+		"screenshot_dir": &hcldec.AttrSpec{Name: "screenshot_dir", Type: cty.String, Required: false},
 	}
 	return s
 }

@@ -1,5 +1,5 @@
 //go:generate packer-sdc struct-markdown
-//go:generate packer-sdc mapstructure-to-hcl2 -type Config,SSH,WinRM,SSHTemporaryKeyPair
+//go:generate packer-sdc mapstructure-to-hcl2 -type Config,SSH,WinRM,SSHTemporaryKeyPair,ScreenshotConfig
 
 package communicator
 
@@ -55,6 +55,8 @@ type Config struct {
 	// will disconnect and then wait 10 minutes before connecting to the guest
 	// and beginning provisioning.
 	PauseBeforeConnect time.Duration `mapstructure:"pause_before_connecting"`
+
+	ScreenshotConfig `mapstructure:",squash"`
 
 	SSH   `mapstructure:",squash"`
 	WinRM `mapstructure:",squash"`
