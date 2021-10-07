@@ -53,6 +53,18 @@ func (cmd *Command) run(args []string) error {
 		return errors.New("No option passed")
 	}
 
+	pluginName := cmd.Load
+
+	if strings.HasPrefix(pluginName, "packer-builder-") ||
+		strings.HasPrefix(pluginName, "packer-provisioner-") ||
+		strings.HasPrefix(pluginName, "packer-post-processor-") {
+		fmt.Printf("\n[WARNING] Plugin is named with old prefix `packer-[builder|provisioner|post-processor]-{name})`. " +
+			"These will be detected but Packer cannot install them automatically. " +
+			"The plugin must be a multi-component plugin named packer-plugin-{name} to be installable through the `packer init` command.\n" +
+			"See docs at: https://www.packer.io/docs/plugins.\n")
+		return nil
+	}
+
 	if err := checkPluginName(cmd.Load); err != nil {
 		return err
 	}
@@ -72,14 +84,7 @@ func checkPluginName(name string) error {
 	if strings.HasPrefix(name, "packer-plugin-") {
 		return nil
 	}
-	if strings.HasPrefix(name, "packer-builder-") ||
-		strings.HasPrefix(name, "packer-provisioner-") ||
-		strings.HasPrefix(name, "packer-post-processor-") {
-		fmt.Printf("\n[WARNING] Plugin is named with old prefix `packer-[builder|provisioner|post-processor]-{name})`. " +
-			"These will be detected but Packer cannot install them automatically. " +
-			"The plugin must be a multi-component plugin named packer-plugin-{name} to be installable through the `packer init` command.\n")
-		return nil
-	}
+
 	return fmt.Errorf("plugin's name is not valid")
 }
 
