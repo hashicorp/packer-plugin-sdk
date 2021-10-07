@@ -4,10 +4,7 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
-	"io"
 	"log"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -21,13 +18,11 @@ var (
 )
 
 type Command struct {
-	Docs bool
 	Load string
 }
 
 func (cmd *Command) Flags() *flag.FlagSet {
 	fs := flag.NewFlagSet(cmdPrefix, flag.ExitOnError)
-	fs.BoolVar(&cmd.Docs, "docs", false, "flag to indicate that documentation files should be checked.")
 	fs.StringVar(&cmd.Load, "load", "", "flag to check if plugin can be loaded by Packer and is compatible with HCL2.")
 	return fs
 }
@@ -58,17 +53,6 @@ func (cmd *Command) run(args []string) error {
 		return errors.New("No option passed")
 	}
 
-	if cmd.Docs {
-		if err := checkDocumentation(); err != nil {
-			return err
-		}
-		fmt.Printf("Plugin successfully passed docs check.\n")
-	}
-
-	if len(cmd.Load) == 0 {
-		return nil
-	}
-
 	if err := checkPluginName(cmd.Load); err != nil {
 		return err
 	}
@@ -79,40 +63,6 @@ func (cmd *Command) run(args []string) error {
 	// }
 	// fmt.Printf("Plugin successfully passed compatibility check.\n")
 	return nil
-}
-
-// checkDocumentation looks for the presence of a docs folder with mdx files inside.
-// It is not possible to predict the number of mdx files for a given plugin.
-// Because of that, finding one file inside the folder is enough to validate the docs existence.
-func checkDocumentation() error {
-	// TODO: this should be updated once we have defined what's going to be for plugin's docs
-	wd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-
-	docsDir := wd + "/docs"
-	stat, err := os.Stat(docsDir)
-	if err != nil {
-		return fmt.Errorf("could not find docs folter: %s", err.Error())
-	}
-	if !stat.IsDir() {
-		return fmt.Errorf("expecting docs do be a directory of mdx files")
-	}
-
-	var mdxFound bool
-	_ = filepath.Walk(docsDir, func(path string, info os.FileInfo, err error) error {
-		if !info.IsDir() && filepath.Ext(path) == ".mdx" {
-			mdxFound = true
-			return io.EOF
-		}
-		return nil
-	})
-
-	if mdxFound {
-		return nil
-	}
-	return fmt.Errorf("no docs files found, make sure to have the docs in place before releasing")
 }
 
 // checkPluginName checks for the possible valid names for a plugin, packer-plugin-* or packer-[builder|provisioner|post-processor]-*.
