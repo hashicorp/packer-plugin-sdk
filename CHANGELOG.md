@@ -1,3 +1,12 @@
+## 0.2.7 (October 07, 2021)
+
+* sdk: Make step_download store the used iso_url in state. [GH-84]
+* sdk: Add `floppy_content` parameter in `FloppyConfig` [GH-82]
+
+## 0.2.6 (September 30, 2021)
+
+* sdk: Add SourceImageID field to registry/image object for HCP Packer registry ancestry support [GH-81]
+
 ## 0.2.5 (September 07, 2021)
 
 * sdk: Bump SDK to Go 1.17
