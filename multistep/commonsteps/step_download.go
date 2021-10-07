@@ -97,7 +97,7 @@ func (s *StepDownload) Run(ctx context.Context, state multistep.StateBag) multis
 		if err == nil {
 			state.Put(s.ResultKey, dst)
 			// Track the URL you actually used for the download.
-			stete.Put("SourceImageURL", source)
+			state.Put("SourceImageURL", source)
 			return multistep.ActionContinue
 		}
 		// may be another url will work
