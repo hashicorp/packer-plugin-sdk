@@ -110,7 +110,6 @@ func checkDocumentation() error {
 	})
 
 	if mdxFound {
-		fmt.Printf("a mdx file was found inside the docs folder\n")
 		return nil
 	}
 	return fmt.Errorf("no docs files found, make sure to have the docs in place before releasing")
