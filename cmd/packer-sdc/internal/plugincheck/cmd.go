@@ -12,8 +12,6 @@ import (
 )
 
 var (
-	cmdPrefix = "plugin-check"
-
 	//go:embed README.md
 	readme string
 )
