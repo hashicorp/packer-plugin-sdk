@@ -105,7 +105,7 @@ func checkPluginName(name string) error {
 		return nil
 	}
 
-	return fmt.Errorf("plugin's name is not valid")
+	return fmt.Errorf("plugin name is not valid")
 }
 
 func (cmd *Command) Synopsis() string {
