@@ -2,9 +2,10 @@ package plugincheck
 
 import (
 	_ "embed"
-	"flag"
+	"encoding/json"
 	"fmt"
 	"log"
+	"os/exec"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -18,17 +19,9 @@ var (
 )
 
 type Command struct {
-	Load string
-}
-
-func (cmd *Command) Flags() *flag.FlagSet {
-	fs := flag.NewFlagSet(cmdPrefix, flag.ExitOnError)
-	fs.StringVar(&cmd.Load, "load", "", "flag to check if plugin can be loaded by Packer and is compatible with HCL2.")
-	return fs
 }
 
 func (cmd *Command) Help() string {
-	cmd.Flags().Usage()
 	return "\n" + readme
 }
 
@@ -42,22 +35,15 @@ func (cmd *Command) Run(args []string) int {
 
 func (cmd *Command) run(args []string) error {
 
-	f := cmd.Flags()
-	err := f.Parse(args)
-	if err != nil {
-		return errors.Wrap(err, "unable to parse flags")
-	}
-
-	if f.NFlag() == 0 {
+	if len(args) != 1 {
 		cmd.Help()
-		return errors.New("No option passed")
+		return errors.New("plugincheck takes on plugin binary name as argument.\n" +
+			"ex: 'packer-plugin-happycloud'. Check will be run on the binary.")
 	}
 
-	pluginName := cmd.Load
+	pluginName := args[0]
 
-	if strings.HasPrefix(pluginName, "packer-builder-") ||
-		strings.HasPrefix(pluginName, "packer-provisioner-") ||
-		strings.HasPrefix(pluginName, "packer-post-processor-") {
+	if isOldPlugin(pluginName) {
 		fmt.Printf("\n[WARNING] Plugin is named with old prefix `packer-[builder|provisioner|post-processor]-{name})`. " +
 			"These will be detected but Packer cannot install them automatically. " +
 			"The plugin must be a multi-component plugin named packer-plugin-{name} to be installable through the `packer init` command.\n" +
@@ -65,21 +51,55 @@ func (cmd *Command) run(args []string) error {
 		return nil
 	}
 
-	if err := checkPluginName(cmd.Load); err != nil {
+	if err := checkPluginName(pluginName); err != nil {
 		return err
 	}
 
-	// if err := discoverAndLoad(); err != nil {
-	// 	fmt.Printf(err.Error())
-	// 	os.Exit(2)
-	// }
-	// fmt.Printf("Plugin successfully passed compatibility check.\n")
+	output, err := exec.Command(pluginName, "describe").Output()
+	if err != nil {
+		return errors.Wrap(err, "failed to describe plugin")
+	}
+
+	desc := pluginDescription{}
+	err = json.Unmarshal(output, &desc)
+	if err != nil {
+		return errors.Wrap(err, "failed to json.Unmarshal plugin description")
+	}
+	if len(desc.Version) == 0 {
+		return errors.New("Version needs to be set")
+	}
+	if len(desc.SDKVersion) == 0 {
+		return errors.New("SDKVersion needs to be set")
+	}
+	if len(desc.APIVersion) == 0 {
+		return errors.New("APIVersion needs to be set")
+	}
+
+	if len(desc.Builders) == 0 && len(desc.PostProcessors) == 0 && len(desc.Datasources) == 0 {
+		return errors.New("this plugin defines no component.")
+	}
 	return nil
 }
 
-// checkPluginName checks for the possible valid names for a plugin, packer-plugin-* or packer-[builder|provisioner|post-processor]-*.
-// If the name is prefixed with `packer-[builder|provisioner|post-processor]-`, packer won't be able to install it,
-// therefore a WARNING will be shown.
+type pluginDescription struct {
+	Version        string   `json:"version"`
+	SDKVersion     string   `json:"sdk_version"`
+	APIVersion     string   `json:"api_version"`
+	Builders       []string `json:"builders"`
+	PostProcessors []string `json:"post_processors"`
+	Datasources    []string `json:"datasources"`
+}
+
+func isOldPlugin(pluginName string) bool {
+	return strings.HasPrefix(pluginName, "packer-builder-") ||
+		strings.HasPrefix(pluginName, "packer-provisioner-") ||
+		strings.HasPrefix(pluginName, "packer-post-processor-")
+}
+
+// checkPluginName checks for the possible valid names for a plugin,
+// packer-plugin-* or packer-[builder|provisioner|post-processor]-*. If the name
+// is prefixed with `packer-[builder|provisioner|post-processor]-`, packer won't
+// be able to install it, therefore a WARNING will be shown.
 func checkPluginName(name string) error {
 	if strings.HasPrefix(name, "packer-plugin-") {
 		return nil
