@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -53,7 +54,12 @@ func (cmd *Command) run(args []string) error {
 		return err
 	}
 
-	output, err := exec.Command(pluginName, "describe").Output()
+	path, err := filepath.Abs(pluginName)
+	if err != nil {
+		return err
+	}
+
+	output, err := exec.Command(path, "describe").Output()
 	if err != nil {
 		return errors.Wrap(err, "failed to describe plugin")
 	}
