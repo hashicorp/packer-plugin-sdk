@@ -35,7 +35,7 @@ func (cmd *Command) run(args []string) error {
 
 	if len(args) != 1 {
 		cmd.Help()
-		return errors.New("plugincheck takes on plugin binary name as argument.\n" +
+		return errors.New("plugin-check requires a plugin binary name as an argument.\n" +
 			"ex: 'packer-plugin-happycloud'. Check will be run on the binary.")
 	}
 
