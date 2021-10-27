@@ -14,6 +14,16 @@ const (
 	TriFalse
 )
 
+func NewTrilean(b *bool) Trilean {
+	if b == nil {
+		return TriUnset
+	}
+	if *b {
+		return TriTrue
+	}
+	return TriFalse
+}
+
 func (t Trilean) ToString() string {
 	if t == TriTrue {
 		return "TriTrue"
