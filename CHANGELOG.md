@@ -1,4 +1,4 @@
-## 0.2.8 (Upcoming)
+## 0.2.8 (November 10, 2021)
 
 * sdk: packer-sdc add plugin-check command to check plugin validity, try `packer-sdc plugin-check -h` for help [#85](https://github.com/hashicorp/packer-plugin-sdk/pull/85)
 
