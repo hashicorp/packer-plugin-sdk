@@ -1,3 +1,7 @@
+## 0.2.8 (November 10, 2021)
+
+* sdk: packer-sdc add plugin-check command to check plugin validity, `packer-sdc plugin-check -h` [#85](https://github.com/hashicorp/packer-plugin-sdk/pull/85)
+
 ## 0.2.7 (October 07, 2021)
 
 * sdk: Make step_download store the used iso_url in state. [GH-84]
