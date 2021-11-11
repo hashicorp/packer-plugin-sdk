@@ -79,7 +79,7 @@ func (cmd *Command) run(args []string) error {
 		return errors.New("APIVersion needs to be set")
 	}
 
-	if len(desc.Builders) == 0 && len(desc.PostProcessors) == 0 && len(desc.Datasources) == 0 {
+	if len(desc.Builders) == 0 && len(desc.PostProcessors) == 0 && len(desc.Datasources) == 0 && len(desc.Provisioners) == 0 {
 		return errors.New("this plugin defines no component.")
 	}
 	return nil
@@ -92,6 +92,7 @@ type pluginDescription struct {
 	Builders       []string `json:"builders"`
 	PostProcessors []string `json:"post_processors"`
 	Datasources    []string `json:"datasources"`
+	Provisioners   []string `json:"provisioners"`
 }
 
 func isOldPlugin(pluginName string) bool {

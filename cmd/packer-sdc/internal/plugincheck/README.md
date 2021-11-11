@@ -1,5 +1,5 @@
 ## `plugin-check`
 
-`plugin-check` will check wether a plugin binary seems to work with packer.
+`plugin-check` will check whether a plugin binary seems to work with packer.
 
 Use: `packer-sdc plugin-check packer-plugin-happy-cloud`
