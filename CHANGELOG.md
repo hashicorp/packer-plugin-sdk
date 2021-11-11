@@ -1,4 +1,4 @@
-## 0.2.9 (Upcoming)
+## 0.2.9 (November 11, 2021)
 
 * sdk: packer-sdc fix plugin-check command for provisioner only plugins. [#88](https://github.com/hashicorp/packer-plugin-sdk/pull/88)
 
