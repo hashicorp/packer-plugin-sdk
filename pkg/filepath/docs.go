@@ -10,6 +10,11 @@ import (
 	"strings"
 )
 
+const (
+	WindowsPathSeparator = '\\'
+	UnixPathSeparator    = '/'
+)
+
 // A List represents a list of filepaths.
 type List []string
 
@@ -21,4 +26,14 @@ func ListFromString(path string) List {
 // windows \, on other systems: /.
 func (l *List) String() string {
 	return filepath.Join(*l...)
+}
+
+// UnixString returns the user path separated by slashes (/).
+func (l *List) UnixString() string {
+	return filepath.Clean(strings.Join(*l, string(UnixPathSeparator)))
+}
+
+// WindowsString returns the user path separated by backward slashes (\).
+func (l *List) WindowsString() string {
+	return filepath.Clean(strings.Join(*l, string(WindowsPathSeparator)))
 }
