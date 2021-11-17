@@ -3,6 +3,8 @@
 
 package happycloud
 
+import "github.com/hashicorp/packer-plugin-sdk/pkg/filepath"
+
 // Config is the configuration structure for the happycloud builder. It stores
 // both the publicly settable state as well as the privately generated state of
 // the config object.
@@ -23,6 +25,8 @@ type Config struct {
 	// service_account_email is not specified. Set this value to true and omit
 	// service_account_email to provision a VM with no service account.
 	DisableDefaultServiceAccount bool `mapstructure:"disable_default_service_account" required:"false"`
+	// The Path to something
+	PathToSomething filepath.List `mapstructure:"path_to_something" required:"false"`
 }
 
 // CustomerEncryptionKey helps configure a customer encryption key

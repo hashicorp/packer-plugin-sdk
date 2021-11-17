@@ -15,6 +15,7 @@ type FlatConfig struct {
 	AcceleratorCount             *int64  `mapstructure:"accelerator_count" required:"false" cty:"accelerator_count" hcl:"accelerator_count"`
 	Address                      *string `mapstructure:"address" required:"false" cty:"address" hcl:"address"`
 	DisableDefaultServiceAccount *bool   `mapstructure:"disable_default_service_account" required:"false" cty:"disable_default_service_account" hcl:"disable_default_service_account"`
+	PathToSomething              *string `mapstructure:"path_to_something" required:"false" cty:"path_to_something" hcl:"path_to_something"`
 }
 
 // FlatMapstructure returns a new FlatConfig.
@@ -34,6 +35,7 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 		"accelerator_count":               &hcldec.AttrSpec{Name: "accelerator_count", Type: cty.Number, Required: false},
 		"address":                         &hcldec.AttrSpec{Name: "address", Type: cty.String, Required: false},
 		"disable_default_service_account": &hcldec.AttrSpec{Name: "disable_default_service_account", Type: cty.Bool, Required: false},
+		"path_to_something":               &hcldec.AttrSpec{Name: "path_to_something", Type: cty.String, Required: false},
 	}
 	return s
 }
