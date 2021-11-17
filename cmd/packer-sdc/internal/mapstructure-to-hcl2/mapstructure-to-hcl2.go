@@ -513,6 +513,8 @@ func getMapstructureSquashedStruct(topPkg *types.Package, utStruct *types.Struct
 			switch f.String() {
 			case "time.Duration":
 				field = types.NewField(field.Pos(), field.Pkg(), field.Name(), types.NewPointer(types.Typ[types.String]), field.Embedded())
+			case "github.com/hashicorp/packer-plugin-sdk/pkg/filepath.List": // TODO(azr): unhack this situation
+				field = types.NewField(field.Pos(), field.Pkg(), field.Name(), types.NewPointer(types.Typ[types.String]), field.Embedded())
 			case "github.com/hashicorp/packer-plugin-sdk/template/config.Trilean": // TODO(azr): unhack this situation
 				field = types.NewField(field.Pos(), field.Pkg(), field.Name(), types.NewPointer(types.Typ[types.Bool]), field.Embedded())
 			case "github.com/hashicorp/packer/provisioner/powershell.ExecutionPolicy": // TODO(azr): unhack this situation
