@@ -17,6 +17,8 @@ func ListFromString(path string) List {
 	return strings.Split(path, "/")
 }
 
+// String returns the user path separated by the systems path separator; on
+// windows \, on other systems: /.
 func (l *List) String() string {
 	return filepath.Join(*l...)
 }
