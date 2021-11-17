@@ -10,6 +10,7 @@ import (
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/hcl/v2/hcldec"
+	"github.com/hashicorp/packer-plugin-sdk/pkg/filepath"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	"github.com/mitchellh/mapstructure"
 	"github.com/ryanuber/go-glob"
@@ -42,6 +43,7 @@ type DecodeOpts struct {
 var DefaultDecodeHookFuncs = []mapstructure.DecodeHookFunc{
 	uint8ToStringHook,
 	stringToTrilean,
+	stringToFilepath,
 	mapstructure.StringToSliceHookFunc(","),
 	mapstructure.StringToTimeDurationHookFunc(),
 }
@@ -326,4 +328,19 @@ func stringToTrilean(f reflect.Type, t reflect.Type, v interface{}) (interface{}
 
 	}
 	return v, nil
+}
+
+func stringToFilepath(f reflect.Type, t reflect.Type, v interface{}) (interface{}, error) {
+	var list filepath.List
+	if t != reflect.TypeOf(list) {
+		return v, nil
+	}
+
+	switch v := v.(type) {
+	case string:
+		list = filepath.ListFromString(v)
+		return list, nil
+	default:
+		return v, nil
+	}
 }
