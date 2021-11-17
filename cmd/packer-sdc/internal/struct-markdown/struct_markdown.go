@@ -162,6 +162,8 @@ func (cmd *Command) Run(args []string) int {
 			switch fieldType {
 			case "time.Duration":
 				fieldType = `duration string | ex: "1h5m2s"`
+			case "filepath.List":
+				fieldType = `path string | ex: "/path/foo" or "c://path/foo"`
 			case "config.Trilean":
 				fieldType = `boolean`
 			case "config.NameValues":
