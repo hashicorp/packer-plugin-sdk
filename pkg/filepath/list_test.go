@@ -47,14 +47,17 @@ func TestList_String(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.list.String(), func(t *testing.T) {
+
 			unixString := tt.list.UnixString()
 			if unixString != tt.wantUnixString {
 				t.Fatalf("bad unix string: expected: %s, got %s", tt.wantUnixString, unixString)
 			}
+
 			windowsString := tt.list.WindowsString()
 			if windowsString != tt.wantWindowsString {
 				t.Fatalf("bad windows string: expected: %s, got %s", tt.wantWindowsString, windowsString)
 			}
+
 			var expectedString string
 			gotString := tt.list.String()
 			if runtime.GOOS == "windows" {
