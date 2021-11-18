@@ -24,16 +24,16 @@ func ListFromString(path string) List {
 
 // String returns the user path separated by the systems path separator; on
 // windows \, on other systems: /.
-func (l *List) String() string {
-	return filepath.Join(*l...)
+func (l List) String() string {
+	return filepath.Join(l...)
 }
 
 // UnixString returns the user path separated by slashes (/).
-func (l *List) UnixString() string {
-	return filepath.Clean(strings.Join(*l, string(UnixPathSeparator)))
+func (l List) UnixString() string {
+	return filepath.Clean(strings.Join(l, string(UnixPathSeparator)))
 }
 
 // WindowsString returns the user path separated by backward slashes (\).
-func (l *List) WindowsString() string {
-	return filepath.Clean(strings.Join(*l, string(WindowsPathSeparator)))
+func (l List) WindowsString() string {
+	return filepath.Clean(strings.Join(l, string(WindowsPathSeparator)))
 }
