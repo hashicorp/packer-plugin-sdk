@@ -118,10 +118,6 @@ func FromArtifact(a packer.Artifact, opts ...ArtifactOverrideFunc) (*Image, erro
 // used to override the ProviderName for an existing Image.
 func WithProvider(name string) func(*Image) error {
 	return func(img *Image) error {
-		if img == nil {
-			return errors.New("no go on empty image")
-		}
-
 		img.ProviderName = name
 		return nil
 	}
@@ -131,10 +127,6 @@ func WithProvider(name string) func(*Image) error {
 // used to override the ImageId for an existing Image.
 func WithID(id string) func(*Image) error {
 	return func(img *Image) error {
-		if img == nil {
-			return errors.New("no go on empty image")
-		}
-
 		img.ImageID = id
 		return nil
 	}
@@ -144,10 +136,6 @@ func WithID(id string) func(*Image) error {
 // used to override the SourceImageId for an existing Image.
 func WithSourceID(id string) func(*Image) error {
 	return func(img *Image) error {
-		if img == nil {
-			return errors.New("no go on empty image")
-		}
-
 		img.SourceImageID = id
 		return nil
 	}
@@ -157,10 +145,6 @@ func WithSourceID(id string) func(*Image) error {
 // used to override the ProviderRegion for an existing Image.
 func WithRegion(region string) func(*Image) error {
 	return func(img *Image) error {
-		if img == nil {
-			return errors.New("no go on empty image")
-		}
-
 		img.ProviderRegion = region
 		return nil
 	}
