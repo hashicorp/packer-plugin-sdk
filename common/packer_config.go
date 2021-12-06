@@ -23,6 +23,10 @@ const (
 	// force build is enabled.
 	ForceConfigKey = "packer_force"
 
+	// This is the key in configurations that is set to the HCP iteration ID
+	// when packer is running an HCP build. It is empty otherwise.
+	PackerHCLIterationIDKey = "packer_hcl_iteration_id"
+
 	// This key determines what to do when a normal multistep step fails
 	// - "cleanup" - run cleanup steps
 	// - "abort" - exit without cleanup
@@ -42,12 +46,13 @@ const (
 // them. Embed this structure into your configuration class to get access to
 // this information from the Packer Core.
 type PackerConfig struct {
-	PackerBuildName     string            `mapstructure:"packer_build_name"`
-	PackerBuilderType   string            `mapstructure:"packer_builder_type"`
-	PackerCoreVersion   string            `mapstructure:"packer_core_version"`
-	PackerDebug         bool              `mapstructure:"packer_debug"`
-	PackerForce         bool              `mapstructure:"packer_force"`
-	PackerOnError       string            `mapstructure:"packer_on_error"`
-	PackerUserVars      map[string]string `mapstructure:"packer_user_variables"`
-	PackerSensitiveVars []string          `mapstructure:"packer_sensitive_variables"`
+	PackerBuildName      string            `mapstructure:"packer_build_name"`
+	PackerBuilderType    string            `mapstructure:"packer_builder_type"`
+	PackerCoreVersion    string            `mapstructure:"packer_core_version"`
+	PackerDebug          bool              `mapstructure:"packer_debug"`
+	PackerForce          bool              `mapstructure:"packer_force"`
+	PackerHCLIterationID string            `mapstructure:"packer_hcl_iteration_id"`
+	PackerOnError        string            `mapstructure:"packer_on_error"`
+	PackerUserVars       map[string]string `mapstructure:"packer_user_variables"`
+	PackerSensitiveVars  []string          `mapstructure:"packer_sensitive_variables"`
 }
