@@ -55,7 +55,7 @@ jobs:
   test-linux:
     executor: golang
     resource_class: large
-    working_directory: /go/src/github.com/hashicorp/packer-plugin-sdk
+    working_directory: ~/go/src/github.com/hashicorp/packer-plugin-sdk
     steps:
       - checkout
       - run: make vet
@@ -92,7 +92,7 @@ jobs:
       - run: make fmt-check
   check-generate:
     executor: golang
-    working_directory: /go/src/github.com/hashicorp/packer-plugin-sdk
+    working_directory: ~/go/src/github.com/hashicorp/packer-plugin-sdk
     steps:
       - checkout
       - run: make generate-check
