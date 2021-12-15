@@ -1,4 +1,4 @@
-## 0.2.10 (Upcoming)
+## 0.2.10 (December 15, 2021)
 
 * sdk: Security release with Go 1.7.5 to address [CVE-2021-44717](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44717). [GH-93](https://github.com/hashicorp/packer-plugin-sdk/pull/93)
 
