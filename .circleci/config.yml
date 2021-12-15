@@ -11,7 +11,7 @@ environment: &ENVIRONMENT
 executors:
   golang:
     docker:
-      - image: docker.mirror.hashicorp.services/circleci/golang:1.16
+      - image: docker.mirror.hashicorp.services/cimg/go:1.17
     resource_class: medium+
   darwin:
     macos:
@@ -55,7 +55,7 @@ jobs:
   test-linux:
     executor: golang
     resource_class: large
-    working_directory: /go/src/github.com/hashicorp/packer-plugin-sdk
+    working_directory: ~/go/src/github.com/hashicorp/packer-plugin-sdk
     steps:
       - checkout
       - run: make vet
@@ -68,14 +68,14 @@ jobs:
     steps:
       - install-go-run-tests-unix:
           GOOS: darwin
-          GOVERSION: "1.16"
+          GOVERSION: "1.17"
   test-windows:
     executor:
       name: win/vs2019
       shell: bash.exe
     steps:
       - install-go-run-tests-windows:
-          GOVERSION: "1.16"
+          GOVERSION: "1.17"
   check-lint:
     executor: golang
     resource_class: xlarge
@@ -92,7 +92,7 @@ jobs:
       - run: make fmt-check
   check-generate:
     executor: golang
-    working_directory: /go/src/github.com/hashicorp/packer-plugin-sdk
+    working_directory: ~/go/src/github.com/hashicorp/packer-plugin-sdk
     steps:
       - checkout
       - run: make generate-check
