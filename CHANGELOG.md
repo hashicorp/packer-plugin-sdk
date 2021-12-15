@@ -1,3 +1,7 @@
+## 0.2.10 (Upcoming)
+
+* sdk: Security release with Go 1.7.5 to address [CVE-2021-44717](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44717). [GH-93](https://github.com/hashicorp/packer-plugin-sdk/pull/93)
+
 ## 0.2.9 (November 11, 2021)
 
 * sdk: packer-sdc fix plugin-check command for provisioner only plugins. [#88](https://github.com/hashicorp/packer-plugin-sdk/pull/88)
