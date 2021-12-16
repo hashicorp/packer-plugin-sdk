@@ -50,10 +50,6 @@ func (i *Image) Validate() error {
 		return errors.New("error registry image does not contain a valid ProviderName")
 	}
 
-	if i.SourceImageID == "" {
-		return errors.New("error registry image does not contain a valid SourceImageID")
-	}
-
 	return nil
 }
 
@@ -70,7 +66,6 @@ func (i *Image) String() string {
 // calling f(k,v). The func f is responsible for type asserting the expected type for the key and value before
 // trying to create an Image from it.
 func FromMappedData(mappedData interface{}, f func(key, value interface{}) (*Image, error)) ([]*Image, error) {
-
 	mapValue := reflect.ValueOf(mappedData)
 	if mapValue.Kind() != reflect.Map {
 		return nil, errors.New("error the incoming mappedData does not appear to be a map; found type to be" + mapValue.Kind().String())
@@ -118,10 +113,6 @@ func FromArtifact(a packer.Artifact, opts ...ArtifactOverrideFunc) (*Image, erro
 // used to override the ProviderName for an existing Image.
 func WithProvider(name string) func(*Image) error {
 	return func(img *Image) error {
-		if img == nil {
-			return errors.New("no go on empty image")
-		}
-
 		img.ProviderName = name
 		return nil
 	}
@@ -131,10 +122,6 @@ func WithProvider(name string) func(*Image) error {
 // used to override the ImageId for an existing Image.
 func WithID(id string) func(*Image) error {
 	return func(img *Image) error {
-		if img == nil {
-			return errors.New("no go on empty image")
-		}
-
 		img.ImageID = id
 		return nil
 	}
@@ -144,10 +131,6 @@ func WithID(id string) func(*Image) error {
 // used to override the SourceImageId for an existing Image.
 func WithSourceID(id string) func(*Image) error {
 	return func(img *Image) error {
-		if img == nil {
-			return errors.New("no go on empty image")
-		}
-
 		img.SourceImageID = id
 		return nil
 	}
@@ -157,10 +140,6 @@ func WithSourceID(id string) func(*Image) error {
 // used to override the ProviderRegion for an existing Image.
 func WithRegion(region string) func(*Image) error {
 	return func(img *Image) error {
-		if img == nil {
-			return errors.New("no go on empty image")
-		}
-
 		img.ProviderRegion = region
 		return nil
 	}
