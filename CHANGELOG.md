@@ -1,4 +1,4 @@
-## 0.2.11 (Upcoming)
+## 0.2.11 (December 17, 2021)
 
 * sdk: The SourceImageID field for registry/image.Image is now optional;
     calling Image#Validate will nolonger error if SourceImageID is empty.
