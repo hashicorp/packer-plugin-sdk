@@ -64,6 +64,13 @@ func (rw *BasicUi) Ask(query string) (string, error) {
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 	defer signal.Stop(sigCh)
 
+	// Clearing stdin prior to asking question then reading input
+	_, err := rw.TTY.ReadString()
+	if err != nil {
+		log.Printf("ui: err cleaning stdin,  err: %s", err)
+		return "", err
+	}
+
 	log.Printf("ui: ask: %s", query)
 	if query != "" {
 		if _, err := fmt.Fprint(rw.Writer, query+" "); err != nil {
