@@ -17,7 +17,7 @@ import (
 
 // By default, Packer will symlink, download or copy image files to the Packer
 // cache into a "`hash($iso_url+$iso_checksum).$iso_target_extension`" file.
-// Packer uses [hashicorp/go-getter](https://github.com/hashicorp/go-getter) in
+// Packer uses [hashicorp/go-getter](https://github.com/hashicorp/go-getter/v2) in
 // file mode in order to perform a download.
 //
 // go-getter supports the following protocols:

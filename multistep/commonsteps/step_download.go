@@ -53,6 +53,9 @@ type StepDownload struct {
 	// extension on the URL is used. Otherwise, this will be forced
 	// on the downloaded file for every URL.
 	Extension string
+
+	// Specify if the file containing many files to extract
+	ContainingManyFiles bool
 }
 
 var defaultGetterClient = getter.Client{
@@ -110,11 +113,20 @@ func (s *StepDownload) Run(ctx context.Context, state multistep.StateBag) multis
 	return multistep.ActionHalt
 }
 
+func appendEndInToTargetPath(path, mode, extensions string) string {
+	targetPath := path + "." + mode
+	if extensions != "" {
+		targetPath += "." + extensions
+	}
+	return targetPath
+}
+
 func (s *StepDownload) UseSourceToFindCacheTarget(source string) (*url.URL, string, error) {
 	u, err := parseSourceURL(source)
 	if err != nil {
 		return nil, "", fmt.Errorf("url parse: %s", err)
 	}
+
 	if checksum := u.Query().Get("checksum"); checksum != "" {
 		s.Checksum = checksum
 	}
@@ -136,12 +148,14 @@ func (s *StepDownload) UseSourceToFindCacheTarget(source string) (*url.URL, stri
 	}
 	shaSumString := hex.EncodeToString(shaSum[:])
 
+	mode := "file"
+	if s.ContainingManyFiles {
+		mode = "folder"
+	}
+
 	targetPath := s.TargetPath
 	if targetPath == "" {
-		targetPath = shaSumString
-		if s.Extension != "" {
-			targetPath += "." + s.Extension
-		}
+		targetPath = appendEndInToTargetPath(shaSumString, mode, s.Extension)
 		targetPath, err = packersdk.CachePath(targetPath)
 		if err != nil {
 			return nil, "", fmt.Errorf("CachePath: %s", err)
@@ -152,12 +166,11 @@ func (s *StepDownload) UseSourceToFindCacheTarget(source string) (*url.URL, stri
 		if !strings.HasSuffix(targetPath, "/") {
 			targetPath += "/"
 		}
-		targetPath += shaSumString
-		if s.Extension != "" {
-			targetPath += "." + s.Extension
-		} else {
-			targetPath += ".iso"
+		extensions := s.Extension
+		if extensions == "" {
+			extensions = "iso"
 		}
+		targetPath = appendEndInToTargetPath(targetPath+shaSumString, mode, extensions)
 	}
 	return u, targetPath, nil
 }
@@ -199,12 +212,16 @@ func (s *StepDownload) download(ctx context.Context, ui packersdk.Ui, source str
 	}
 
 	ui.Say(fmt.Sprintf("Trying %s", u.String()))
+	getterMode := getter.ModeFile
+	if s.ContainingManyFiles {
+		getterMode = getter.ModeDir
+	}
 	req := &getter.Request{
 		Dst:              targetPath,
 		Src:              src,
 		ProgressListener: ui,
 		Pwd:              wd,
-		GetMode:          getter.ModeFile,
+		GetMode:          getterMode,
 		Inplace:          true,
 	}
 
