@@ -2,6 +2,8 @@ package struct_markdown
 
 import (
 	"fmt"
+	"io/ioutil"
+	"strings"
 	"testing"
 
 	. "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/cmd"
@@ -34,6 +36,14 @@ func TestCommand_Run(t *testing.T) {
 			cmd := &Command{}
 			if got := cmd.Run(tt.args); got != tt.want {
 				t.Errorf("CMD.Run() = %v, want %v", got, tt.want)
+			}
+			targetedPath := strings.TrimPrefix(tt.args[0], "../test-data/packer-plugin-happycloud/")
+			for _, p := range tt.FileCheck.ExpectedFiles() {
+				raw, _ := ioutil.ReadFile(p)
+				content := string(raw)
+				if !strings.Contains(content, targetedPath) {
+					t.Errorf("%s must contain '%s'. Its content is:\n%s", p, targetedPath, content)
+				}
 			}
 		})
 	}
