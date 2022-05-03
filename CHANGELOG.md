@@ -1,4 +1,4 @@
-## 0.2.12 (Upcoming)
+## 0.2.12 (May 03, 2022)
 
 * provisioner/shell-local: Add `env` argument to pass env vars through a key
     value store [GH-98](https://github.com/hashicorp/packer-plugin-sdk/pull/98)
