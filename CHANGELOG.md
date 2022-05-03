@@ -1,3 +1,19 @@
+## 0.2.12 (Upcoming)
+
+* provisioner/shell-local: Add `env` argument to pass env vars through a key
+    value store [GH-98](https://github.com/hashicorp/packer-plugin-sdk/pull/98)
+* provisioner/shell: Add `env` argument to pass env vars through a key value
+    store [GH-98](https://github.com/hashicorp/packer-plugin-sdk/pull/98)
+* sdk: Bump github.com/hashicorp/go-getter/v2  to v2.0.2
+    [GH-102](https://github.com/hashicorp/packer-plugin-sdk/pull/102)
+* sdk: Bump github.com/hashicorp/hcl/v2  to v2.12.0
+    [GH-106](https://github.com/hashicorp/packer-plugin-sdk/pull/106)
+* sdk: Update crypto/ssh pkg used by SSH communicator The existing ssh client
+    used by the SSH communicator was relying on legacy key algorithms and could
+    not connect to recent versions of openssh, or servers with a limited set of
+    fips approved algorithms. [GH-107](https://github.com/hashicorp/packer-
+    plugin- sdk/pull/107)
+
 ## 0.2.11 (December 17, 2021)
 
 * sdk: The SourceImageID field for registry/image.Image is now optional;
