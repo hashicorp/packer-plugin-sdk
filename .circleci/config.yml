@@ -17,16 +17,6 @@ executors:
     macos:
       xcode: "12.0.0"
 
-steps:
-  setup-gpg: &setup-gpg
-    run:
-      name: import base64 GPG key and prime passphrase
-      command: |
-        echo -e "${RELEASES_GPG_PRIV_KEY_B64}" | base64 -di | gpg --import --batch
-        echo "hello world" > temp.txt
-        gpg --detach-sig --yes -v --output=/dev/null --pinentry-mode loopback --passphrase "${RELEASES_GPG_PASSPHRASE}" temp.txt
-        rm temp.txt
-
 commands:
   install-go-run-tests-unix:
     parameters:
@@ -101,7 +91,6 @@ jobs:
     environment:
       <<: *ENVIRONMENT
     steps:
-      - *setup-gpg
       - add_ssh_keys:
           fingerprints:
             - "52:49:7d:88:9b:81:21:fb:71:86:fd:89:c4:4b:95:df" # circleci-key of packer-ci user in GitHub
