@@ -24,11 +24,6 @@ function gpgKeyCheck {
 function init {
   sed --version > /dev/null || pleaseUseGNUsed
 
-  ## Enable GPG Check
-  if [ "$CI" == true ]; then
-    gpgKeyCheck
-  fi
-
   DATE=`date '+%B %d, %Y'`
   START_DIR=`pwd`
 
@@ -80,16 +75,10 @@ function commitChanges {
   modifyVersionFiles
   git add version/version.go
 
-  if [ "$CI" == true ]; then
-    git commit --gpg-sign="${RELEASES_GPG_KEY_ID}" -m "v${TARGET_VERSION} [skip ci]"
-    git tag -a -m "v${TARGET_VERSION}" -s -u "${RELEASES_GPG_KEY_ID}" "v${TARGET_VERSION}"
-    git push origin "${CIRCLE_BRANCH}"
-  else
-    printf "Skipping GPG signature on non CI releases...\n"
-    git commit -m "v${TARGET_VERSION} [skip ci]"
-    git tag -a -m "v${TARGET_VERSION}" "v${TARGET_VERSION}"
-    git push origin main
-  fi
+  printf "Skipping GPG signature on non CI releases...\n"
+  git commit -m "v${TARGET_VERSION} [skip ci]"
+  git tag -a -m "v${TARGET_VERSION}" "v${TARGET_VERSION}"
+  git push origin main
 
   git push origin "v${TARGET_VERSION}"
 }
