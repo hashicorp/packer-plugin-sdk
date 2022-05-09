@@ -13,5 +13,6 @@ updates:
       - dependency-name: "github.com/hashicorp/packer"
       - dependency-name: "github.com/hashicorp/hcl/v2"
       - dependency-name: "github.com/zclconf/go-cty"
+      - dependency-name: "github.com/mna/pigeon"
     ignore:
       - dependency-name: "github.com/aws/aws-sdk-go"
