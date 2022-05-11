@@ -1,4 +1,4 @@
-## 0.2.13 (Upcoming)
+## 0.2.13 (May 11, 2022)
 
 * cmd/packer-sdc: Update golang.org/x/tools to fix internal package errors when running code generation commands with Go 1.18 [GH-108](https://github.com/hashicorp/packer-plugin-sdk/pull/108)
 
