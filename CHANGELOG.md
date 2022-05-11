@@ -1,3 +1,7 @@
+## 0.2.13 (Upcoming)
+
+* cmd/packer-sdc: Update golang.org/x/tools to fix internal package errors when running code generation commands with Go 1.18 [GH-108](https://github.com/hashicorp/packer-plugin-sdk/pull/108)
+
 ## 0.2.12 (May 03, 2022)
 
 * provisioner/shell-local: Add `env` argument to pass env vars through a key
