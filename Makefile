@@ -9,13 +9,9 @@ default: install-build-deps install-gen-deps generate
 ci: testrace ## Test in continuous integration
 
 install-gen-deps: ## Install dependencies for code generation
-	# to avoid having to tidy our go deps, we `go get` our binaries from a temp
-	# dir. `go get` will change our deps and the following deps are not part of
-	# out code dependencies; so a go mod tidy will remove them again. `go
-	# install` seems to install the last tagged version and we want to install
-	# master.
-	@(cd $(TEMPDIR) && GO111MODULE=on go get github.com/mna/pigeon@master)
-	@(cd $(TEMPDIR) && GO111MODULE=on go get github.com/alvaroloes/enumer@master)
+	@go install github.com/mna/pigeon@v1.1.0
+	# Pinning enumer at master branch; the latest tagged release is out of date.
+	@go install github.com/alvaroloes/enumer@master
 
 	@go install github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc
 
