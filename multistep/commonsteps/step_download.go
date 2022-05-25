@@ -56,7 +56,8 @@ type StepDownload struct {
 }
 
 var defaultGetterClient = getter.Client{
-	Getters: getter.Getters,
+	Getters:         getter.Getters,
+	DisableSymlinks: true,
 }
 
 func init() {
