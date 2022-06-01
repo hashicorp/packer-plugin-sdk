@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 
 	gcs "github.com/hashicorp/go-getter/gcs/v2"
 	s3 "github.com/hashicorp/go-getter/s3/v2"
@@ -61,8 +62,14 @@ var defaultGetterClient = getter.Client{
 }
 
 func init() {
-	defaultGetterClient.Getters = append(defaultGetterClient.Getters, new(gcs.Getter))
-	defaultGetterClient.Getters = append(defaultGetterClient.Getters, new(s3.Getter))
+	gcsGetter := gcs.Getter{
+		Timeout: 5 * time.Minute,
+	}
+	defaultGetterClient.Getters = append(defaultGetterClient.Getters, &gcsGetter)
+	s3Getter := s3.Getter{
+		Timeout: 5 * time.Minute,
+	}
+	defaultGetterClient.Getters = append(defaultGetterClient.Getters, &s3Getter)
 }
 
 func (s *StepDownload) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
