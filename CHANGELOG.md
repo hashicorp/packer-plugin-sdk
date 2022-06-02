@@ -1,3 +1,10 @@
+## 0.3.0 (Upcoming)
+
+* multistep/commonsteps: Update settings for the default go-getter client to prevent arbitrary host access via go-getter's path traversal, symlink processing, and command injection flaws.
+* multistep/commonsteps: Disable support for the `X-Terraform-Get` header to mitigate against protocol switching, endless redirect, and configuration bypass abuse of custom HTTP response header processing.
+* multistep/commonsteps: Add default timeouts to the GitGetter, HgGetter, S3Getter, and GcsGetter getters to mitigate against resource exhaustion when calling out to external command line applications.
+* sdk: Bump github.com/hashicorp/go-getter/v2, github.com/hashicorp/go-getter/gcs/v2, github.com/hashicorp/go-getter/s3/v2 to address a number of security vulnerabilities as defined in [HCSEC-2022-13](https://discuss.hashicorp.com/t/hcsec-2022-13-multiple-vulnerabilities-in-go-getter-library/39930)
+
 ## 0.2.13 (May 11, 2022)
 
 * cmd/packer-sdc: Update golang.org/x/tools to fix internal package errors when running code generation commands with Go 1.18 [GH-108](https://github.com/hashicorp/packer-plugin-sdk/pull/108)
