@@ -57,19 +57,39 @@ type StepDownload struct {
 }
 
 var defaultGetterClient = getter.Client{
-	Getters:         getter.Getters,
+	// Disable writing and reading through symlinks
 	DisableSymlinks: true,
-}
-
-func init() {
-	gcsGetter := gcs.Getter{
-		Timeout: 5 * time.Minute,
-	}
-	defaultGetterClient.Getters = append(defaultGetterClient.Getters, &gcsGetter)
-	s3Getter := s3.Getter{
-		Timeout: 5 * time.Minute,
-	}
-	defaultGetterClient.Getters = append(defaultGetterClient.Getters, &s3Getter)
+	// The order of the Getters in the list may affect the result
+	// depending if the Request.Src is detected as valid by multiple getters
+	Getters: []getter.Getter{
+		&getter.GitGetter{
+			Timeout: 5 * time.Minute,
+			Detectors: []getter.Detector{
+				new(getter.GitHubDetector),
+				new(getter.GitDetector),
+				new(getter.BitBucketDetector),
+				new(getter.GitLabDetector),
+			},
+		},
+		&getter.HgGetter{
+			Timeout: 5 * time.Minute,
+		},
+		new(getter.SmbClientGetter),
+		new(getter.SmbMountGetter),
+		&getter.HttpGetter{
+			Netrc:                 true,
+			XTerraformGetDisabled: true,
+			HeadFirstTimeout:      10 * time.Second,
+			ReadTimeout:           30 * time.Second,
+		},
+		new(getter.FileGetter),
+		&gcs.Getter{
+			Timeout: 5 * time.Minute,
+		},
+		&s3.Getter{
+			Timeout: 5 * time.Minute,
+		},
+	},
 }
 
 func (s *StepDownload) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
