@@ -56,14 +56,18 @@ type StepDownload struct {
 	Extension string
 }
 
+// defaultGetterReadTimeout is the read timeout for downloading operations via go-getter.
+// The timeout must be long enough to accommodate large/slow downloads.
+const defaultGetterReadTimeout time.Duration = 30 * time.Minute
+
 var defaultGetterClient = getter.Client{
-	// Disable writing and reading through symlinks
+	// Disable writing and reading through symlinks.
 	DisableSymlinks: true,
 	// The order of the Getters in the list may affect the result
 	// depending if the Request.Src is detected as valid by multiple getters
 	Getters: []getter.Getter{
 		&getter.GitGetter{
-			Timeout: 5 * time.Minute,
+			Timeout: defaultGetterReadTimeout,
 			Detectors: []getter.Detector{
 				new(getter.GitHubDetector),
 				new(getter.GitDetector),
@@ -72,22 +76,22 @@ var defaultGetterClient = getter.Client{
 			},
 		},
 		&getter.HgGetter{
-			Timeout: 5 * time.Minute,
+			Timeout: defaultGetterReadTimeout,
 		},
 		new(getter.SmbClientGetter),
 		new(getter.SmbMountGetter),
 		&getter.HttpGetter{
 			Netrc:                 true,
 			XTerraformGetDisabled: true,
-			HeadFirstTimeout:      10 * time.Second,
-			ReadTimeout:           30 * time.Second,
+			HeadFirstTimeout:      defaultGetterReadTimeout,
+			ReadTimeout:           defaultGetterReadTimeout,
 		},
 		new(getter.FileGetter),
 		&gcs.Getter{
-			Timeout: 5 * time.Minute,
+			Timeout: defaultGetterReadTimeout,
 		},
 		&s3.Getter{
-			Timeout: 5 * time.Minute,
+			Timeout: defaultGetterReadTimeout,
 		},
 	},
 }
