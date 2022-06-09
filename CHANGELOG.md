@@ -1,4 +1,4 @@
-## 0.3.0 (Upcoming)
+## 0.3.0 (June 09, 2022)
 
 * multistep/commonsteps: Add default timeouts to the GitGetter, HgGetter,
     S3Getter, and GcsGetter getters to mitigate against resource exhaustion
