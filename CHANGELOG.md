@@ -12,8 +12,7 @@
 * sdk: Bump github.com/hashicorp/go-getter/v2, github.com/hashicorp/go-
     getter/gcs/v2, github.com/hashicorp/go-getter/s3/v2 to address a number of
     security vulnerabilities as defined in
-    [HCSEC-2022-13](https://discuss.hashicorp.com/t/hcsec-2022-13-multiple-
-    vulnerabilities-in-go-getter-library/39930)
+    [HCSEC-2022-13](https://discuss.hashicorp.com/t/hcsec-2022-13-multiple-vulnerabilities-in-go-getter-library/39930)
 
 ## 0.2.13 (May 11, 2022)
 
@@ -34,8 +33,7 @@
 * sdk: Update crypto/ssh pkg used by SSH communicator The existing ssh client
     used by the SSH communicator was relying on legacy key algorithms and could
     not connect to recent versions of openssh, or servers with a limited set of
-    fips approved algorithms. [GH-107](https://github.com/hashicorp/packer-
-    plugin- sdk/pull/107)
+    fips approved algorithms. [GH-107](https://github.com/hashicorp/packer-plugin-sdk/pull/107)
 
 ## 0.2.11 (December 17, 2021)
 
