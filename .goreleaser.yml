@@ -1,0 +1,8 @@
+project_name: packer-plugin-sdk
+build:
+  skip: true
+release:
+  ids:
+    - 'none'
+changelog:
+  use: github-native
