@@ -86,17 +86,6 @@ jobs:
     steps:
       - checkout
       - run: make generate-check
-  release-sdk:
-    executor: golang
-    environment:
-      <<: *ENVIRONMENT
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "52:49:7d:88:9b:81:21:fb:71:86:fd:89:c4:4b:95:df" # circleci-key of packer-ci user in GitHub
-      - checkout
-      - run: ./scripts/release/release.sh
-
 
 workflows:
   version: 2
@@ -110,30 +99,3 @@ workflows:
       - check-lint
       - check-fmt
       - check-generate
-  release:
-    jobs:
-      - check-generate
-      - check-fmt
-      - check-lint
-      - test-linux
-      - trigger-release:
-          filters:
-            branches:
-              only:
-                - main
-          type: approval
-      - release-sdk:
-          context:
-            - releases-gpg-private-signing-key
-            - releases-gpg-public-signing-key
-          filters:
-            branches:
-              only:
-                - main
-          requires:
-            - trigger-release
-            - check-generate
-            - check-fmt
-            - check-lint
-            - test-linux
-
