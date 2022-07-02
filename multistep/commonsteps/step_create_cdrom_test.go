@@ -52,10 +52,10 @@ func checkFiles(t *testing.T, rootFolder string, expected map[string]string) {
 
 		if !d.IsDir() {
 			name, _ := filepath.Rel(rootFolder, path)
-
-			expectedContent, ok := expected[name]
+			nameSlashSafe := filepath.ToSlash(name)
+			expectedContent, ok := expected[nameSlashSafe]
 			if !ok {
-				t.Fatalf("unexpected file: %s", name)
+				t.Fatalf("unexpected file: %s", nameSlashSafe)
 			}
 
 			content, err := ioutil.ReadFile(path)
@@ -63,10 +63,10 @@ func checkFiles(t *testing.T, rootFolder string, expected map[string]string) {
 				t.Fatalf("reading file: %s", err)
 			}
 			if string(content) != expectedContent {
-				t.Fatalf("unexpected content: %s", name)
+				t.Fatalf("unexpected content: %s", nameSlashSafe)
 			}
 
-			delete(expected, name)
+			delete(expected, nameSlashSafe)
 		}
 
 		return nil
