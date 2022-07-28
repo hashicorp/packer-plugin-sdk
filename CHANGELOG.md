@@ -1,3 +1,7 @@
+ See [Releases](https://github.com/hashicorp/packer-plugin-sdk/releases) for latest CHANGELOG information.
+
+## 0.3.1 (Upcoming)
+
 ## 0.3.0 (June 09, 2022)
 
 * multistep/commonsteps: Add default timeouts to the GitGetter, HgGetter,
