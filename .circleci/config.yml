@@ -15,7 +15,7 @@ executors:
     resource_class: medium+
   darwin:
     macos:
-      xcode: "12.0.0"
+      xcode: "13.4.1"
 
 commands:
   install-go-run-tests-unix:
@@ -58,14 +58,14 @@ jobs:
     steps:
       - install-go-run-tests-unix:
           GOOS: darwin
-          GOVERSION: "1.17"
+          GOVERSION: "1.17.13"
   test-windows:
     executor:
       name: win/vs2019
       shell: bash.exe
     steps:
       - install-go-run-tests-windows:
-          GOVERSION: "1.17"
+          GOVERSION: "1.17.13"
   check-lint:
     executor: golang
     resource_class: xlarge
