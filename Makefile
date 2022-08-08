@@ -16,9 +16,8 @@ install-gen-deps: ## Install dependencies for code generation
 	@go install github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc
 
 install-lint-deps: ## Install linter dependencies
-	# Pinning golangci-lint at v1.23.8 as --new-from-rev seems to work properly; the latest 1.24.0 has caused issues with memory consumption
 	@echo "==> Updating linter dependencies..."
-	@curl -sSfL -q https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin v1.23.8
+	@curl -sSfL -q https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin
 
 lint: install-lint-deps ## Lint Go code
 	@if [ ! -z  $(PKG_NAME) ]; then \
