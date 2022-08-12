@@ -547,10 +547,10 @@ func (c *Config) prepareSSH(ctx *interpolate.Context) []error {
 		}
 	}
 
-	if c.SSHBastionHost != "" && !c.SSHBastionAgentAuth {
-		if c.SSHBastionPassword == "" && c.SSHBastionPrivateKeyFile == "" {
+	if c.SSHBastionHost != "" {
+		if c.SSHBastionPassword == "" && c.SSHBastionPrivateKeyFile == "" && !c.SSHBastionAgentAuth {
 			errs = append(errs, errors.New(
-				"ssh_bastion_password or ssh_bastion_private_key_file must be specified"))
+				"ssh_bastion_password, ssh_bastion_private_key_file or ssh_bastion_agent_auth must be specified"))
 		} else if c.SSHBastionPrivateKeyFile != "" {
 			path, err := pathing.ExpandUser(c.SSHBastionPrivateKeyFile)
 			if err != nil {
