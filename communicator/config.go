@@ -103,7 +103,7 @@ type SSH struct {
 	// (unless the user has set the `-debug` flag). Defaults to "false";
 	// currently only works on guests with `sed` installed.
 	SSHClearAuthorizedKeys bool `mapstructure:"ssh_clear_authorized_keys"`
-	// If set, Packer will override the value of key exchange (kex) altorighms
+	// If set, Packer will override the value of key exchange (kex) algorithms
 	// supported by default by golang. Acceptable values include:
 	// "curve25519-sha256@libssh.org", "ecdh-sha2-nistp256",
 	// "ecdh-sha2-nistp384", "ecdh-sha2-nistp521",
