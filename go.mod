@@ -62,7 +62,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/ugorji/go/codec v1.2.6
 	github.com/ulikunitz/xz v0.5.10 // indirect
-	github.com/zclconf/go-cty v1.10.0
+	github.com/zclconf/go-cty v1.11.0
 	golang.org/x/crypto v0.0.0-20220517005047-85d78b3ac167
 	golang.org/x/mobile v0.0.0-20210901025245-1fde1d6c3ca1
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3
