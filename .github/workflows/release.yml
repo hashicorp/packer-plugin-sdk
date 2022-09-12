@@ -16,7 +16,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: GoReleaser
-        uses: goreleaser/goreleaser-action@v3.0.0
-        args: "release"
+        uses: goreleaser/goreleaser-action@v3
+        with: 
+          args: "release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
