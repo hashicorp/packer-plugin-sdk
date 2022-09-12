@@ -93,16 +93,17 @@ func TestStepCreateCD(t *testing.T) {
 	defer os.RemoveAll(dir)
 
 	createFiles(t, dir, map[string]string{
-		"test folder/b/test1": "1",
-		"test folder/b/test2": "2",
-		"test folder 2/x":     "3",
-		"test_cd_roms.tmp":    "4",
-		"test cd files.tmp":   "5",
-		"Test-Test-Test5.tmp": "6",
-		"subfolder/meta-data": "subfolder/meta-data from files",
-		"subfolder/user-data": "subfolder/user-data from files",
-		"user-data":           "user-data from files",
-		"vendor-data":         "vendor-data from files",
+		"test folder/b/test1":    "1",
+		"test folder/b/test2":    "2",
+		"test folder 2/x":        "3",
+		"test_cd_roms.tmp":       "4",
+		"test cd files.tmp":      "5",
+		"Test-Test-Test5.tmp":    "6",
+		"fwdslashes/nested/test": "7",
+		"subfolder/meta-data":    "subfolder/meta-data from files",
+		"subfolder/user-data":    "subfolder/user-data from files",
+		"user-data":              "user-data from files",
+		"vendor-data":            "vendor-data from files",
 	})
 	step.Content = map[string]string{
 		"subfolder not created by files/test.tmp": "test",
@@ -110,11 +111,15 @@ func TestStepCreateCD(t *testing.T) {
 		"user-data":                               "user-data from content",
 	}
 
-	files := []string{"test folder", "test folder 2/", "test_cd_roms.tmp", "test cd files.tmp", "Test-Test-Test5.tmp", "subfolder", "user-data", "vendor-data"}
+	files := []string{"test folder", "test folder 2/", "test_cd_roms.tmp", "test cd files.tmp", "Test-Test-Test5.tmp", "fwdslashes", "subfolder", "user-data", "vendor-data"}
 
 	step.Files = make([]string, len(files))
 	for i, fname := range files {
-		step.Files[i] = filepath.Join(dir, fname)
+		fullPath := filepath.Join(dir, fname)
+		if fname == "fwdslashes" {
+			fullPath = filepath.ToSlash(fullPath)
+		}
+		step.Files[i] = fullPath
 	}
 	action := step.Run(context.Background(), state)
 
@@ -139,6 +144,7 @@ func TestStepCreateCD(t *testing.T) {
 		"test_cd_roms.tmp":                        "4",
 		"test cd files.tmp":                       "5",
 		"Test-Test-Test5.tmp":                     "6",
+		"fwdslashes/nested/test":                  "7",
 		"subfolder not created by files/test.tmp": "test",
 		"subfolder/meta-data":                     "subfolder/meta-data from content",
 		"subfolder/user-data":                     "subfolder/user-data from files",
