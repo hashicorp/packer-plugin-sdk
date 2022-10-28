@@ -221,7 +221,7 @@ type WinRM struct {
 	//
 	// NOTE: If using an Amazon EBS builder, you can specify the interface
 	// WinRM connects to via
-	// [`ssh_interface`](/docs/builders/amazon-ebs#ssh_interface)
+	// [`ssh_interface`](/packer/plugins/builders/amazon/ebs#ssh_interface)
 	WinRMHost string `mapstructure:"winrm_host"`
 	// Setting this to `true` adds the remote
 	// `host:port` to the `NO_PROXY` environment variable. This has the effect of
