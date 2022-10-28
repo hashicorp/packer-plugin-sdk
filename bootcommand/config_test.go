@@ -28,6 +28,15 @@ func TestConfigPrepare(t *testing.T) {
 	if len(errs) > 0 {
 		t.Fatalf("bad: %#v", errs)
 	}
+
+	// Test boot command and boot steps
+	c = new(BootConfig)
+	c.BootCommand = []string{"a", "b"}
+	c.BootSteps = [][]string{{"a"}, {"b"}}
+	errs = c.Prepare(&interpolate.Context{})
+	if len(errs) == 0 {
+		t.Fatal("should error")
+	}
 }
 
 func TestVNCConfigPrepare(t *testing.T) {

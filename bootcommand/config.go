@@ -165,6 +165,45 @@ type BootConfig struct {
 	// well, and are covered in the section below on the boot command. If this
 	// is not specified, it is assumed the installer will start itself.
 	BootCommand []string `mapstructure:"boot_command"`
+	// This is an array of tuples of boot commands, to type when the virtual
+	// machine is booted. The first element of the tuple is the actual boot
+	// command. The second element of the tuple, which is optional, is a
+	// description of what the boot command does. This is intended to be used for
+	// interactive installers that requires many commands to complete the
+	// installation. Both the command and the description will be printed when
+	// logging is enabled. When debug mode is enabled Packer will pause after
+	// typing each boot command. This will make it easier to follow along the
+	// installation process and make sure the Packer and the installer are in
+	// sync. `boot_steps` and `boot_commands` are mutually exclusive.
+	//
+	// Example:
+	//
+	// In HCL:
+	// ```hcl
+	// boot_steps = [
+	//   ["1<enter><wait5>", "Install NetBSD"],
+	//   ["a<enter><wait5>", "Installation messages in English"],
+	//   ["a<enter><wait5>", "Keyboard type: unchanged"],
+	//
+	//   ["a<enter><wait5>", "Install NetBSD to hard disk"],
+	//   ["b<enter><wait5>", "Yes"]
+	// ]
+	// ```
+	//
+	// In JSON:
+	// ```json
+	// {
+	//   "boot_steps": [
+	//     ["1<enter><wait5>", "Install NetBSD"],
+	//     ["a<enter><wait5>", "Installation messages in English"],
+	//     ["a<enter><wait5>", "Keyboard type: unchanged"],
+	//
+	//     ["a<enter><wait5>", "Install NetBSD to hard disk"],
+	//     ["b<enter><wait5>", "Yes"]
+	//   ]
+	// }
+	// ```
+	BootSteps [][]string `mapstructure:"boot_steps" required:"false"`
 }
 
 // The boot command "typed" character for character over a VNC connection to
@@ -184,6 +223,11 @@ type VNCConfig struct {
 }
 
 func (c *BootConfig) Prepare(ctx *interpolate.Context) (errs []error) {
+	if len(c.BootCommand) > 0 && len(c.BootSteps) > 0 {
+		errs = append(errs,
+			fmt.Errorf("Both boot command and boot steps cannot be used."))
+	}
+
 	if c.BootWait == 0 {
 		c.BootWait = 10 * time.Second
 	}
