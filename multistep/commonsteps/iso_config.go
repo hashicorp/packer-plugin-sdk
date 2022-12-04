@@ -144,6 +144,11 @@ func (c *ISOConfig) Prepare(*interpolate.Context) (warnings []string, errs []err
 			"A checksum of 'none' was specified. Since ISO files are so big,\n"+
 				"a checksum is highly recommended.")
 		return warnings, errs
+	} else if c.ISOChecksum == "<unknown>" {
+		warnings = append(warnings,
+			"A checksum of '<unknown>' was specified. This is expected when\n"+
+				"running 'packer validate' and the checksum is set using a datasource.")
+		return warnings, errs
 	} else if c.ISOChecksum == "" {
 		errs = append(errs, fmt.Errorf("A checksum must be specified"))
 	} else {

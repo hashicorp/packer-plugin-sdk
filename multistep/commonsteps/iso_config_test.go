@@ -98,6 +98,17 @@ func TestISOConfigPrepare_ISOChecksumType(t *testing.T) {
 	if err != nil {
 		t.Fatalf("should not have error: %s", err)
 	}
+
+	// Test <unknown>
+	i = testISOConfig()
+	i.ISOChecksum = "<unknown>"
+	warns, err = i.Prepare(nil)
+	if len(warns) == 0 {
+		t.Fatalf("bad: %#v", warns)
+	}
+	if err != nil {
+		t.Fatalf("should not have error: %s", err)
+	}
 }
 
 func TestISOConfigPrepare_ISOUrl(t *testing.T) {
