@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 /*
 Package provisioneracc creates a framework for provisioner acceptance
 testing. For builder acceptance testing, use the top level tooling in the

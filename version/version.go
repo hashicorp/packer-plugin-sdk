@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package version helps plugin creators set and track the plugin version using
 // the same convenience functions used by the Packer core.
 package version

@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // mapstructure-to-hcl2 fills the gaps between hcl2 and mapstructure for Packer
 //
 // By generating a struct that the HCL2 ecosystem understands making use of

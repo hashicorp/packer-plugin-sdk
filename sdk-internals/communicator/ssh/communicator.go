@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package ssh implements the SSH communicator. Plugin maintainers should not
 // import this package directly, instead using the tooling in the
 // "packer-plugin-sdk/communicator" module.
