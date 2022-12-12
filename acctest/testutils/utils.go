@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package testutils provides some simple ease-of-use tools for implementing
 // acceptance testing.
 package testutils
