@@ -4,10 +4,14 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
+	"math/big"
+	"reflect"
+	"unsafe"
 
 	"github.com/hashicorp/hcl/v2/hcldec"
 	"github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty/set"
 )
 
 // An implementation of packer.Datasource where the data source is actually
@@ -69,14 +73,16 @@ func (d *datasource) Execute() (cty.Value, error) {
 		err := fmt.Errorf("Datasource.Execute failed: %v", err)
 		return *res, err
 	}
-	err := gob.NewDecoder(bytes.NewReader(resp.Value)).Decode(&res)
-	if err != nil {
+	if err := gob.NewDecoder(bytes.NewReader(resp.Value)).Decode(&res); err != nil {
 		return *res, err
 	}
-	if resp.Error != nil {
-		err = resp.Error
+	if err := gobDecodeFixNumberPtrVal(res); err != nil {
+		return *res, err
 	}
-	return *res, err
+	if err := resp.Error; err != nil {
+		return *res, err
+	}
+	return *res, nil
 }
 
 // DatasourceServer wraps a packer.Datasource implementation and makes it
@@ -127,4 +133,80 @@ func (d *DatasourceServer) Cancel(args *interface{}, reply *interface{}) error {
 
 func init() {
 	gob.Register(new(cty.Value))
+}
+
+// goDecodeFixNumberPtr fixes an unfortunate quirk of round-tripping cty.Number
+// values through gob: the big.Float.GobEncode method is implemented on a
+// pointer receiver, and so it loses the "pointer-ness" of the value on
+// encode, causing the values to emerge the other end as big.Float rather than
+// *big.Float as we expect elsewhere in cty.
+//
+// The implementation of gobDecodeFixNumberPtr mutates the given raw value
+// during its work, and may either return the same value mutated or a new
+// value. Callers must no longer use whatever value they pass as "raw" after
+// this function is called.
+func gobDecodeFixNumberPtr(raw interface{}, ty cty.Type) interface{} {
+	// Unfortunately we need to work recursively here because number values
+	// might be embedded in structural or collection type values.
+
+	switch {
+	case ty.Equals(cty.Number):
+		if bf, ok := raw.(big.Float); ok {
+			return &bf // wrap in pointer
+		}
+	case ty.IsMapType():
+		if m, ok := raw.(map[string]interface{}); ok {
+			for k, v := range m {
+				m[k] = gobDecodeFixNumberPtr(v, ty.ElementType())
+			}
+		}
+	case ty.IsListType():
+		if s, ok := raw.([]interface{}); ok {
+			for i, v := range s {
+				s[i] = gobDecodeFixNumberPtr(v, ty.ElementType())
+			}
+		}
+	case ty.IsSetType():
+		if s, ok := raw.(set.Set); ok {
+			newS := set.NewSet(s.Rules())
+			for it := s.Iterator(); it.Next(); {
+				newV := gobDecodeFixNumberPtr(it.Value(), ty.ElementType())
+				newS.Add(newV)
+			}
+			return newS
+		}
+	case ty.IsObjectType():
+		if m, ok := raw.(map[string]interface{}); ok {
+			for k, v := range m {
+				aty := ty.AttributeType(k)
+				m[k] = gobDecodeFixNumberPtr(v, aty)
+			}
+		}
+	case ty.IsTupleType():
+		if s, ok := raw.([]interface{}); ok {
+			for i, v := range s {
+				ety := ty.TupleElementType(i)
+				s[i] = gobDecodeFixNumberPtr(v, ety)
+			}
+		}
+	}
+
+	return raw
+}
+
+// gobDecodeFixNumberPtrVal is a helper wrapper around gobDecodeFixNumberPtr
+// that works with already-constructed values. This is primarily for testing,
+// to fix up intentionally-invalid number values for the parts of the test
+// code that need them to be valid, such as calling GoString on them.
+func gobDecodeFixNumberPtrVal(val *cty.Value) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("%v", r)
+		}
+	}()
+
+	v := (*interface{})(unsafe.Pointer(reflect.Indirect(reflect.ValueOf(val)).FieldByName("v").UnsafeAddr()))
+	*v = gobDecodeFixNumberPtr(*v, val.Type())
+
+	return nil
 }
