@@ -207,7 +207,7 @@ func (c *comm) DownloadDir(src string, dst string, excl []string) error {
 				return err
 			}
 
-			if len(fi) < 0 {
+			if len(fi) == 0 {
 				return fmt.Errorf("empty response from server")
 			}
 
