@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"embed"
 	"flag"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -67,7 +66,7 @@ func (cmd *Command) run(args []string) error {
 }
 
 func RenderDocsFolder(folder, partials string) error {
-	entries, err := ioutil.ReadDir(folder)
+	entries, err := os.ReadDir(folder)
 	if err != nil {
 		return errors.Wrapf(err, "cannot read directory %s", folder)
 	}
@@ -129,7 +128,9 @@ var partialFiles embed.FS
 // getPartial will first try to look for partials in the
 // renderdocs/docs-partials dir. This makes common/shared partials available to
 // all docs with for example:
-//  @include 'packer-plugin-sdk/communicator/Config.mdx'
+//
+//	@include 'packer-plugin-sdk/communicator/Config.mdx'
+//
 // Otherwise it tries to find a partial in/ the actual filesystem.
 func getPartial(partialsDir, partialPath string) ([]byte, error) {
 	if partial, err := partialFiles.ReadFile(strings.Join([]string{"docs-partials", partialPath}, "/")); err == nil {

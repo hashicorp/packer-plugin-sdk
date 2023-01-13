@@ -8,7 +8,6 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -72,7 +71,7 @@ func (cmd *Command) Run(args []string) int {
 		log.Fatal("Failed to guess project ROOT. If this is a Packer plugin project please make sure the root directory begins with`packer-plugin-*`")
 	}
 
-	b, err := ioutil.ReadFile(fname)
+	b, err := os.ReadFile(fname)
 	if err != nil {
 		log.Fatalf("ReadFile: %+v", err)
 	}

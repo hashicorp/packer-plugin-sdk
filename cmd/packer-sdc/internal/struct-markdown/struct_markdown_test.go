@@ -5,7 +5,7 @@ package struct_markdown
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 
@@ -42,7 +42,7 @@ func TestCommand_Run(t *testing.T) {
 			}
 			targetedPath := strings.TrimPrefix(tt.args[0], "../test-data/packer-plugin-happycloud/")
 			for _, p := range tt.FileCheck.ExpectedFiles() {
-				raw, _ := ioutil.ReadFile(p)
+				raw, _ := os.ReadFile(p)
 				content := string(raw)
 				if !strings.Contains(content, targetedPath) {
 					t.Errorf("%s must contain '%s'. Its content is:\n%s", p, targetedPath, content)

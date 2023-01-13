@@ -83,8 +83,7 @@ func TestDatasource(t *testing.T) {
 }
 
 func TestDatasource_Implements(t *testing.T) {
-	var raw interface{}
-	raw = new(datasource)
+	var raw interface{} = new(datasource)
 	if _, ok := raw.(packer.Datasource); !ok {
 		t.Fatal("not a datasource")
 	}

@@ -164,8 +164,7 @@ func TestCommunicatorRPC(t *testing.T) {
 }
 
 func TestCommunicator_ImplementsCommunicator(t *testing.T) {
-	var raw interface{}
-	raw = Communicator(nil)
+	var raw interface{} = Communicator(nil)
 	if _, ok := raw.(packersdk.Communicator); !ok {
 		t.Fatal("should be a Communicator")
 	}

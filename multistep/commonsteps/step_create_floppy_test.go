@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -22,8 +21,7 @@ import (
 const TestFixtures = "test-fixtures"
 
 func TestStepCreateFloppy_Impl(t *testing.T) {
-	var raw interface{}
-	raw = new(StepCreateFloppy)
+	var raw interface{} = new(StepCreateFloppy)
 	if _, ok := raw.(multistep.Step); !ok {
 		t.Fatalf("StepCreateFloppy should be a step")
 	}
@@ -42,7 +40,7 @@ func TestStepCreateFloppy(t *testing.T) {
 	state := testStepCreateFloppyState(t)
 	step := new(StepCreateFloppy)
 
-	dir, err := ioutil.TempDir("", "packer")
+	dir, err := os.MkdirTemp("", "packer")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -105,7 +103,7 @@ func TestStepCreateFloppy_missing(t *testing.T) {
 	state := testStepCreateFloppyState(t)
 	step := new(StepCreateFloppy)
 
-	dir, err := ioutil.TempDir("", "packer")
+	dir, err := os.MkdirTemp("", "packer")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -150,7 +148,7 @@ func TestStepCreateFloppy_notfound(t *testing.T) {
 	state := testStepCreateFloppyState(t)
 	step := new(StepCreateFloppy)
 
-	dir, err := ioutil.TempDir("", "packer")
+	dir, err := os.MkdirTemp("", "packer")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}

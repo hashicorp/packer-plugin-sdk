@@ -6,7 +6,7 @@ package chroot
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"path"
 	"runtime"
 	"strings"
@@ -23,15 +23,14 @@ func testUI() (packersdk.Ui, func() string) {
 	errorBuffer := &strings.Builder{}
 	ui := &packersdk.BasicUi{
 		Reader:      strings.NewReader(""),
-		Writer:      ioutil.Discard,
+		Writer:      io.Discard,
 		ErrorWriter: errorBuffer,
 	}
 	return ui, errorBuffer.String
 }
 
 func TestCopyFilesCleanupFunc_ImplementsCleanupFunc(t *testing.T) {
-	var raw interface{}
-	raw = new(StepCopyFiles)
+	var raw interface{} = new(StepCopyFiles)
 	if _, ok := raw.(Cleanup); !ok {
 		t.Fatalf("cleanup func should be a CleanupFunc")
 	}
@@ -50,8 +49,7 @@ func TestCopyFiles_Run(t *testing.T) {
 
 	var gotCommand string
 	commandRunCount := 0
-	var wrapper common.CommandWrapper
-	wrapper = func(ran string) (string, error) {
+	var wrapper common.CommandWrapper = func(ran string) (string, error) {
 		gotCommand = ran
 		commandRunCount++
 		return "", nil
@@ -101,8 +99,7 @@ func TestCopyFiles_CopyNothing(t *testing.T) {
 	}
 
 	commandRunCount := 0
-	var wrapper common.CommandWrapper
-	wrapper = func(ran string) (string, error) {
+	var wrapper common.CommandWrapper = func(ran string) (string, error) {
 		commandRunCount++
 		return "", nil
 	}
