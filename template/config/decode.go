@@ -189,7 +189,7 @@ func Decode(target interface{}, config *DecodeOpts, raws ...interface{}) error {
 							}
 						}
 					}
-					if fixable == true {
+					if fixable {
 						break
 					}
 				}

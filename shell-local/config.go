@@ -150,7 +150,7 @@ func Validate(config *Config) error {
 					break
 				}
 			}
-			if supported_os != true {
+			if supported_os {
 				return fmt.Errorf("Invalid OS specified in only_on: '%s'\n"+
 					"Supported OS names: %s", provided_os, strings.Join(supportedSyslist, ", "))
 			}
@@ -188,11 +188,7 @@ func Validate(config *Config) error {
 	}
 
 	// drop unnecessary "." in extension; we add this later.
-	if config.TempfileExtension != "" {
-		if strings.HasPrefix(config.TempfileExtension, ".") {
-			config.TempfileExtension = config.TempfileExtension[1:]
-		}
-	}
+	config.TempfileExtension = strings.TrimPrefix(config.TempfileExtension, ".")
 
 	// Do a check for bad environment variables, such as '=foo', 'foobar'
 	for _, kv := range config.Vars {
