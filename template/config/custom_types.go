@@ -36,17 +36,11 @@ func (t Trilean) ToBoolPointer() *bool {
 }
 
 func (t Trilean) True() bool {
-	if t == TriTrue {
-		return true
-	}
-	return false
+	return t == TriTrue
 }
 
 func (t Trilean) False() bool {
-	if t == TriFalse {
-		return true
-	}
-	return false
+	return t == TriFalse
 }
 
 func TrileanFromString(s string) (Trilean, error) {
@@ -57,7 +51,7 @@ func TrileanFromString(s string) (Trilean, error) {
 	b, err := strconv.ParseBool(s)
 	if err != nil {
 		return TriUnset, err
-	} else if b == true {
+	} else if b {
 		return TriTrue, nil
 	} else {
 		return TriFalse, nil

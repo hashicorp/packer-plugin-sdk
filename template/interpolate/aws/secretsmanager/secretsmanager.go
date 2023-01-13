@@ -84,7 +84,7 @@ func getSecretValue(s *SecretString, spec *SecretSpec) (string, error) {
 	blob := []byte(s.SecretString)
 
 	//For those plaintext secrets just return the value
-	if json.Valid(blob) != true {
+	if !json.Valid(blob) {
 		return s.SecretString, nil
 	}
 

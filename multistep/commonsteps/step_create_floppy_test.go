@@ -248,7 +248,7 @@ func TestStepCreateFloppyDirectories(t *testing.T) {
 			for _, c := range test.dirs {
 				step.Directories = append(step.Directories, filepath.Join(dir, filepath.FromSlash(c)))
 			}
-			log.Println(fmt.Sprintf("Trying against floppy_dirs : %v", step.Directories))
+			log.Printf("Trying against floppy_dirs : %v\n", step.Directories)
 
 			// run the step
 			if action := step.Run(context.Background(), state); action != multistep.ActionContinue {

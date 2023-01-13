@@ -59,9 +59,7 @@ type TestTeardownFunc func() error
 //nolint:errcheck
 func TestPlugin(t *testing.T, testCase *PluginTestCase) {
 	if os.Getenv(TestEnvVar) == "" {
-		t.Skip(fmt.Sprintf(
-			"Acceptance tests skipped unless env '%s' set",
-			TestEnvVar))
+		t.Skipf("Acceptance tests skipped unless env '%s' set", TestEnvVar)
 		return
 	}
 

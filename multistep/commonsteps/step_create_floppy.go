@@ -199,9 +199,7 @@ func (s *StepCreateFloppy) Run(ctx context.Context, state multistep.StateBag) mu
 				return multistep.ActionHalt
 			}
 
-			for _, filename := range matches {
-				pathqueue = append(pathqueue, filename)
-			}
+			pathqueue = append(pathqueue, matches...)
 			continue
 		}
 		pathqueue = append(pathqueue, filename)

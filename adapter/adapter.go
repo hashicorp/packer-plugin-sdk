@@ -105,7 +105,6 @@ func (c *Adapter) handleSession(newChannel ssh.NewChannel) error {
 	// Sessions have requests such as "pty-req", "shell", "env", and "exec".
 	// see RFC 4254, section 6
 	go func(in <-chan *ssh.Request) {
-		env := make([]envRequestPayload, 4)
 		for req := range in {
 			switch req.Type {
 			case "pty-req":
@@ -120,7 +119,6 @@ func (c *Adapter) handleSession(newChannel ssh.NewChannel) error {
 					req.Reply(false, nil)
 					continue
 				}
-				env = append(env, req.Payload)
 				log.Printf("new env request: %s", req.Payload)
 				req.Reply(true, nil)
 			case "exec":
@@ -207,7 +205,7 @@ func (c *Adapter) exec(command string, in io.Reader, out io.Writer, err io.Write
 
 func serveSCP(args string) bool {
 	opts, _ := scpOptions(args)
-	return bytes.IndexAny(opts, "tf") >= 0
+	return bytes.ContainsAny(opts, "tf")
 }
 
 func (c *Adapter) scpExec(args string, in io.Reader, out io.Writer) error {

@@ -50,15 +50,6 @@ func (l *secretFilter) FilterString(message string) string {
 	return message
 }
 
-func (l *secretFilter) get() (s []string) {
-	l.m.Lock()
-	defer l.m.Unlock()
-	for k := range l.s {
-		s = append(s, k)
-	}
-	return
-}
-
 var LogSecretFilter secretFilter
 
 func init() {

@@ -14,16 +14,16 @@ import (
 
 const (
 	DefaultArtifactEndpoint      string = "Artifact"
-	DefaultBuildEndpoint                = "Build"
-	DefaultBuilderEndpoint              = "Builder"
-	DefaultCacheEndpoint                = "Cache"
-	DefaultCommandEndpoint              = "Command"
-	DefaultCommunicatorEndpoint         = "Communicator"
-	DefaultHookEndpoint                 = "Hook"
-	DefaultPostProcessorEndpoint        = "PostProcessor"
-	DefaultProvisionerEndpoint          = "Provisioner"
-	DefaultDatasourceEndpoint           = "Datasource"
-	DefaultUiEndpoint                   = "Ui"
+	DefaultBuildEndpoint         string = "Build"
+	DefaultBuilderEndpoint       string = "Builder"
+	DefaultCacheEndpoint         string = "Cache"
+	DefaultCommandEndpoint       string = "Command"
+	DefaultCommunicatorEndpoint  string = "Communicator"
+	DefaultHookEndpoint          string = "Hook"
+	DefaultPostProcessorEndpoint string = "PostProcessor"
+	DefaultProvisionerEndpoint   string = "Provisioner"
+	DefaultDatasourceEndpoint    string = "Datasource"
+	DefaultUiEndpoint            string = "Ui"
 )
 
 // PluginServer represents an RPC server for Packer. This must be paired on the
