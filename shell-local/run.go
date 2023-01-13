@@ -39,7 +39,7 @@ func Run(ctx context.Context, ui packersdk.Ui, config *Config, generatedData map
 			}
 		}
 		if !runCommand {
-			ui.Say(fmt.Sprintf("Skipping shell-local due to runtime OS"))
+			ui.Say("Skipping shell-local due to runtime OS")
 			log.Printf("[INFO] (shell-local): skipping shell-local due to missing runtime OS")
 			return true, nil
 		}

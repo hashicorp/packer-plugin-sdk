@@ -161,9 +161,9 @@ func (c *comm) Start(ctx context.Context, cmd *packersdk.RemoteCmd) (err error) 
 		err := session.Wait()
 		exitStatus := 0
 		if err != nil {
-			switch err.(type) {
+			switch err := err.(type) {
 			case *ssh.ExitError:
-				exitStatus = err.(*ssh.ExitError).ExitStatus()
+				exitStatus = err.ExitStatus()
 				log.Printf("[ERROR] Remote command exited with '%d': %s", exitStatus, cmd.Command)
 			case *ssh.ExitMissingError:
 				log.Printf("[ERROR] Remote command exited without exit status or exit signal.")
@@ -490,7 +490,6 @@ func (c *comm) connectToAgent() {
 	}
 
 	log.Printf("[INFO] agent forwarding enabled")
-	return
 }
 
 func (c *comm) sftpUploadSession(path string, input io.Reader, fi *os.FileInfo) error {

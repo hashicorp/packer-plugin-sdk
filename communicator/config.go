@@ -627,7 +627,7 @@ func (c *Config) prepareWinRM(ctx *interpolate.Context) (errs []error) {
 		c.WinRMTimeout = 30 * time.Minute
 	}
 
-	if c.WinRMUseNTLM == true {
+	if c.WinRMUseNTLM {
 		c.WinRMTransportDecorator = func() winrm.Transporter { return &winrm.ClientNTLM{} }
 	}
 
