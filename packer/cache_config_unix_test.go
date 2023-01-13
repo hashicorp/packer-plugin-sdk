@@ -7,7 +7,6 @@
 package packer
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -15,12 +14,12 @@ import (
 
 func TestCachePath(t *testing.T) {
 	// temporary directories for env vars
-	xdgCacheHomeTempDir, err := ioutil.TempDir(os.TempDir(), "*")
+	xdgCacheHomeTempDir, err := os.MkdirTemp(os.TempDir(), "*")
 	if err != nil {
 		t.Fatalf("Failed to create temp test directory: failing test: %v", err)
 	}
 	defer os.RemoveAll(xdgCacheHomeTempDir)
-	packerCacheTempDir, err := ioutil.TempDir(os.TempDir(), "*")
+	packerCacheTempDir, err := os.MkdirTemp(os.TempDir(), "*")
 	if err != nil {
 		t.Fatalf("Failed to create temp test directory: failing test: %v", err)
 	}

@@ -12,8 +12,7 @@ import (
 )
 
 func TestDebugRunner_Impl(t *testing.T) {
-	var raw interface{}
-	raw = &DebugRunner{}
+	var raw interface{} = &DebugRunner{}
 	if _, ok := raw.(Runner); !ok {
 		t.Fatal("DebugRunner must be a runner.")
 	}

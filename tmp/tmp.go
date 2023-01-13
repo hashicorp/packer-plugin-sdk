@@ -17,7 +17,6 @@
 package tmp
 
 import (
-	"io/ioutil"
 	"os"
 )
 
@@ -31,7 +30,7 @@ var tmpDir = os.TempDir()
 // It is the caller's responsibility
 // to remove the file when no longer needed.
 func Dir(prefix string) (string, error) {
-	return ioutil.TempDir(tmpDir, prefix)
+	return os.MkdirTemp(tmpDir, prefix)
 }
 
 // File creates a new temporary file in the system temporary
@@ -45,5 +44,5 @@ func Dir(prefix string) (string, error) {
 // to find the pathname of the file. It is the caller's responsibility
 // to remove the file when no longer needed.
 func File(pattern string) (*os.File, error) {
-	return ioutil.TempFile(tmpDir, pattern)
+	return os.CreateTemp(tmpDir, pattern)
 }

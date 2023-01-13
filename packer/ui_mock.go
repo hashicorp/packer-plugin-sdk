@@ -6,7 +6,6 @@ package packer
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"testing"
 	"time"
 )
@@ -17,8 +16,8 @@ func TestUi(t *testing.T) Ui {
 	var buf bytes.Buffer
 	return &BasicUi{
 		Reader:      &buf,
-		Writer:      ioutil.Discard,
-		ErrorWriter: ioutil.Discard,
+		Writer:      io.Discard,
+		ErrorWriter: io.Discard,
 		PB:          &NoopProgressTracker{},
 	}
 }

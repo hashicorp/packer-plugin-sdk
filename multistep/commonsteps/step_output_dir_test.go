@@ -6,7 +6,6 @@ package commonsteps
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -25,7 +24,7 @@ func testState(t *testing.T) multistep.StateBag {
 }
 
 func testStepOutputDir(t *testing.T) *StepOutputDir {
-	td, err := ioutil.TempDir("", "packer")
+	td, err := os.MkdirTemp("", "packer")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}

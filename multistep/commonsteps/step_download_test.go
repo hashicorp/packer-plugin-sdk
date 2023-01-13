@@ -8,7 +8,6 @@ import (
 	"context"
 	"crypto/sha1"
 	"encoding/hex"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -326,7 +325,7 @@ func createTempDir(t *testing.T) string {
 }
 
 func listFiles(t *testing.T, dir string) []string {
-	fs, err := ioutil.ReadDir(dir)
+	fs, err := os.ReadDir(dir)
 	if err != nil {
 		log.Fatal(err)
 	}
