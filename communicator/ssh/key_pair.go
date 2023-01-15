@@ -6,7 +6,7 @@ package ssh
 import (
 	"bytes"
 	"crypto"
-	"crypto/dsa"
+	"crypto/dsa" //nolint:all
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
@@ -60,10 +60,10 @@ type KeyPair struct {
 // KeyPairFromPrivateKey returns a KeyPair loaded from an existing private key.
 //
 // Supported key pair types include:
-// 	- DSA
-// 	- ECDSA
-// 	- ED25519
-// 	- RSA
+//   - DSA
+//   - ECDSA
+//   - ED25519
+//   - RSA
 func KeyPairFromPrivateKey(config FromPrivateKeyConfig) (KeyPair, error) {
 	privateKey, err := gossh.ParseRawPrivateKey(config.RawPrivateKeyPemBlock)
 	if err != nil {
