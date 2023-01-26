@@ -87,7 +87,7 @@ type SSH struct {
 	// a 36 character unique identifier.
 	SSHTemporaryKeyPairName string `mapstructure:"temporary_key_pair_name" undocumented:"true"`
 	SSHTemporaryKeyPair     `mapstructure:",squash"`
-	// This overrides the value of ciphers supported by default by golang.
+	// This overrides the value of ciphers supported by default by Golang.
 	// The default value is [
 	//   "aes128-gcm@openssh.com",
 	//   "chacha20-poly1305@openssh.com",
@@ -107,7 +107,7 @@ type SSH struct {
 	// currently only works on guests with `sed` installed.
 	SSHClearAuthorizedKeys bool `mapstructure:"ssh_clear_authorized_keys"`
 	// If set, Packer will override the value of key exchange (kex) algorithms
-	// supported by default by golang. Acceptable values include:
+	// supported by default by Golang. Acceptable values include:
 	// "curve25519-sha256@libssh.org", "ecdh-sha2-nistp256",
 	// "ecdh-sha2-nistp384", "ecdh-sha2-nistp521",
 	// "diffie-hellman-group14-sha1", and "diffie-hellman-group1-sha1".
