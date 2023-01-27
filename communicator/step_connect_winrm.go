@@ -28,12 +28,10 @@ import (
 // configuration when creating the step.
 //
 // Uses:
-//
-//	ui packersdk.Ui
+//   ui packersdk.Ui
 //
 // Produces:
-//
-//	communicator packersdk.Communicator
+//   communicator packersdk.Communicator
 type StepConnectWinRM struct {
 	// All the fields below are documented on StepConnect
 	Config      *Config

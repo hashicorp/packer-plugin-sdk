@@ -15,44 +15,41 @@ which is passed between steps by the runner.
 ```go
 type stepAdd struct{}
 
-	func (s *stepAdd) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
-	    // Read our value and assert that it is they type we want
-	    value := state.Get("value").(int)
-	    fmt.Printf("Value is %d\n", value)
+func (s *stepAdd) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
+    // Read our value and assert that it is they type we want
+    value := state.Get("value").(int)
+    fmt.Printf("Value is %d\n", value)
 
-	    // Store some state back
-	    state.Put("value", value + 1)
-	    return multistep.ActionContinue
-	}
+    // Store some state back
+    state.Put("value", value + 1)
+    return multistep.ActionContinue
+}
 
-	func (s *stepAdd) Cleanup(multistep.StateBag) {
-		// This is called after all the steps have run or if the runner is
-		// cancelled so that cleanup can be performed.
-	}
-
+func (s *stepAdd) Cleanup(multistep.StateBag) {
+	// This is called after all the steps have run or if the runner is
+	// cancelled so that cleanup can be performed.
+}
 ```
 
 Make a runner and call your array of Steps.
 
 ```go
+func main() {
+    // Our "bag of state" that we read the value from
+    state := new(multistep.BasicStateBag)
+    state.Put("value", 0)
 
-	func main() {
-	    // Our "bag of state" that we read the value from
-	    state := new(multistep.BasicStateBag)
-	    state.Put("value", 0)
+    steps := []multistep.Step{
+        &stepAdd{},
+        &stepAdd{},
+        &stepAdd{},
+    }
 
-	    steps := []multistep.Step{
-	        &stepAdd{},
-	        &stepAdd{},
-	        &stepAdd{},
-	    }
+    runner := &multistep.BasicRunner{Steps: steps}
 
-	    runner := &multistep.BasicRunner{Steps: steps}
-
-	    // Executes the steps
-	    runner.Run(context.Background(), state)
-	}
-
+    // Executes the steps
+    runner.Run(context.Background(), state)
+}
 ```
 
 This will produce:
