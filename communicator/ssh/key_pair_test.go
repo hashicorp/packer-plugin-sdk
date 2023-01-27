@@ -5,7 +5,7 @@ package ssh
 
 import (
 	"bytes"
-	"crypto/dsa"
+	"crypto/dsa" //nolint:all
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"fmt"

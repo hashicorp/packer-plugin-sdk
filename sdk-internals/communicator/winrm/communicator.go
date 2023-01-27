@@ -11,7 +11,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -170,7 +169,7 @@ func (c *Communicator) Download(src string, dst io.Writer) error {
 	base64DecodePipe := &Base64Pipe{w: dst}
 
 	cmd := winrm.Powershell(fmt.Sprintf(encodeScript, src))
-	_, err = client.Run(cmd, base64DecodePipe, ioutil.Discard)
+	_, err = client.Run(cmd, base64DecodePipe, io.Discard)
 
 	return err
 }
@@ -235,7 +234,7 @@ type Base64Pipe struct {
 }
 
 func (d *Base64Pipe) ReadFrom(r io.Reader) (int64, error) {
-	b, err := ioutil.ReadAll(r)
+	b, err := io.ReadAll(r)
 	if err != nil {
 		return 0, err
 	}

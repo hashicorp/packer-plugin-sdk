@@ -4,7 +4,7 @@
 package sshkey
 
 import (
-	"crypto/dsa"
+	"crypto/dsa" //nolint:all
 	"crypto/ecdsa"
 	"crypto/ed25519"
 	"crypto/elliptic"

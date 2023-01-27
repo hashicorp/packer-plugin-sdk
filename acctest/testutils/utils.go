@@ -8,7 +8,6 @@ package testutils
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
@@ -48,7 +47,7 @@ func GetArtifact(manifestfilepath string) (ManifestFile, error) {
 	//   "last_run_uuid": "81fc083f-0b78-d815-ed3a-2e5f53b36bff"
 	// }
 	manifest := ManifestFile{}
-	data, err := ioutil.ReadFile(manifestfilepath)
+	data, err := os.ReadFile(manifestfilepath)
 	if err != nil {
 		return manifest, fmt.Errorf("failed to open manifest file %s", manifestfilepath)
 	}

@@ -6,7 +6,6 @@ package rpc
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"reflect"
 	"testing"
 )
@@ -122,7 +121,7 @@ func TestUiRPC(t *testing.T) {
 	}
 
 	ctt := []byte("foo bar baz !!!")
-	rc := ioutil.NopCloser(bytes.NewReader(ctt))
+	rc := io.NopCloser(bytes.NewReader(ctt))
 
 	stream := uiClient.TrackProgress("stuff.txt", 0, int64(len(ctt)), rc)
 	if ui.trackProgressCalled != true {

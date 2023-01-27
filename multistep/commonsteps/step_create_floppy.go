@@ -139,8 +139,7 @@ func (s *StepCreateFloppy) Run(ctx context.Context, state multistep.StateBag) mu
 	crawlDirectoryFiles = []string{}
 
 	// Collect files and copy them flatly...because floppy_files is broken on purpose.
-	var filelist chan string
-	filelist = make(chan string)
+	var filelist = make(chan string)
 	go globFiles(s.Files, filelist)
 
 	ui.Message("Copying files flatly from floppy_files")
@@ -394,9 +393,7 @@ func removeBase(base string, path string) (string, error) {
 type directoryCache func(string) (fs.Directory, error)
 
 func fsDirectoryCache(rootDirectory fs.Directory) directoryCache {
-	var cache map[string]fs.Directory
-
-	cache = make(map[string]fs.Directory)
+	var cache = make(map[string]fs.Directory)
 	cache[""] = rootDirectory
 
 	Input, Output, Error := make(chan string), make(chan fs.Directory), make(chan error)

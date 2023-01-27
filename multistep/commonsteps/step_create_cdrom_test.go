@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"context"
 	"io/fs"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -17,8 +16,7 @@ import (
 )
 
 func TestStepCreateCD_Impl(t *testing.T) {
-	var raw interface{}
-	raw = new(StepCreateCD)
+	var raw interface{} = new(StepCreateCD)
 	if _, ok := raw.(multistep.Step); !ok {
 		t.Fatalf("StepCreateCD should be a step")
 	}
@@ -40,7 +38,7 @@ func createFiles(t *testing.T, rootFolder string, expected map[string]string) {
 		if err != nil {
 			t.Fatalf("mkdir -p: %s", err)
 		}
-		err = ioutil.WriteFile(path, []byte(content), 0666)
+		err = os.WriteFile(path, []byte(content), 0666)
 		if err != nil {
 			t.Fatalf("writing file: %s", err)
 		}
@@ -61,7 +59,7 @@ func checkFiles(t *testing.T, rootFolder string, expected map[string]string) {
 				t.Fatalf("unexpected file: %s", nameSlashSafe)
 			}
 
-			content, err := ioutil.ReadFile(path)
+			content, err := os.ReadFile(path)
 			if err != nil {
 				t.Fatalf("reading file: %s", err)
 			}
@@ -89,7 +87,7 @@ func TestStepCreateCD(t *testing.T) {
 	state := testStepCreateCDState(t)
 	step := new(StepCreateCD)
 
-	dir, err := ioutil.TempDir("", "packer")
+	dir, err := os.MkdirTemp("", "packer")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -172,7 +170,7 @@ func TestStepCreateCD_missing(t *testing.T) {
 	state := testStepCreateCDState(t)
 	step := new(StepCreateCD)
 
-	dir, err := ioutil.TempDir("", "packer")
+	dir, err := os.MkdirTemp("", "packer")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
