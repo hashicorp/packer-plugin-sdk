@@ -19,8 +19,7 @@ import (
 // StepMountExtra mounts the attached device.
 //
 // Produces:
-//
-//	mount_extra_cleanup CleanupFunc - To perform early cleanup
+//   mount_extra_cleanup CleanupFunc - To perform early cleanup
 type StepMountExtra struct {
 	ChrootMounts [][]string
 	mounts       []string

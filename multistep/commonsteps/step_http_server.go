@@ -33,12 +33,10 @@ func HTTPServerFromHTTPConfig(cfg *HTTPConfig) *StepHTTPServer {
 // template.
 //
 // Uses:
-//
-//	ui     packersdk.Ui
+//   ui     packersdk.Ui
 //
 // Produces:
-//
-//	http_port int - The port the HTTP server started on.
+//   http_port int - The port the HTTP server started on.
 type StepHTTPServer struct {
 	HTTPDir     string
 	HTTPContent map[string]string

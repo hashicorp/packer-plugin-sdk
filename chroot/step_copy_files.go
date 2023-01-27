@@ -19,9 +19,8 @@ import (
 // StepCopyFiles copies some files from the host into the chroot environment.
 //
 // Produces:
-//
-//	copy_files_cleanup CleanupFunc - A function to clean up the copied files
-//	early.
+//   copy_files_cleanup CleanupFunc - A function to clean up the copied files
+//   early.
 type StepCopyFiles struct {
 	Files []string
 	files []string
