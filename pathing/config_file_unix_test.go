@@ -7,7 +7,6 @@
 package pathing
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -15,25 +14,25 @@ import (
 
 func TestConfigPath(t *testing.T) {
 	// temporary directories for env vars
-	xdgConfigHomeTempDir, err := ioutil.TempDir(os.TempDir(), "*")
+	xdgConfigHomeTempDir, err := os.MkdirTemp(os.TempDir(), "*")
 	if err != nil {
 		t.Fatalf("Failed to create temp test directory: failing test: %v", err)
 	}
 	defer os.RemoveAll(xdgConfigHomeTempDir)
 
-	packerConfigTempDir, err := ioutil.TempDir(os.TempDir(), "*")
+	packerConfigTempDir, err := os.MkdirTemp(os.TempDir(), "*")
 	if err != nil {
 		t.Fatalf("Failed to create temp test directory: failing test: %v", err)
 	}
 	defer os.RemoveAll(packerConfigTempDir)
 
-	homeTempDir, err := ioutil.TempDir(os.TempDir(), "*")
+	homeTempDir, err := os.MkdirTemp(os.TempDir(), "*")
 	if err != nil {
 		t.Fatalf("Failed to create temp test directory: failing test: %v", err)
 	}
 	defer os.RemoveAll(homeTempDir)
 
-	homeDirDefaultConfigTempDir, err := ioutil.TempDir(os.TempDir(), "*")
+	homeDirDefaultConfigTempDir, err := os.MkdirTemp(os.TempDir(), "*")
 	if err != nil {
 		t.Fatalf("Failed to create temp test directory: failing test: %v", err)
 	}

@@ -134,8 +134,7 @@ func TestPostProcessorRPC_cancel(t *testing.T) {
 }
 
 func TestPostProcessor_Implements(t *testing.T) {
-	var raw interface{}
-	raw = new(postProcessor)
+	var raw interface{} = new(postProcessor)
 	if _, ok := raw.(packersdk.PostProcessor); !ok {
 		t.Fatal("not a postprocessor")
 	}

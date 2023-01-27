@@ -8,7 +8,7 @@ package ssh
 import (
 	"encoding/pem"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"time"
 
@@ -22,7 +22,7 @@ func parseKeyFile(path string) ([]byte, error) {
 	}
 	defer f.Close()
 
-	keyBytes, err := ioutil.ReadAll(f)
+	keyBytes, err := io.ReadAll(f)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +65,7 @@ func ReadCertificate(certificatePath string, keySigner ssh.Signer) (ssh.Signer, 
 	}
 
 	// Load the certificate
-	cert, err := ioutil.ReadFile(certificatePath)
+	cert, err := os.ReadFile(certificatePath)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read certificate file: %v", err)
 	}

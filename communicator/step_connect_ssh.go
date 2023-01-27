@@ -7,14 +7,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"golang.org/x/term"
 	"io"
 	"log"
 	"net"
 	"os"
 	"strings"
 	"time"
-
-	"golang.org/x/crypto/ssh/terminal"
 
 	helperssh "github.com/hashicorp/packer-plugin-sdk/communicator/ssh"
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
@@ -261,7 +260,7 @@ func sshBastionConfig(config *Config) (*gossh.ClientConfig, error) {
 
 	if config.SSHBastionInteractive {
 		var c io.ReadWriteCloser
-		if terminal.IsTerminal(int(os.Stdin.Fd())) {
+		if term.IsTerminal(int(os.Stdin.Fd())) {
 			c = os.Stdin
 		} else {
 			tty, err := os.Open("/dev/tty")

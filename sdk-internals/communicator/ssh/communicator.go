@@ -13,7 +13,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -715,7 +714,7 @@ func (c *comm) scpDownloadSession(path string, output io.Writer) error {
 			return err
 		}
 
-		if len(fi) < 0 {
+		if len(fi) == 0 {
 			return fmt.Errorf("empty response from server")
 		}
 
@@ -821,7 +820,7 @@ func (c *comm) scpSession(scpCommand string, f func(io.Writer, *bufio.Reader) er
 			// Otherwise, we have an ExitError, meaning we can just read the
 			// exit status
 			log.Printf("[DEBUG] non-zero exit status: %d, %v", exitErr.ExitStatus(), err)
-			stdoutB, err := ioutil.ReadAll(stdoutR)
+			stdoutB, err := io.ReadAll(stdoutR)
 			if err != nil {
 				return err
 			}

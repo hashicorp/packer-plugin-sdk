@@ -9,7 +9,6 @@ package communicator
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"os"
 	"time"
@@ -317,7 +316,7 @@ func (c *Config) ReadSSHPrivateKeyFile() ([]byte, error) {
 			return []byte{}, fmt.Errorf("Error expanding path for SSH private key: %s", err)
 		}
 
-		privateKey, err = ioutil.ReadFile(keyPath)
+		privateKey, err = os.ReadFile(keyPath)
 		if err != nil {
 			return privateKey, fmt.Errorf("Error on reading SSH private key: %s", err)
 		}
