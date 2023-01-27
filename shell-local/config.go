@@ -150,7 +150,7 @@ func Validate(config *Config) error {
 					break
 				}
 			}
-			if supported_os {
+			if !supported_os {
 				return fmt.Errorf("Invalid OS specified in only_on: '%s'\n"+
 					"Supported OS names: %s", provided_os, strings.Join(supportedSyslist, ", "))
 			}
