@@ -11,13 +11,13 @@
 //
 // Here are a few differences/gaps betweens hcl2 and mapstructure:
 //
-//  * in HCL2 all basic struct fields (string/int/struct) that are not pointers
-//   are required ( must be set ). In mapstructure everything is optional.
+//   - in HCL2 all basic struct fields (string/int/struct) that are not pointers
+//     are required ( must be set ). In mapstructure everything is optional.
 //
-//  * mapstructure allows to 'squash' fields
-//  (ex: Field CommonStructType `mapstructure:",squash"`) this allows to
-//  decorate structs and reuse configuration code. HCL2 parsing libs don't have
-//  anything similar.
+//   - mapstructure allows to 'squash' fields
+//     (ex: Field CommonStructType `mapstructure:",squash"`) this allows to
+//     decorate structs and reuse configuration code. HCL2 parsing libs don't have
+//     anything similar.
 //
 // mapstructure-to-hcl2 will parse Packer's config files and generate the HCL2
 // compliant code that will allow to not change any of the current builders in
