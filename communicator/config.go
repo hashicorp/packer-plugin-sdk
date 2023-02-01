@@ -163,13 +163,13 @@ type SSH struct {
 	// The `~` can be used in path and will be expanded to the
 	//home directory of current user.
 	SSHBastionCertificateFile string `mapstructure:"ssh_bastion_certificate_file"`
-	// `scp` or `sftp` - How to transfer files, Secure copy (default) or SSH
-	// File Transfer Protocol.
+	// `scp` or `sftp` - How to transfer files, Secure copy or SSH File Transfer
+	// Protocol (default).
 	//
 	// **NOTE**: Guests using Windows with Win32-OpenSSH v9.1.0.0p1-Beta, scp
-	// (the default protocol for copying data) returns a a non-zero error code since the MOTW
-	// cannot be set, which cause any file transfer to fail. As a workaround you can override the transfer protocol
-	// with SFTP instead `ssh_file_transfer_protocol = "sftp"`.
+	// returns a a non-zero error code since the MOTW cannot be set, which causes
+	// any file transfer to fail. As a workaround you can override the transfer
+	// protocol with SFTP instead `ssh_file_transfer_protocol = "sftp"`.
 	SSHFileTransferMethod string `mapstructure:"ssh_file_transfer_method"`
 	// A SOCKS proxy host to use for SSH connection
 	SSHProxyHost string `mapstructure:"ssh_proxy_host"`
@@ -513,7 +513,7 @@ func (c *Config) prepareSSH(ctx *interpolate.Context) []error {
 	}
 
 	if c.SSHFileTransferMethod == "" {
-		c.SSHFileTransferMethod = "scp"
+		c.SSHFileTransferMethod = "sftp"
 	}
 
 	// Backwards compatibility
