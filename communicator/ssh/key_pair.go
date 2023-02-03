@@ -60,7 +60,7 @@ type KeyPair struct {
 // KeyPairFromPrivateKey returns a KeyPair loaded from an existing private key.
 //
 // Supported key pair types include:
-//   - DSA
+//   - DSA (NOTE: deprecated from Go as DSA is not regarded as secure anymore, please consider RSA or ED25519 instead)
 //   - ECDSA
 //   - ED25519
 //   - RSA
