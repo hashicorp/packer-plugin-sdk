@@ -685,7 +685,7 @@ func (c *comm) scpUploadDirSession(dst string, src string, excl []string) error 
 				return err
 			}
 
-			return scpUploadDir(src, entries, w, r)
+			return scpUploadDir(src, entries, w, r, excl)
 		}
 
 		if src[len(src)-1] != '/' {
@@ -960,9 +960,23 @@ func scpUploadDirProtocol(name string, w io.Writer, r *bufio.Reader, f func() er
 	return err
 }
 
-func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader) error {
+func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader, excl []string) error {
 	for _, fi := range fs {
 		realPath := filepath.Join(root, fi.Name())
+
+		// Check if this file is excluded
+		excluded := false
+		for _, e := range excl {
+			if e == realPath {
+				excluded = true
+				break
+			}
+		}
+
+		if excluded {
+			log.Printf("[DEBUG] SCP: skipping excluded file: %s", realPath)
+			continue
+		}
 
 		// Track if this is actually a symlink to a directory. If it is
 		// a symlink to a file we don't do any special behavior because uploading
@@ -1015,7 +1029,7 @@ func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader) e
 				return err
 			}
 
-			return scpUploadDir(realPath, entries, w, r)
+			return scpUploadDir(realPath, entries, w, r, excl)
 		}, fi)
 		if err != nil {
 			return err
