@@ -146,8 +146,18 @@ func (cmd *Command) Run(args []string) int {
 		}
 		// make sure each type is found once where somehow sometimes they can be found twice
 		typeNames = append(typeNames[:pos], typeNames[pos+1:]...)
-		flatenedStruct := getMapstructureSquashedStruct(obj.Pkg(), utStruct)
-		flatenedStruct = addCtyTagToStruct(flatenedStruct)
+		flatenedStruct, err := getMapstructureSquashedStruct(obj.Pkg(), utStruct)
+		if err != nil {
+			log.Printf("%s.%s: %s", obj.Pkg().Name(), obj.Id(), err)
+			return 1
+		}
+
+		flatenedStruct, err = addCtyTagToStruct(flatenedStruct)
+		if err != nil {
+			log.Printf("%s.%s: %s", obj.Pkg().Name(), obj.Id(), err)
+			return 1
+		}
+
 		newStructName := "Flat" + id.Name
 		structs = append(structs, StructDef{
 			OriginalStructName: id.Name,
@@ -422,7 +432,7 @@ func getUsedImports(s *types.Struct) map[NamePath]*types.Package {
 	return res
 }
 
-func addCtyTagToStruct(s *types.Struct) *types.Struct {
+func addCtyTagToStruct(s *types.Struct) (*types.Struct, error) {
 	vars, tags := structFields(s)
 	for i := range tags {
 		field, tag := vars[i], tags[i]
@@ -437,10 +447,16 @@ func addCtyTagToStruct(s *types.Struct) *types.Struct {
 		_ = st.Set(&structtag.Tag{Key: "hcl", Name: ctyAccessor})
 		tags[i] = st.String()
 	}
-	return types.NewStruct(uniqueTags("cty", vars, tags))
+
+	vars, tags, err := uniqueTags("cty", vars, tags)
+	if err != nil {
+		return nil, fmt.Errorf("failed to add tag to struct: %s", err)
+	}
+
+	return types.NewStruct(vars, tags), nil
 }
 
-func uniqueTags(tagName string, fields []*types.Var, tags []string) ([]*types.Var, []string) {
+func uniqueTags(tagName string, fields []*types.Var, tags []string) ([]*types.Var, []string, error) {
 	outVars := []*types.Var{}
 	outTags := []string{}
 	uniqueTags := map[string]bool{}
@@ -450,20 +466,19 @@ func uniqueTags(tagName string, fields []*types.Var, tags []string) ([]*types.Va
 		h, err := structtag.Get(tagName)
 		if err == nil {
 			if uniqueTags[h.Name] {
-				log.Printf("skipping field %s ( duplicate `%s` %s tag  )", field.Name(), h.Name, tagName)
-				continue
+				return nil, nil, fmt.Errorf("field %q: duplicate tag %q", field.Name(), tagName)
 			}
 			uniqueTags[h.Name] = true
 		}
 		outVars = append(outVars, field)
 		outTags = append(outTags, tag)
 	}
-	return outVars, outTags
+	return outVars, outTags, nil
 }
 
 // getMapstructureSquashedStruct will return the same struct but embedded
 // fields with a `mapstructure:",squash"` tag will be un-nested.
-func getMapstructureSquashedStruct(topPkg *types.Package, utStruct *types.Struct) *types.Struct {
+func getMapstructureSquashedStruct(topPkg *types.Package, utStruct *types.Struct) (*types.Struct, error) {
 	res := &types.Struct{}
 	for i := 0; i < utStruct.NumFields(); i++ {
 		field, tag := utStruct.Field(i), utStruct.Tag(i)
@@ -498,7 +513,16 @@ func getMapstructureSquashedStruct(topPkg *types.Package, utStruct *types.Struct
 					continue
 				}
 
-				res = squashStructs(res, getMapstructureSquashedStruct(topPkg, utStruct))
+				sqStr, err := getMapstructureSquashedStruct(topPkg, utStruct)
+				if err != nil {
+					return nil, err
+				}
+
+				res, err = squashStructs(res, sqStr)
+				if err != nil {
+					return nil, err
+				}
+
 				continue
 			}
 		}
@@ -553,9 +577,12 @@ func getMapstructureSquashedStruct(topPkg *types.Package, utStruct *types.Struct
 			// non optional fields should be non pointers.
 			field = makePointer(field)
 		}
-		res = addFieldToStruct(res, field, tag)
+		res, err = addFieldToStruct(res, field, tag)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return res
+	return res, nil
 }
 
 func flattenNamed(f *types.Named, underlying types.Type) *types.Named {
@@ -568,32 +595,45 @@ func makePointer(field *types.Var) *types.Var {
 	return types.NewField(field.Pos(), field.Pkg(), field.Name(), types.NewPointer(field.Type()), field.Embedded())
 }
 
-func addFieldToStruct(s *types.Struct, field *types.Var, tag string) *types.Struct {
+func addFieldToStruct(s *types.Struct, field *types.Var, tag string) (*types.Struct, error) {
 	sf, st := structFields(s)
-	return types.NewStruct(uniqueFields(append(sf, field), append(st, tag)))
+
+	vars, tags, err := uniqueFields(append(sf, field), append(st, tag))
+	if err != nil {
+		return nil, err
+	}
+
+	str := types.NewStruct(vars, tags)
+	return str, nil
 }
 
-func squashStructs(a, b *types.Struct) *types.Struct {
+func squashStructs(a, b *types.Struct) (*types.Struct, error) {
 	va, ta := structFields(a)
 	vb, tb := structFields(b)
-	return types.NewStruct(uniqueFields(append(va, vb...), append(ta, tb...)))
+
+	vars, tags, err := uniqueFields(append(va, vb...), append(ta, tb...))
+	if err != nil {
+		return nil, fmt.Errorf("failed to squash struct: %s", err)
+	}
+
+	str := types.NewStruct(vars, tags)
+	return str, nil
 }
 
-func uniqueFields(fields []*types.Var, tags []string) ([]*types.Var, []string) {
+func uniqueFields(fields []*types.Var, tags []string) ([]*types.Var, []string, error) {
 	outVars := []*types.Var{}
 	outTags := []string{}
 	fieldNames := map[string]bool{}
 	for i := range fields {
 		field, tag := fields[i], tags[i]
 		if fieldNames[field.Name()] {
-			log.Printf("skipping duplicate %s field", field.Name())
-			continue
+			return nil, nil, fmt.Errorf("duplicate field %q", field.Name())
 		}
 		fieldNames[field.Name()] = true
 		outVars = append(outVars, field)
 		outTags = append(outTags, tag)
 	}
-	return outVars, outTags
+	return outVars, outTags, nil
 }
 
 func structFields(s *types.Struct) (vars []*types.Var, tags []string) {

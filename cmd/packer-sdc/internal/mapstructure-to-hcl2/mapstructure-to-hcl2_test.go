@@ -45,6 +45,16 @@ func TestCommand_Run(t *testing.T) {
 				Expected: []string{"../test-data/packer-plugin-happycloud/builder/happycloud/config.hcl2spec.go"},
 			},
 		},
+		{
+			[]string{"-type", "Config", "../test-data/field-conflict/test_mapstructure_field_conflict.go"},
+			1,
+			FileCheck{},
+		},
+		{
+			[]string{"-type", "Config", "../test-data/tag-conflict/test_mapstructure_tag_conflict.go"},
+			1,
+			FileCheck{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s", tt.args), func(t *testing.T) {
