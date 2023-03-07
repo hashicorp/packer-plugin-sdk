@@ -80,8 +80,6 @@ jobs:
       matrix:
         go-version:
           - 1.18
-        directory:
-          - .
     permissions:
       id-token: write
       contents: read
@@ -126,4 +124,56 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: windows test results
+          path: ${{ env.TEST_RESULTS_PATH }}
+
+  darwin-tests:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        go-version:
+          - 1.18
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Setup go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create test directory
+        run: |
+          mkdir -p ${{ env.TEST_RESULTS_PATH }}/packer-plugin-sdk
+
+      - name: Setup cache for go modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Download go modules
+        run: go mod download
+
+      - name: Install gotestsum
+        run: go install gotest.tools/gotestsum@v1.8.2
+
+      - name: Run Go tests
+        run: |
+          PACKAGE_NAMES=$(go list ./...)
+          echo "Running $(echo $PACKAGE_NAMES | wc -w) packages"
+          echo $PACKAGE_NAMES
+          gotestsum --format=short-verbose --junitfile $TEST_RESULTS_PATH/packer-plugin-sdk/gotestsum-report.xml -- -p 2 $PACKAGE_NAMES
+
+      # Save coverage report parts
+      - name: Upload and save artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos test results
           path: ${{ env.TEST_RESULTS_PATH }}
