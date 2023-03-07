@@ -5,6 +5,7 @@ package pathing
 
 import (
 	"fmt"
+	"os"
 	"os/user"
 	"path/filepath"
 	"runtime"
@@ -17,6 +18,9 @@ func platform_user() string {
 	//      on the windows platform, whereas the correct way is to use
 	//		the api or to scrape `net user`.
 	if runtime.GOOS == "windows" {
+		if loginUser := os.Getenv("USERNAME"); loginUser != "" {
+			return loginUser
+		}
 		return "Administrator"
 	}
 	return "root"
