@@ -53,7 +53,7 @@ const PackerKeyDefault = 100 * time.Millisecond
 //
 // -   `<home> <end>` - Simulates pressing the home and end keys.
 //
-// -   `<pageUp> <pageDown>` - Simulates pressing the page up and page down
+//   - `<pageUp> <pageDown>` - Simulates pressing the page up and page down
 //     keys.
 //
 // -   `<menu>` - Simulates pressing the Menu key.
@@ -66,24 +66,24 @@ const PackerKeyDefault = 100 * time.Millisecond
 //
 // -   `<leftSuper> <rightSuper>` - Simulates pressing the ⌘ or Windows key.
 //
-// -   `<wait> <wait5> <wait10>` - Adds a 1, 5 or 10 second pause before
+//   - `<wait> <wait5> <wait10>` - Adds a 1, 5 or 10 second pause before
 //     sending any additional keys. This is useful if you have to generally
 //     wait for the UI to update before typing more.
 //
-// -   `<waitXX>` - Add an arbitrary pause before sending any additional keys.
+//   - `<waitXX>` - Add an arbitrary pause before sending any additional keys.
 //     The format of `XX` is a sequence of positive decimal numbers, each with
 //     optional fraction and a unit suffix, such as `300ms`, `1.5h` or `2h45m`.
 //     Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For
 //     example `<wait10m>` or `<wait1m20s>`.
 //
-// -   `<XXXOn> <XXXOff>` - Any printable keyboard character, and of these
-//      "special" expressions, with the exception of the `<wait>` types, can
-//      also be toggled on or off. For example, to simulate ctrl+c, use
-//      `<leftCtrlOn>c<leftCtrlOff>`. Be sure to release them, otherwise they
-//      will be held down until the machine reboots. To hold the `c` key down,
-//      you would use `<cOn>`. Likewise, `<cOff>` to release.
+//   - `<XXXOn> <XXXOff>` - Any printable keyboard character, and of these
+//     "special" expressions, with the exception of the `<wait>` types, can
+//     also be toggled on or off. For example, to simulate ctrl+c, use
+//     `<leftCtrlOn>c<leftCtrlOff>`. Be sure to release them, otherwise they
+//     will be held down until the machine reboots. To hold the `c` key down,
+//     you would use `<cOn>`. Likewise, `<cOff>` to release.
 //
-// -   `{{ .HTTPIP }} {{ .HTTPPort }}` - The IP and port, respectively of an
+//   - `{{ .HTTPIP }} {{ .HTTPPort }}` - The IP and port, respectively of an
 //     HTTP server that is started serving the directory specified by the
 //     `http_directory` configuration parameter. If `http_directory` isn't
 //     specified, these will be blank!
@@ -97,18 +97,22 @@ const PackerKeyDefault = 100 * time.Millisecond
 //
 // ```json
 // "boot_command": [
-//     "<tab><wait>",
-//     " ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos6-ks.cfg<enter>"
-//  ]
+//
+//	   "<tab><wait>",
+//	   " ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos6-ks.cfg<enter>"
+//	]
+//
 // ```
 //
 // In HCL2:
 //
 // ```hcl
 // boot_command = [
-//     "<tab><wait>",
-//     " ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos6-ks.cfg<enter>"
-//  ]
+//
+//	   "<tab><wait>",
+//	   " ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos6-ks.cfg<enter>"
+//	]
+//
 // ```
 //
 // The example shown below is a working boot command used to start an Ubuntu
@@ -118,15 +122,17 @@ const PackerKeyDefault = 100 * time.Millisecond
 //
 // ```json
 // "boot_command": [
-//   "<esc><esc><enter><wait>",
-//   "/install/vmlinuz noapic ",
-//   "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-//   "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-//   "hostname={{ .Name }} ",
-//   "fb=false debconf/frontend=noninteractive ",
-//   "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-//   "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
-//   "initrd=/install/initrd.gz -- <enter>"
+//
+//	"<esc><esc><enter><wait>",
+//	"/install/vmlinuz noapic ",
+//	"preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+//	"debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+//	"hostname={{ .Name }} ",
+//	"fb=false debconf/frontend=noninteractive ",
+//	"keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+//	"keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+//	"initrd=/install/initrd.gz -- <enter>"
+//
 // ]
 // ```
 //
@@ -134,15 +140,17 @@ const PackerKeyDefault = 100 * time.Millisecond
 //
 // ```hcl
 // boot_command = [
-//   "<esc><esc><enter><wait>",
-//   "/install/vmlinuz noapic ",
-//   "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-//   "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-//   "hostname={{ .Name }} ",
-//   "fb=false debconf/frontend=noninteractive ",
-//   "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-//   "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
-//   "initrd=/install/initrd.gz -- <enter>"
+//
+//	"<esc><esc><enter><wait>",
+//	"/install/vmlinuz noapic ",
+//	"preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+//	"debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+//	"hostname={{ .Name }} ",
+//	"fb=false debconf/frontend=noninteractive ",
+//	"keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+//	"keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+//	"initrd=/install/initrd.gz -- <enter>"
+//
 // ]
 // ```
 //

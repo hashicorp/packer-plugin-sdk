@@ -53,10 +53,12 @@ jobs:
         run: go mod download
       
       - name: Run gofmt
+        working-directory: ${{ matrix.directory }}
         run: |
             make fmt-check
 
       - name: Run Go Generate Check
+        working-directory: ${{ matrix.directory }}
         run: |
             make generate-check
       
@@ -111,7 +113,6 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-
       - name: Download go modules
         run: go mod download
 
