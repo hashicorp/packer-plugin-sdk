@@ -1042,7 +1042,6 @@ func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader, e
 func isExcluded(filePath string, excludes []string) bool {
 	// Check if this file is excluded
 	excluded := false
-	log.Printf("[DEBUG] SCP: checking if %v is excluded", excludes)
 	for _, excl := range excludes {
 		log.Printf("[DEBUG] SCP: checking if %s is excluded by %s", filePath, excl)
 		match, err := filepath.Match(excl, filePath)
