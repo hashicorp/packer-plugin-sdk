@@ -1,4 +1,5 @@
- See [Releases](https://github.com/hashicorp/packer-plugin-sdk/releases) for latest CHANGELOG information.
+ # Latest Release
+ Please refer to [releases](https://github.com/hashicorp/packer-plugin-sdk/releases) for latest CHANGELOG information.
 
 ## 0.3.1 (July 28, 2022)
 
