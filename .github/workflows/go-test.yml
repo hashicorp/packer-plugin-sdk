@@ -59,10 +59,10 @@ jobs:
 
       - name: Run Go tests
         run: |
-          PACKAGE_NAMES=$(go list ./...)
-          echo "Running $(echo $PACKAGE_NAMES | wc -w) packages"
-          echo $PACKAGE_NAMES
-          gotestsum --format=short-verbose --junitfile $TEST_RESULTS_PATH/packer-plugin-sdk/gotestsum-report.xml -- -p 2 $PACKAGE_NAMES
+          PACKAGE_NAMES="$(go list ./...)"
+          echo "Running $(echo "$PACKAGE_NAMES" | wc -w) packages"
+          echo "$PACKAGE_NAMES"
+          echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
 
       # Save coverage report parts
       - name: Upload and save artifacts
@@ -111,10 +111,10 @@ jobs:
       - name: Run Go tests
         shell: bash
         run: |
-          PACKAGE_NAMES=$(go list ./...)
-          echo "Running $(echo $PACKAGE_NAMES | wc -w) packages"
-          echo $PACKAGE_NAMES
-          gotestsum --format=short-verbose --junitfile $TEST_RESULTS_PATH/packer-plugin-sdk/gotestsum-report.xml -- -p 2 $PACKAGE_NAMES
+          PACKAGE_NAMES="$(go list ./...)"
+          echo "Running $(echo "$PACKAGE_NAMES" | wc -w) packages"
+          echo "$PACKAGE_NAMES"
+          echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
       
       # Save coverage report parts
       - name: Upload and save artifacts
@@ -163,10 +163,10 @@ jobs:
 
       - name: Run Go tests
         run: |
-          PACKAGE_NAMES=$(go list ./...)
-          echo "Running $(echo $PACKAGE_NAMES | wc -w) packages"
-          echo $PACKAGE_NAMES
-          gotestsum --format=short-verbose --junitfile $TEST_RESULTS_PATH/packer-plugin-sdk/gotestsum-report.xml -- -p 2 $PACKAGE_NAMES
+          PACKAGE_NAMES="$(go list ./...)"
+          echo "Running $(echo "$PACKAGE_NAMES" | wc -w) packages"
+          echo "$PACKAGE_NAMES"
+          echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
 
       # Save coverage report parts
       - name: Upload and save artifacts
