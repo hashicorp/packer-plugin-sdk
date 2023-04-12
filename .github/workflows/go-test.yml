@@ -25,19 +25,19 @@ jobs:
       contents: read
     steps:
       - name: Setup go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
         with:
           go-version: ${{ matrix.go-version }}
       
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
 
       - name: Create test directory
         run: |
           mkdir -p ${{ env.TEST_RESULTS_PATH }}/packer-plugin-sdk
   
       - name: Setup cache for go modules
-        uses: actions/cache@v3
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: |
             ~/.cache/go-build
@@ -69,7 +69,7 @@ jobs:
 
       # Save coverage report parts
       - name: Upload and save artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: linux test results
           path: ${{ env.TEST_RESULTS_PATH }}
@@ -88,15 +88,15 @@ jobs:
         run: git config --global core.autocrlf false
 
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
         with:
           go-version: ${{ matrix.go-version }}
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
 
       - name: Setup cache for go modules
-        uses: actions/cache@v3
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: |
             ~\AppData\Local\go-build
@@ -121,7 +121,7 @@ jobs:
       
       # Save coverage report parts
       - name: Upload and save artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: windows test results
           path: ${{ env.TEST_RESULTS_PATH }}
@@ -137,19 +137,19 @@ jobs:
       contents: read
     steps:
       - name: Setup go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
         with:
           go-version: ${{ matrix.go-version }}
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
 
       - name: Create test directory
         run: |
           mkdir -p ${{ env.TEST_RESULTS_PATH }}/packer-plugin-sdk
 
       - name: Setup cache for go modules
-        uses: actions/cache@v3
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: |
             ~/.cache/go-build
@@ -173,7 +173,7 @@ jobs:
 
       # Save coverage report parts
       - name: Upload and save artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: macos test results
           path: ${{ env.TEST_RESULTS_PATH }}
