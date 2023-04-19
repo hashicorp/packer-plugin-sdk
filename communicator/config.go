@@ -496,6 +496,16 @@ func (c *Config) prepareSSH(ctx *interpolate.Context) []error {
 		c.SSHKeepAliveInterval = 5 * time.Second
 	}
 
+	// Validation
+	var errs []error
+	if c.SSHPrivateKeyFile == "" && c.SSHCertificateFile != "" {
+		errs = append(errs, fmt.Errorf("ssh_private_key_file must be specified if ssh_certificate_file is specified"))
+	}
+
+	if c.SSHBastionPrivateKeyFile == "" && c.SSHBastionCertificateFile != "" {
+		errs = append(errs, fmt.Errorf("ssh_bastion_private_key_file must be specified if ssh_bastion_certificate_file is specified"))
+	}
+
 	if c.SSHBastionHost != "" {
 		if c.SSHBastionPort == 0 {
 			c.SSHBastionPort = 22
@@ -503,12 +513,8 @@ func (c *Config) prepareSSH(ctx *interpolate.Context) []error {
 
 		if c.SSHBastionPrivateKeyFile == "" && c.SSHPrivateKeyFile != "" {
 			c.SSHBastionPrivateKeyFile = c.SSHPrivateKeyFile
-		}
-
-		if c.SSHBastionCertificateFile == "" && c.SSHCertificateFile != "" {
 			c.SSHBastionCertificateFile = c.SSHCertificateFile
 		}
-
 	}
 
 	if c.SSHProxyHost != "" {
@@ -526,8 +532,6 @@ func (c *Config) prepareSSH(ctx *interpolate.Context) []error {
 		c.SSHTimeout = c.SSHWaitTimeout
 	}
 
-	// Validation
-	var errs []error
 	if c.SSHUsername == "" {
 		errs = append(errs, errors.New("An ssh_username must be specified\n  Note: some builders used to default ssh_username to \"root\"."))
 	}
