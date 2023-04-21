@@ -36,28 +36,47 @@ func TestCommonServer_ConfigSpec(t *testing.T) {
 			defer client.Close()
 			defer server.Close()
 
-			var spec hcldec.ObjectSpec
+			var configSpecTestFn func() hcldec.ObjectSpec
 			switch v := tc.component.(type) {
 			case packersdk.Builder:
-				server.RegisterBuilder(v)
-				remote := client.Builder()
-				spec = remote.ConfigSpec()
+				configSpecTestFn = func() hcldec.ObjectSpec {
+					server.RegisterBuilder(v)
+					remote := client.Builder()
+					spec := remote.ConfigSpec()
+					return spec
+				}
 			case packersdk.Datasource:
-				server.RegisterDatasource(v)
-				remote := client.Datasource()
-				spec = remote.ConfigSpec()
+				configSpecTestFn = func() hcldec.ObjectSpec {
+					server.RegisterDatasource(v)
+					remote := client.Datasource()
+					spec := remote.ConfigSpec()
+					return spec
+				}
 			case packersdk.Provisioner:
-				server.RegisterProvisioner(v)
-				remote := client.Provisioner()
-				spec = remote.ConfigSpec()
+				configSpecTestFn = func() hcldec.ObjectSpec {
+					server.RegisterProvisioner(v)
+					remote := client.Provisioner()
+					spec := remote.ConfigSpec()
+					return spec
+				}
 			case packersdk.PostProcessor:
-				server.RegisterPostProcessor(v)
-				remote := client.PostProcessor()
-				spec = remote.ConfigSpec()
+				configSpecTestFn = func() hcldec.ObjectSpec {
+					server.RegisterPostProcessor(v)
+					remote := client.PostProcessor()
+					spec := remote.ConfigSpec()
+					return spec
+				}
 			default:
 				t.Fatalf("Unknown component type %T", v)
 			}
 
+			defer func() {
+				if r := recover(); r != nil {
+					t.Errorf("Call to ConfigSpec for %s panicked: %v", tc.name, r)
+				}
+			}()
+
+			spec := configSpecTestFn()
 			if len(spec) == 0 {
 				t.Errorf("expected remote.ConfigSpec for %T to return a valid hcldec.ObjectSpec, but return %v", tc.component, spec)
 			}
