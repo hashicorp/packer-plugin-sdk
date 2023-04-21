@@ -66,6 +66,12 @@ func TestDatasource(t *testing.T) {
 	d.outputSpec = map[string]hcldec.Spec{
 		"foo": &hcldec.AttrSpec{Name: "foo", Type: cty.String, Required: false},
 	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			t.Errorf("Call to ConfigSpec for datasource panicked: %v", r)
+		}
+	}()
 	spec := dsClient.OutputSpec()
 	if !reflect.DeepEqual(spec, d.outputSpec) {
 		t.Fatalf("unknown outputSpec value: %#v", spec)
