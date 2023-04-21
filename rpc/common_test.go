@@ -7,8 +7,6 @@ import (
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 )
 
-var b testing.B
-
 func TestCommonServer_ConfigSpec(t *testing.T) {
 	tt := []struct {
 		name      string
