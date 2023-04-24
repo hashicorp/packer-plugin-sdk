@@ -4,9 +4,15 @@
 package rpc
 
 import (
+	"encoding/gob"
+
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/json"
 )
+
+// Test that cty types implement the gob.GobEncoder interface.
+// Support for encoding/gob was removed in github.com/zclconf/go-cty@v1.11.0.
+var _ gob.GobEncoder = cty.Value{}
 
 // cty.Value is does not know how to encode itself through the wire so we
 // transform it to bytes.
