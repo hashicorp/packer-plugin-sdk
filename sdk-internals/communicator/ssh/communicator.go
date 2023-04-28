@@ -526,8 +526,9 @@ func (c *comm) sftpUploadDirSession(dst string, src string, excl []string) error
 	sftpFunc := func(client *sftp.Client) error {
 		rootDst := dst
 		if src[len(src)-1] != '/' {
-			log.Printf("[DEBUG] No trailing slash, creating the source directory name")
-			rootDst = filepath.Join(dst, filepath.Base(src))
+			srcBase := filepath.Base(src)
+			log.Printf("[DEBUG] sftp: No trailing slash, creating directory %s/%s", dst, srcBase)
+			rootDst = filepath.Join(dst, srcBase)
 		}
 		walkFunc := func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -545,9 +546,12 @@ func (c *comm) sftpUploadDirSession(dst string, src string, excl []string) error
 			// to the sftp server
 			finalDst = filepath.ToSlash(finalDst)
 
+			log.Printf("[DEBUG] sftp: uploading %q to %q", relSrc, finalDst)
+
 			// Skip the creation of the target destination directory since
 			// it should exist and we might not even own it
 			if finalDst == dst {
+				log.Printf("[DEBUG] sftp: skipping creation of %q", dst)
 				return nil
 			}
 
@@ -689,12 +693,13 @@ func (c *comm) scpUploadDirSession(dst string, src string, excl []string) error 
 		}
 
 		if src[len(src)-1] != '/' {
-			log.Printf("[DEBUG] No trailing slash, creating the source directory name")
+			srcBase := filepath.Base(src)
+			log.Printf("[DEBUG] scp: No trailing slash, creating directory %s/%s", dst, srcBase)
 			fi, err := os.Stat(src)
 			if err != nil {
 				return err
 			}
-			return scpUploadDirProtocol(filepath.Base(src), w, r, uploadEntries, fi)
+			return scpUploadDirProtocol(srcBase, w, r, uploadEntries, fi)
 		} else {
 			// Trailing slash, so only upload the contents
 			return uploadEntries()
@@ -961,6 +966,8 @@ func scpUploadDirProtocol(name string, w io.Writer, r *bufio.Reader, f func() er
 }
 
 func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader) error {
+	log.Printf("[DEBUG] scp: uploading directory %s", root)
+
 	for _, fi := range fs {
 		realPath := filepath.Join(root, fi.Name())
 
