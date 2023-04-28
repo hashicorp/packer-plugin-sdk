@@ -539,6 +539,12 @@ func (c *comm) sftpUploadDirSession(dst string, src string, excl []string) error
 			if err != nil {
 				return err
 			}
+
+			if excluded := isExcluded(relSrc, excl); excluded {
+				log.Printf("[DEBUG] SCP: skipping excluded file: %s", relSrc)
+				return nil
+			}
+
 			finalDst := filepath.Join(rootDst, relSrc)
 
 			// In Windows, Join uses backslashes which we don't want to get
@@ -685,7 +691,7 @@ func (c *comm) scpUploadDirSession(dst string, src string, excl []string) error 
 				return err
 			}
 
-			return scpUploadDir(src, entries, w, r)
+			return scpUploadDir(src, entries, w, r, excl)
 		}
 
 		if src[len(src)-1] != '/' {
@@ -960,9 +966,14 @@ func scpUploadDirProtocol(name string, w io.Writer, r *bufio.Reader, f func() er
 	return err
 }
 
-func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader) error {
+func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader, excl []string) error {
 	for _, fi := range fs {
 		realPath := filepath.Join(root, fi.Name())
+
+		if excluded := isExcluded(realPath, excl); excluded {
+			log.Printf("[DEBUG] SCP: skipping excluded file: %s", realPath)
+			continue
+		}
 
 		// Track if this is actually a symlink to a directory. If it is
 		// a symlink to a file we don't do any special behavior because uploading
@@ -1015,7 +1026,7 @@ func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader) e
 				return err
 			}
 
-			return scpUploadDir(realPath, entries, w, r)
+			return scpUploadDir(realPath, entries, w, r, excl)
 		}, fi)
 		if err != nil {
 			return err
@@ -1023,4 +1034,25 @@ func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader) e
 	}
 
 	return nil
+}
+
+// isExcluded checks if the given file path is excluded by the given list of
+// excludes.
+// It does shell style matching, so the excludes can contain wildcards.
+func isExcluded(filePath string, excludes []string) bool {
+	// Check if this file is excluded
+	excluded := false
+	for _, excl := range excludes {
+		log.Printf("[DEBUG] SCP: checking if %s is excluded by %s", filePath, excl)
+		match, err := filepath.Match(excl, filePath)
+		if err != nil {
+			log.Printf("[DEBUG] SCP: error matching %s to %s: %s", filePath, excl, err)
+			continue
+		}
+		if match {
+			excluded = true
+			break
+		}
+	}
+	return excluded
 }
