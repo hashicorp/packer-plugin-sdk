@@ -701,7 +701,7 @@ func (c *comm) scpUploadDirSession(dst string, src string, excl []string) error 
 		}
 	}
 
-	return c.scpSession("scp -rvt "+dst, scpFunc)
+	return c.scpSession("scp -rdvt "+dst, scpFunc)
 }
 
 func (c *comm) scpDownloadSession(path string, output io.Writer) error {
