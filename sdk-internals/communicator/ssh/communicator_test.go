@@ -233,30 +233,30 @@ func TestHandshakeTimeout(t *testing.T) {
 
 func TestIsExclude(t *testing.T) {
 	testCases := []struct {
-		Exclude []string
-		Path    string
-		Is      bool
+		Exclude       []string
+		Path          string
+		ExpectExclude bool
 	}{
 		{
-			Exclude: []string{"foo"},
-			Path:    "foo",
-			Is:      true,
+			Exclude:       []string{"foo"},
+			Path:          "foo",
+			ExpectExclude: true,
 		},
 		{
-			Exclude: []string{"foo/*"},
-			Path:    "foo/bar",
-			Is:      true,
+			Exclude:       []string{"foo/*"},
+			Path:          "foo/bar",
+			ExpectExclude: true,
 		},
 		{
-			Exclude: []string{"foo"},
-			Path:    "bar",
-			Is:      false,
+			Exclude:       []string{"foo"},
+			Path:          "bar",
+			ExpectExclude: false,
 		},
 	}
 
 	for _, tc := range testCases {
-		if isExcluded(tc.Path, tc.Exclude) != tc.Is {
-			t.Fatalf("Expected %s to be excluded: %t", tc.Path, tc.Is)
+		if isExcluded(tc.Path, tc.Exclude) != tc.ExpectExclude {
+			t.Fatalf("Expected %s to be excluded: %t", tc.Path, tc.ExpectExclude)
 		}
 	}
 
