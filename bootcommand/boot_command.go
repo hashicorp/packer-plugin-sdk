@@ -611,6 +611,12 @@ var g = &grammar{
 						ignoreCase: true,
 						want:       "\"right\"i",
 					},
+					&litMatcher{
+						pos:        position{line: 71, col: 32, offset: 1699},
+						val:        "menu",
+						ignoreCase: true,
+						want:       "\"menu\"i",
+					},
 				},
 			},
 		},
