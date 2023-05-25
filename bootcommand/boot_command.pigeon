@@ -68,7 +68,7 @@ SpecialKey = "bs"i / "del"i / "enter"i / "esc"i / "f10"i / "f11"i / "f12"i
         /  "return"i / "tab"i / "up"i / "down"i / "spacebar"i / "insert"i / "home"i
         / "end"i / "pageUp"i / "pageDown"i / "leftAlt"i / "leftCtrl"i / "leftShift"i
         / "rightAlt"i / "rightCtrl"i / "rightShift"i / "leftSuper"i / "rightSuper"i
-        / "left"i / "right"i
+        / "left"i / "right"i / "menu"i
 
 NonZeroDigit = [1-9]
 Digit = [0-9]
