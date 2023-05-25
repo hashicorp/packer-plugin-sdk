@@ -15,7 +15,7 @@ func Test_parse(t *testing.T) {
 	in := "<wait><wait20><wait3s><wait4m2ns>"
 	in += "foo/bar > one 界"
 	in += "<fon> b<fOff>"
-	in += "<foo><f3><f12><spacebar><leftalt><rightshift><rightsuper>"
+	in += "<foo><f3><f12><spacebar><leftalt><rightshift><rightsuper><menu>"
 	expected := []string{
 		"Wait<1s>",
 		"Wait<20s>",
@@ -51,6 +51,7 @@ func Test_parse(t *testing.T) {
 		"Spec-Press(leftalt)",
 		"Spec-Press(rightshift)",
 		"Spec-Press(rightsuper)",
+		"Spec-Press(menu)",
 	}
 
 	seq, err := GenerateExpressionSequence(in)
