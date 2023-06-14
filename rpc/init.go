@@ -9,7 +9,16 @@ underpins the packer server that all plugins must implement.
 */
 package rpc
 
-import "encoding/gob"
+import (
+	"encoding/gob"
+
+	"github.com/zclconf/go-cty/cty"
+)
+
+// Test that cty types implement the gob.GobEncoder interface.
+// Support for encoding/gob was removed in github.com/zclconf/go-cty@v1.11.0.
+// Refer to issue https://github.com/hashicorp/packer-plugin-sdk/issues/187
+var _ gob.GobEncoder = cty.Value{}
 
 func init() {
 	gob.Register(new(map[string]string))
