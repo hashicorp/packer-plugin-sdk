@@ -1,5 +1,8 @@
 module github.com/hashicorp/packer-plugin-sdk
 
+// As described in https://github.com/hashicorp/packer-plugin-sdk/issues/187
+replace github.com/zclconf/go-cty => github.com/nywilken/go-cty v1.12.1
+
 require (
 	cloud.google.com/go v0.105.0 // indirect
 	cloud.google.com/go/storage v1.27.0 // indirect
@@ -62,7 +65,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/ugorji/go/codec v1.2.6
 	github.com/ulikunitz/xz v0.5.10 // indirect
-	github.com/zclconf/go-cty v1.10.0
+	github.com/zclconf/go-cty v1.12.1
 	golang.org/x/crypto v0.0.0-20220517005047-85d78b3ac167
 	golang.org/x/mobile v0.0.0-20210901025245-1fde1d6c3ca1
 	golang.org/x/mod v0.8.0
