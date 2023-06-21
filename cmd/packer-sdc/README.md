@@ -19,3 +19,4 @@ specific help commands:
 * `packer-sdc plugin-check -h`
 * `packer-sdc struct-markdown -h`
 * `packer-sdc renderdocs -h`
+* `packer-sdc fix -h`
