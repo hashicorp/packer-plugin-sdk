@@ -53,7 +53,7 @@ var (
 	readme string
 )
 
-const HCLLABELINDEXKEY = "hcllabelindex"
+const HCL_LABEL_INDEX_KEY = "hcllabelindex"
 
 type Command struct {
 	typeNames string
@@ -294,7 +294,7 @@ func goFieldToCtyType(accessor string, fieldType types.Type, tags *structtag.Tag
 	case *types.Basic:
 		if f.Kind() == types.String {
 			hcl, err1 := tags.Get("hcl")
-			hcllabelindex, err2 := tags.Get(HCLLABELINDEXKEY)
+			hcllabelindex, err2 := tags.Get(HCL_LABEL_INDEX_KEY)
 			if err1 == nil && err2 == nil && hcl.HasOption("label") {
 				index, err := strconv.Atoi(hcllabelindex.Name)
 				if err != nil {
@@ -397,7 +397,7 @@ func outputStructFields(w io.Writer, s *types.Struct) {
 		if err == nil {
 			// Remove hcllabelindex from the printout because it is not needed
 			// in the generated struct.
-			st.Delete(HCLLABELINDEXKEY)
+			st.Delete(HCL_LABEL_INDEX_KEY)
 		}
 		fieldNameStr := field.String()
 		fieldNameStr = strings.Replace(fieldNameStr, "field ", "", 1)
@@ -491,7 +491,7 @@ func addTagsToStruct(s *types.Struct) (*types.Struct, error) {
 					return nil, fmt.Errorf("field %q has an hcl label struct tag but is not a string or string pointer", ctyAccessor)
 				}
 				hclOptions = append(hclOptions, "label")
-				st.Set(&structtag.Tag{Key: HCLLABELINDEXKEY, Name: fmt.Sprintf("%d", hclLabelIndex)})
+				st.Set(&structtag.Tag{Key: HCL_LABEL_INDEX_KEY, Name: fmt.Sprintf("%d", hclLabelIndex)})
 				hclLabelIndex++
 				if required, err := st.Get("required"); err == nil {
 					required.Name = "true" // All labels are always required
