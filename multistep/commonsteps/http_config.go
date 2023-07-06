@@ -17,7 +17,9 @@ import (
 //
 // Example usage from a builder:
 //
-//	`wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/foo/bar/preseed.cfg`
+// ```
+// wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/foo/bar/preseed.cfg
+// ```
 type HTTPConfig struct {
 	// Path to a directory to serve using an HTTP server. The files in this
 	// directory will be available over HTTP that will be requestable from the
