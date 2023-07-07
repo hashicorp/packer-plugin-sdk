@@ -6,119 +6,109 @@ package fix
 import (
 	"fmt"
 	"os"
-	"path/filepath"
+	"path"
 
-	"github.com/pkg/errors"
 	"golang.org/x/mod/modfile"
 )
 
 const (
-	oldPath    string = "github.com/zclconf/go-cty"
-	newPath    string = "github.com/nywilken/go-cty"
-	newVersion string = "1.12.1"
+	sdkPath     string = "github.com/hashicorp/packer-plugin-sdk"
+	oldPath     string = "github.com/zclconf/go-cty"
+	newPath     string = "github.com/nywilken/go-cty"
+	newVersion  string = "1.12.1"
+	modFilename string = "go.mod"
 )
 
-type GoCtyFix struct {
-	OldPath, NewPath, NewVersion string
-	data                         []byte
-}
-
-// NewGoCtyFixer is an entry to the go-cty fix command
-func NewGoCtyFixer() GoCtyFix {
-	return GoCtyFix{
+var goctyFix = fix{
+	name:        "gocty",
+	description: "Adds a replace directive for github.com/zclconf/go-cty to github.com/nywilken/go-cty",
+	scan:        modPaths,
+	fixer: goCtyFix{
 		OldPath:    oldPath,
 		NewPath:    newPath,
 		NewVersion: newVersion,
-	}
+	},
 }
 
-func (f GoCtyFix) modFileFormmatedVersion() string {
+// modPaths scans the incoming dir for potential go.mod files to fix.
+func modPaths(dir string) ([]string, error) {
+	paths := []string{
+		path.Join(dir, modFilename),
+	}
+	return paths, nil
+
+}
+
+type goCtyFix struct {
+	OldPath, NewPath, NewVersion string
+}
+
+func (f goCtyFix) modFileFormattedVersion() string {
 	return fmt.Sprintf("v%s", f.NewVersion)
 }
 
-func (f GoCtyFix) isUnfixed(dir string) (bool, error) {
-	modFilePath := filepath.Join(dir, "go.mod")
+// Fix applies a replace directive in a projects go.mod file for f.OldPath to f.NewPath.
+// This fix applies to the replacement of github.com/zclconf/go-cty, as described in https://github.com/hashicorp/packer-plugin-sdk/issues/187
+// The return data contains the data file with the applied fix. In cases where the fix is already applied or not needed the original data is returned.
+func (f goCtyFix) fix(modFilePath string, data []byte) ([]byte, error) {
 	if _, err := os.Stat(modFilePath); err != nil {
-		return false, errors.Wrap(err, "failed to find go.mod file")
+		return nil, fmt.Errorf("failed to find go.mod file %s", modFilePath)
 	}
-	data, err := os.ReadFile(modFilePath)
-	if err != nil {
-		return false, errors.Wrap(err, "failed to read go.mod file")
-	}
+
 	mf, err := modfile.Parse(modFilePath, data, nil)
 	if err != nil {
-		return false, errors.Wrap(err, "failed to parse go.mod file")
+		return nil, fmt.Errorf("%s: failed to parse go.mod file: %v", modFilePath, err)
 	}
 
-	// Basic go.mod with no module dependencies
+	// fix doesn't apply to go.mod with no module dependencies
 	if len(mf.Require) == 0 {
-		return false, nil
+		return data, nil
 	}
 
-	// Brute force will be better to Sort then search
-	var found bool
+	var requiresSDK, requiresGoCty bool
 	for _, req := range mf.Require {
+		if req.Mod.Path == sdkPath {
+			requiresSDK = true
+		}
 		if req.Mod.Path == f.OldPath {
-			found = true
+			requiresGoCty = true
+		}
+
+		if requiresSDK && requiresGoCty {
 			break
 		}
 	}
 
-	if !found {
-		return false, nil
+	if !(requiresSDK && requiresGoCty) {
+		return data, nil
 	}
 
-	if len(mf.Replace) == 0 {
-		return true, nil
-	}
-	// what happens with multiple replace
 	for _, r := range mf.Replace {
 		if r.Old.Path != f.OldPath {
 			continue
 		}
+
 		if r.New.Path != f.NewPath {
-			return false, errors.New("found unexpected replace for " + r.Old.Path)
+			return nil, fmt.Errorf("%s: found unexpected replace for %s", modFilePath, r.Old.Path)
 		}
-		return r.New.Version != f.modFileFormmatedVersion(), nil
-	}
-	return true, nil
-}
 
-func (f GoCtyFix) Fix(dir string, check bool) error {
-	ok, err := f.isUnfixed(dir)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		return nil
-	}
-	if check {
-		fmt.Printf("%s %5s\n", "gocty", "Unfixed!")
-		return nil
-	}
-
-	modFilePath := filepath.Join(dir, "go.mod")
-	info, err := os.Stat(modFilePath)
-	if err != nil {
-		return errors.Wrap(err, "failed to find plugin go.mod file")
-	}
-	data, err := os.ReadFile(modFilePath)
-	if err != nil {
-		return errors.Wrap(err, "failed to read plugin go.mod file")
-	}
-	mf, err := modfile.Parse(modFilePath, data, nil)
-	if err != nil {
-		return errors.Wrap(err, "failed to parse plugin go.mod file")
+		if r.New.Version == f.modFileFormattedVersion() {
+			return data, nil
+		}
 	}
 
 	if err := mf.DropReplace(f.OldPath, ""); err != nil {
-		return errors.Wrap(err, "failed to apply gocty fix")
-	}
-	commentSuffix := " // add by packer-sdc fix as noted in github.com/hashicorp/packer-plugin-sdk/issues/187"
-	if err := mf.AddReplace(f.OldPath, "", f.NewPath, f.modFileFormmatedVersion()+commentSuffix); err != nil {
-		return errors.Wrap(err, "failed to apply gocty fix")
+		return nil, fmt.Errorf("%s: failed to drop previously added replacement fix %v", modFilePath, err)
 	}
 
-	bytes, _ := mf.Format()
-	return os.WriteFile(modFilePath, bytes, info.Mode())
+	commentSuffix := " // added by packer-sdc fix as noted in github.com/hashicorp/packer-plugin-sdk/issues/187"
+	if err := mf.AddReplace(f.OldPath, "", f.NewPath, f.modFileFormattedVersion()+commentSuffix); err != nil {
+		return nil, fmt.Errorf("%s: failed to apply go-cty fix: %v", modFilePath, err)
+	}
+
+	newData, err := mf.Format()
+	if err != nil {
+		return nil, err
+	}
+	return newData, nil
 }
