@@ -58,6 +58,7 @@ require (
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
 	github.com/packer-community/winrmcp v0.0.0-20180921211025-c76d91c1e7db
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
+	github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v1.13.2
 	github.com/ryanuber/go-glob v1.0.0
