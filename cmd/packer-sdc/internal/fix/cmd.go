@@ -143,7 +143,7 @@ func processFiles(rootDir string, showDiff bool) error {
 
 	if showDiff {
 		for filename, fixedData := range fixedFiles {
-			diff.Text(filename, filename+"fixed", string(srcFiles[filename]), string(fixedData), os.Stdout)
+			diff.Text(filename, "Fixed: "+filename, string(srcFiles[filename]), string(fixedData), os.Stdout)
 		}
 		return nil
 	}
