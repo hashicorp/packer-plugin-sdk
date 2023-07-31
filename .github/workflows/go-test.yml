@@ -44,6 +44,14 @@ jobs:
       - name: Install gotestsum
         run: go install gotest.tools/gotestsum@v1.8.2
 
+      # Required for passing tests as we need to have a replace in the go.mod
+      # otherwise we'll get compile-time errors when running them
+      - name: Fix gocty
+        run: |
+          make install-gen-deps
+          packer-sdc fix .
+          go mod tidy
+
       - name: Run Go tests
         run: |
           PACKAGE_NAMES="$(go list ./...)"
@@ -82,6 +90,14 @@ jobs:
       - name: Install gotestsum
         shell: bash
         run: go install gotest.tools/gotestsum@v1.8.2
+
+      # Required for passing tests as we need to have a replace in the go.mod
+      # otherwise we'll get compile-time errors when running them
+      - name: Fix gocty
+        run: |
+          make install-gen-deps
+          packer-sdc fix .
+          go mod tidy
 
       - name: Run Go tests
         shell: bash
@@ -122,6 +138,14 @@ jobs:
 
       - name: Install gotestsum
         run: go install gotest.tools/gotestsum@v1.8.2
+
+      # Required for passing tests as we need to have a replace in the go.mod
+      # otherwise we'll get compile-time errors when running them
+      - name: Fix gocty
+        run: |
+          make install-gen-deps
+          packer-sdc fix .
+          go mod tidy
 
       - name: Run Go tests
         run: |
