@@ -1,8 +1,5 @@
 module github.com/hashicorp/packer-plugin-sdk
 
-// As described in https://github.com/hashicorp/packer-plugin-sdk/issues/187
-replace github.com/zclconf/go-cty => github.com/nywilken/go-cty v1.12.1
-
 require (
 	cloud.google.com/go v0.105.0 // indirect
 	cloud.google.com/go/storage v1.27.0 // indirect
