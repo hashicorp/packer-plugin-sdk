@@ -1,5 +1,5 @@
 name: go-test
-on: 
+on:
   push:
     branches:
       - main
@@ -25,14 +25,14 @@ jobs:
         uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
         with:
           go-version: ${{ matrix.go-version }}
-      
+
       - name: Checkout code
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
 
       - name: Create test directory
         run: |
           mkdir -p ${{ env.TEST_RESULTS_PATH }}/packer-plugin-sdk
-  
+
       - name: Run gofmt
         run: |
             make fmt-check
@@ -40,7 +40,7 @@ jobs:
       - name: Run Go Generate Check
         run: |
             make generate-check
-      
+
       - name: Install gotestsum
         run: go install gotest.tools/gotestsum@v1.8.2
 
@@ -90,7 +90,7 @@ jobs:
           echo "Running $(echo "$PACKAGE_NAMES" | wc -w) packages"
           echo "$PACKAGE_NAMES"
           echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
-      
+
       # Save coverage report parts
       - name: Upload and save artifacts
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
