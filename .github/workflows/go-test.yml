@@ -29,6 +29,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
 
+      - name: Check that go.mod does not contain a replace
+        run: |
+          if grep -q "replace" <go.mod; then
+            echo "go.mod contains a replace but should not." >&2
+            false
+          fi
+
       - name: Create test directory
         run: |
           mkdir -p ${{ env.TEST_RESULTS_PATH }}/packer-plugin-sdk
