@@ -67,7 +67,7 @@ func (f goCtyFix) fix(modFilePath string, data []byte) ([]byte, error) {
 
 	var requiresSDK, requiresGoCty bool
 	for _, req := range mf.Require {
-		if req.Mod.Path == sdkPath {
+		if req.Mod.Path == sdkPath || mf.Module.Mod.Path == sdkPath {
 			requiresSDK = true
 		}
 		if req.Mod.Path == f.OldPath {
