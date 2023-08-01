@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/diff"
 )
 
@@ -103,7 +104,7 @@ func processFiles(rootDir string, showDiff bool) error {
 	srcFiles := make(map[string][]byte)
 	fixedFiles := make(map[string][]byte)
 
-	var hasErrors error
+	var cmdApplyErrs error
 	for _, f := range availableFixes {
 		matches, err := f.scan(rootDir)
 		if err != nil {
@@ -115,30 +116,30 @@ func processFiles(rootDir string, showDiff bool) error {
 			if _, ok := srcFiles[filename]; !ok {
 				bs, err := os.ReadFile(filename)
 				if err != nil {
-					hasErrors = errors.Join(hasErrors, err)
+					cmdApplyErrs = multierror.Append(cmdApplyErrs, err)
 				}
-				srcFiles[filename] = bytes.Clone(bs)
+				srcFiles[filename] = append([]byte{}, bs...)
 			}
 
 			fixedData, ok := fixedFiles[filename]
 			if !ok {
-				fixedData = bytes.Clone(srcFiles[filename])
+				fixedData = append([]byte{}, srcFiles[filename]...)
 			}
 
 			fixedData, err := f.fix(filename, fixedData)
 			if err != nil {
-				hasErrors = errors.Join(hasErrors, err)
+				cmdApplyErrs = multierror.Append(cmdApplyErrs, err)
 				continue
 			}
 			if bytes.Equal(fixedData, srcFiles[filename]) {
 				continue
 			}
-			fixedFiles[filename] = bytes.Clone(fixedData)
+			fixedFiles[filename] = fixedData
 		}
 	}
 
-	if hasErrors != nil {
-		return hasErrors
+	if cmdApplyErrs != nil {
+		return cmdApplyErrs
 	}
 
 	if showDiff {
