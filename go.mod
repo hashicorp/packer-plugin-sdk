@@ -119,3 +119,5 @@ require (
 )
 
 go 1.19
+
+retract v0.5.0 // v0.5.0 of the SDK was broken because of the replace statement for go-cty
