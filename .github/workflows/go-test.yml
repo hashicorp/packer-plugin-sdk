@@ -32,7 +32,7 @@ jobs:
 
       - name: Check that go.mod does not contain a replace
         run: |
-          if grep -q "replace" <go.mod; then
+          if grep -Eq "^\s*replace" <go.mod; then
             echo "go.mod contains a replace but should not." >&2
             false
           fi
