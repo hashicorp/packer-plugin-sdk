@@ -308,15 +308,17 @@ func goFieldToCtyType(accessor string, fieldType types.Type, tags *structtag.Tag
 		}
 
 		ctyType := basicKindToCtyType(f.Kind())
+
 		return &hcldec.AttrSpec{
 			Name:     accessor,
 			Type:     ctyType,
-			Required: false,
+			Required: hasTrueRequiredStructTag(tags),
 		}, ctyType
 	case *types.Map:
 		return &hcldec.AttrSpec{
-			Name: accessor,
-			Type: cty.Map(cty.String), // for now everything can be simplified to a map[string]string
+			Name:     accessor,
+			Type:     cty.Map(cty.String), // for now everything can be simplified to a map[string]string
+			Required: hasTrueRequiredStructTag(tags),
 		}, cty.Map(cty.String)
 	case *types.Named:
 		// Named is the relative type when of a field with a struct.
@@ -327,8 +329,16 @@ func goFieldToCtyType(accessor string, fieldType types.Type, tags *structtag.Tag
 		case *types.Struct:
 			// A struct returns NilType because its HCL2Spec is written in the related file
 			// and we don't need to write it again.
-			return fmt.Sprintf(`&hcldec.BlockSpec{TypeName: "%s",`+
-				` Nested: hcldec.ObjectSpec((*%s)(nil).HCL2Spec())}`, accessor, f.String()), cty.NilType
+			reqString := `false`
+			if hasTrueRequiredStructTag(tags) {
+				reqString = `true`
+			}
+			return fmt.Sprintf(
+				`&hcldec.BlockSpec{TypeName: "%s", `+
+					`Nested: hcldec.ObjectSpec((*%s)(nil).HCL2Spec()), `+
+					`Required: %s}`,
+				accessor, f.String(), reqString,
+			), cty.NilType
 		default:
 			return goFieldToCtyType(accessor, underlyingType, tags)
 		}
@@ -348,7 +358,14 @@ func goFieldToCtyType(accessor string, fieldType types.Type, tags *structtag.Tag
 			case *types.Struct:
 				fmt.Fprintf(b, `hcldec.ObjectSpec((*%s)(nil).HCL2Spec())`, elem.String())
 			}
-			return fmt.Sprintf(`&hcldec.BlockListSpec{TypeName: "%s", Nested: %s}`, accessor, b.String()), cty.NilType
+			minCount := 0
+			if hasTrueRequiredStructTag(tags) {
+				minCount = 1
+			}
+			return fmt.Sprintf(
+				`&hcldec.BlockListSpec{TypeName: "%s", Nested: %s, MinItems: %d}`,
+				accessor, b.String(), minCount,
+			), cty.NilType
 		default:
 			_, specType := goFieldToCtyType(accessor, elem, tags)
 			if specType == cty.NilType {
@@ -357,7 +374,7 @@ func goFieldToCtyType(accessor string, fieldType types.Type, tags *structtag.Tag
 			return &hcldec.AttrSpec{
 				Name:     accessor,
 				Type:     cty.List(specType),
-				Required: false,
+				Required: hasTrueRequiredStructTag(tags),
 			}, cty.List(specType)
 		}
 	}
@@ -365,7 +382,7 @@ func goFieldToCtyType(accessor string, fieldType types.Type, tags *structtag.Tag
 	fmt.Fprintf(b, `%#v`, &hcldec.AttrSpec{
 		Name:     accessor,
 		Type:     basicKindToCtyType(types.Bool),
-		Required: false,
+		Required: hasTrueRequiredStructTag(tags),
 	})
 	fmt.Fprintf(b, `/* TODO(azr): could not find type */`)
 	return b.String(), cty.NilType
@@ -480,21 +497,21 @@ func addTagsToStruct(s *types.Struct) (*types.Struct, error) {
 	for i := range tags {
 		field, tag := vars[i], tags[i]
 		ctyAccessor := ToSnakeCase(field.Name())
-		st, err := structtag.Parse(tag)
 		var hclOptions []string
+		st, err := structtag.Parse(tag)
 		if err == nil {
 			if ms, err := st.Get("mapstructure"); err == nil && ms.Name != "" {
 				ctyAccessor = ms.Name
 			}
 			if hcl, err := st.Get("hcl"); err == nil && hcl.HasOption("label") {
 				if !isCtyStringOrStringPointer(field) {
-					return nil, fmt.Errorf("field %q has an hcl label struct tag but is not a string or string pointer", ctyAccessor)
+					return nil, fmt.Errorf("field %q has an `hcl:\",label\"` struct tag but is not a string or string pointer", ctyAccessor)
 				}
 				hclOptions = append(hclOptions, "label")
 				st.Set(&structtag.Tag{Key: HCL_LABEL_INDEX_KEY, Name: fmt.Sprintf("%d", hclLabelIndex)})
 				hclLabelIndex++
-				if required, err := st.Get("required"); err == nil {
-					required.Name = "true" // All labels are always required
+				if required, err := st.Get("required"); err != nil || required.Name != "true" {
+					return nil, fmt.Errorf("field %q has an `hcl:\",label\"` struct tag, but has a malformed or missing `required:\"true\"` struct tag", ctyAccessor)
 				}
 			}
 		}
@@ -716,4 +733,13 @@ func goFmt(filename string, b []byte) []byte {
 		return b
 	}
 	return fb
+}
+
+func hasTrueRequiredStructTag(st *structtag.Tags) bool {
+	if st == nil {
+		return false
+	}
+
+	requiredTag, err := st.Get("required")
+	return err == nil && requiredTag.Name == "true"
 }
