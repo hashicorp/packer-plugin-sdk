@@ -5,6 +5,7 @@ package struct_markdown
 
 import (
 	_ "embed"
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -121,6 +122,7 @@ func (cmd *Command) Run(args []string) int {
 			Filename:   typeSpec.Name.Name + "-not-required.mdx",
 		}
 
+		var hclLabelIndex = 0
 		for _, field := range fields {
 			if len(field.Names) == 0 || field.Tag == nil {
 				continue
@@ -161,17 +163,24 @@ func (cmd *Command) Run(args []string) int {
 			if strings.Contains(docs, "TODO") {
 				continue
 			}
-			fieldType := string(b[field.Type.Pos()-1 : field.Type.End()-1])
-			fieldType = strings.ReplaceAll(fieldType, "*", `\*`)
-			switch fieldType {
-			case "time.Duration":
-				fieldType = `duration string | ex: "1h5m2s"`
-			case "config.Trilean":
-				fieldType = `boolean`
-			case "config.NameValues":
-				fieldType = `[]{name string, value string}`
-			case "config.KeyValues":
-				fieldType = `[]{key string, value string}`
+
+			var fieldType string
+			if hcl, err := tags.Get("hcl"); err == nil && hcl.HasOption("label") {
+				fieldType = fmt.Sprintf(`block label | index: %d`, hclLabelIndex)
+				hclLabelIndex++
+			} else { // Not a label
+				fieldType = string(b[field.Type.Pos()-1 : field.Type.End()-1])
+				fieldType = strings.ReplaceAll(fieldType, "*", `\*`)
+				switch fieldType {
+				case "time.Duration":
+					fieldType = `duration string | ex: "1h5m2s"`
+				case "config.Trilean":
+					fieldType = `boolean`
+				case "config.NameValues":
+					fieldType = `[]{name string, value string}`
+				case "config.KeyValues":
+					fieldType = `[]{key string, value string}`
+				}
 			}
 
 			field := Field{
@@ -185,7 +194,7 @@ func (cmd *Command) Run(args []string) int {
 				continue
 			}
 
-			if req, err := tags.Get("required"); err == nil && req.Value() == "true" {
+			if req, err := tags.Get("required"); err == nil && req.Name == "true" {
 				required.Fields = append(required.Fields, field)
 			} else {
 				notRequired.Fields = append(notRequired.Fields, field)
