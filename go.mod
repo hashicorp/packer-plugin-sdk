@@ -1,6 +1,6 @@
 module github.com/hashicorp/packer-plugin-sdk
 
-require github.com/zclconf/go-cty v1.12.1 // go-cty v1.11.0 removed gob encoding support so it cannot work with the Packer SDK as-is, you need to run `packer-sdc fix .' to change that
+require github.com/zclconf/go-cty v1.14.0 // go-cty v1.11.0 removed gob encoding support so it cannot work with the Packer SDK as-is, you need to run `packer-sdc fix .' to change that
 
 require (
 	cloud.google.com/go v0.105.0 // indirect
@@ -72,7 +72,7 @@ require (
 	golang.org/x/sync v0.1.0
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/term v0.6.0
-	golang.org/x/text v0.8.0 // indirect
+	golang.org/x/text v0.11.0 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
 	golang.org/x/tools v0.6.0
 	google.golang.org/api v0.101.0 // indirect
@@ -87,6 +87,7 @@ require (
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
+	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
