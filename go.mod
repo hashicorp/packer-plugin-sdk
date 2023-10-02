@@ -77,7 +77,7 @@ require (
 	golang.org/x/tools v0.6.0
 	google.golang.org/api v0.101.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (
