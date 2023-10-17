@@ -16,12 +16,12 @@ import (
 var GitCommit string
 
 // Package version helps plugin creators set and track the sdk version using
-var Version = "0.5.1"
+var Version = "0.5.2"
 
 // A pre-release marker for the version. If this is "" (empty string)
 // then it means that it is a final release. Otherwise, this is a pre-release
 // such as "dev" (in development), "beta", "rc1", etc.
-var VersionPrerelease = ""
+var VersionPrerelease = "dev"
 
 // SDKVersion is used by the plugin set to allow Packer to recognize
 // what version of the sdk the plugin is.
