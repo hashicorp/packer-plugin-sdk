@@ -40,7 +40,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/hcl/v2 v2.16.2
 	github.com/hashicorp/vault/api v1.1.1
-	github.com/hashicorp/yamux v0.0.0-20210826001029-26ff87cf9493
+	github.com/hashicorp/yamux v0.1.1
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869
 	github.com/masterzen/simplexml v0.0.0-20190410153822-31eea3082786 // indirect
