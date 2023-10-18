@@ -140,9 +140,15 @@ func (cmd *Command) Run(args []string) int {
 		if !utOk {
 			continue
 		}
+
 		pos := sort.SearchStrings(typeNames, id.Name)
 		if pos >= len(typeNames) || typeNames[pos] != id.Name {
 			continue // not a struct we care about
+		}
+		// Sometimes we see the underlying struct for a similar named type, which results
+		// in an incorrect FlatMap. If the type names are not exactly the same skip.
+		if nt.Obj().Name() != id.Name {
+			continue // not the struct we are looking for
 		}
 		// make sure each type is found once where somehow sometimes they can be found twice
 		typeNames = append(typeNames[:pos], typeNames[pos+1:]...)
