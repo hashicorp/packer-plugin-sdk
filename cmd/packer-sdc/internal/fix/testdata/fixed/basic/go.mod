@@ -8,4 +8,4 @@ require (
 	github.com/zclconf/go-cty v1.10.0
 )
 
-replace github.com/zclconf/go-cty => github.com/nywilken/go-cty v1.12.1
+replace github.com/zclconf/go-cty => github.com/nywilken/go-cty v1.13.3
