@@ -15,7 +15,7 @@ const (
 	sdkPath     string = "github.com/hashicorp/packer-plugin-sdk"
 	oldPath     string = "github.com/zclconf/go-cty"
 	newPath     string = "github.com/nywilken/go-cty"
-	newVersion  string = "1.12.1"
+	newVersion  string = "1.13.3"
 	modFilename string = "go.mod"
 )
 

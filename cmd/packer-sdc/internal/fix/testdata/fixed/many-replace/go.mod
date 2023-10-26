@@ -10,4 +10,4 @@ require (
 
 replace github.com/hashicorp/packer-plugin-sdk => github.com/example/packer-plugin-sdk v0.5.0
 
-replace github.com/zclconf/go-cty => github.com/nywilken/go-cty v1.12.1 // added by packer-sdc fix as noted in github.com/hashicorp/packer-plugin-sdk/issues/187
+replace github.com/zclconf/go-cty => github.com/nywilken/go-cty v1.13.3 // added by packer-sdc fix as noted in github.com/hashicorp/packer-plugin-sdk/issues/187

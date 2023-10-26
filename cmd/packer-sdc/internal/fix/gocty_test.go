@@ -101,7 +101,6 @@ func TestFixGoCty_Unfixed(t *testing.T) {
 		},
 		{
 			name:       "out of date fix",
-			versionStr: "1.13.1",
 			fixtureDir: filepath.Join("testdata", "unfixed", "version"),
 		},
 	}
