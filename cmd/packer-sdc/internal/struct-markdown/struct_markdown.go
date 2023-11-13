@@ -47,7 +47,7 @@ func (cmd *Command) Run(args []string) int {
 
 	for dir := filepath.Dir(absFilePath); len(dir) > 0 && projectRoot == ""; dir = filepath.Dir(dir) {
 		base := filepath.Base(dir)
-		if base == "packer" {
+		if base == "packer" || base == "packer-internal" {
 			projectRoot = dir
 			filePath, _ = filepath.Rel(projectRoot, absFilePath)
 			docsFolder = filepath.Join("website", "content", "partials")
