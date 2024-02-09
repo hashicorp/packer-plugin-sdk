@@ -120,6 +120,6 @@ require (
 	google.golang.org/protobuf v1.28.1 // indirect
 )
 
-go 1.20
+go 1.22
 
 retract v0.5.0 // v0.5.0 of the SDK was broken because of the replace statement for go-cty
