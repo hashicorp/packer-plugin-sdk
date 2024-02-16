@@ -33,6 +33,7 @@ type Set struct {
 	version        string
 	sdkVersion     string
 	apiVersion     string
+	useProto       bool
 	Builders       map[string]packersdk.Builder
 	PostProcessors map[string]packersdk.PostProcessor
 	Provisioners   map[string]packersdk.Provisioner
@@ -115,10 +116,41 @@ func (i *Set) Run() error {
 	return i.RunCommand(args...)
 }
 
+// parseProtobufFlag walks over the args to find if `--protobuf` is set.
+//
+// It then returns the args without it for the commands to process them.
+func (i *Set) parseProtobufFlag(args ...string) []string {
+	protobufPos := -1
+	for i, arg := range args {
+		if arg == "--protobuf" {
+			protobufPos = i
+			break
+		}
+	}
+
+	if protobufPos == -1 {
+		return args
+	}
+
+	i.useProto = true
+
+	if protobufPos == 0 {
+		return args[1:]
+	}
+
+	if protobufPos == len(args)-1 {
+		return args[:len(args)-1]
+	}
+
+	return append(args[:protobufPos], args[protobufPos+1:]...)
+}
+
 func (i *Set) RunCommand(args ...string) error {
 	if len(args) < 1 {
 		return fmt.Errorf("needs at least one argument")
 	}
+
+	args = i.parseProtobufFlag(args...)
 
 	switch args[0] {
 	case "describe":
@@ -139,6 +171,7 @@ func (i *Set) start(kind, name string) error {
 	if err != nil {
 		return err
 	}
+	server.UseProto = i.useProto
 
 	log.Printf("[TRACE] starting %s %s", kind, name)
 

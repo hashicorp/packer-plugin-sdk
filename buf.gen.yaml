@@ -1,0 +1,7 @@
+version: v2
+plugins:
+- remote: buf.build/protocolbuffers/go:v1.28.1
+  out: rpc
+  opt: paths=source_relative
+inputs:
+- proto_file: rpc/hcl_spec.proto
