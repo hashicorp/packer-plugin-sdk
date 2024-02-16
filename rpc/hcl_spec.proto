@@ -1,0 +1,93 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+syntax = "proto3";
+
+option go_package = "rpc/";
+
+// CtyType is any of the cty types that can be used for a Attribute.
+//
+// Bodies aren't an issue since they're encompassing a bunch of different
+// attributes, which end-up referencing a type from this structure.
+message CtyType {
+  oneof typeDef {
+    CtyPrimitive primitive = 1;
+    CtyList list = 2;
+    CtyMap map = 3;
+  }
+}
+
+// CtyPrimitive is any of the cty.Type that match the `IsPrimitiveType` function
+// i.e. either Number, Bool or String.
+message CtyPrimitive {
+  string typeString = 1;
+}
+
+// CtyList is a list of a cty.Type
+message CtyList {
+  CtyType elementType = 1;
+}
+
+// CtyMap is a map from one type to another
+message CtyMap {
+  CtyType elementType = 1;
+}
+
+/*
+HCL2Spec matches what Packer already consumes from plugins in order to describe
+their contents' schema, and lets Packer decode the configuration provided by
+the user to cty values, and detect problems with the contents before executing them.
+
+These are sent over-the-wire over gRPC, much like the old system did using gob
+encoding and standard go RPC servers.
+*/
+message HCL2Spec {
+  map<string, Spec> TypeSpec = 1;
+}
+
+// A Spec is any kind of object that can convert losslessly to any of the hcldec.Spec types.
+message Spec {
+  oneof block {
+    Object object = 1;
+    Attr attr = 2;
+    Block block_value = 3;
+    BlockList block_list = 4;
+  }
+}
+
+/* Attr spec type reads the value of an attribute in the current body
+and returns that value as its result. It also creates validation constraints
+for the given attribute name and its value.
+*/
+message Attr {
+  string name = 1;
+  CtyType type = 2;
+  bool required = 3;
+}
+
+/* Block spec type applies one nested spec block to the contents of a
+block within the current body and returns the result of that spec. It also
+creates validation constraints for the given block type name.
+*/
+message Block {
+  string name = 1;
+  bool required = 2;
+  Spec nested = 3;
+}
+
+/* BlockList spec type is similar to `Block`, but it accepts zero or
+more blocks of a specified type rather than requiring zero or one. The
+result is a JSON array with one entry per block of the given type.
+*/
+message BlockList {
+  string name = 1;
+  Spec nested = 2;
+}
+
+/* Object spec type is the most commonly used at the root of a spec file.
+Its result is a JSON object whose properties are set based on any nested
+spec blocks:
+*/
+message Object {
+  map<string, Spec> attributes = 1;
+}
