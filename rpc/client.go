@@ -21,6 +21,9 @@ type Client struct {
 	mux      *muxBroker
 	client   *rpc.Client
 	closeMux bool
+	// UseProto makes it so that clients started from this will use
+	// protobuf/msgpack for serialisation instead of gob
+	UseProto bool
 }
 
 func NewClient(rwc io.ReadWriteCloser) (*Client, error) {
@@ -76,6 +79,13 @@ func (c *Client) Artifact() packer.Artifact {
 		commonClient: commonClient{
 			endpoint: DefaultArtifactEndpoint,
 			client:   c.client,
+			// Setting useProto to false is essentially a noop for
+			// this type of client since they don't exchange cty
+			// values, and there's no HCLSpec object tied to this.
+			//
+			// For documentation purposes though, we keep it visible
+			// in order to change this later if it becomes relevant.
+			useProto: false,
 		},
 	}
 }
@@ -86,6 +96,13 @@ func (c *Client) Build() packer.Build {
 			endpoint: DefaultBuildEndpoint,
 			client:   c.client,
 			mux:      c.mux,
+			// Setting useProto to false is essentially a noop for
+			// this type of client since they don't exchange cty
+			// values, and there's no HCLSpec object tied to this.
+			//
+			// For documentation purposes though, we keep it visible
+			// in order to change this later if it becomes relevant.
+			useProto: false,
 		},
 	}
 }
@@ -96,6 +113,7 @@ func (c *Client) Builder() packer.Builder {
 			endpoint: DefaultBuilderEndpoint,
 			client:   c.client,
 			mux:      c.mux,
+			useProto: c.UseProto,
 		},
 	}
 }
@@ -106,6 +124,13 @@ func (c *Client) Communicator() packer.Communicator {
 			endpoint: DefaultCommunicatorEndpoint,
 			client:   c.client,
 			mux:      c.mux,
+			// Setting useProto to false is essentially a noop for
+			// this type of client since they don't exchange cty
+			// values, and there's no HCLSpec object tied to this.
+			//
+			// For documentation purposes though, we keep it visible
+			// in order to change this later if it becomes relevant.
+			useProto: false,
 		},
 	}
 }
@@ -116,6 +141,13 @@ func (c *Client) Hook() packer.Hook {
 			endpoint: DefaultHookEndpoint,
 			client:   c.client,
 			mux:      c.mux,
+			// Setting useProto to false is essentially a noop for
+			// this type of client since they don't exchange cty
+			// values, and there's no HCLSpec object tied to this.
+			//
+			// For documentation purposes though, we keep it visible
+			// in order to change this later if it becomes relevant.
+			useProto: false,
 		},
 	}
 }
@@ -126,6 +158,7 @@ func (c *Client) PostProcessor() packer.PostProcessor {
 			endpoint: DefaultPostProcessorEndpoint,
 			client:   c.client,
 			mux:      c.mux,
+			useProto: c.UseProto,
 		},
 	}
 }
@@ -136,6 +169,7 @@ func (c *Client) Provisioner() packer.Provisioner {
 			endpoint: DefaultProvisionerEndpoint,
 			client:   c.client,
 			mux:      c.mux,
+			useProto: c.UseProto,
 		},
 	}
 }
@@ -146,6 +180,7 @@ func (c *Client) Datasource() packer.Datasource {
 			endpoint: DefaultDatasourceEndpoint,
 			client:   c.client,
 			mux:      c.mux,
+			useProto: c.UseProto,
 		},
 	}
 }
@@ -155,6 +190,13 @@ func (c *Client) Ui() packer.Ui {
 		commonClient: commonClient{
 			endpoint: DefaultUiEndpoint,
 			client:   c.client,
+			// Setting useProto to false is essentially a noop for
+			// this type of client since they don't exchange cty
+			// values, and there's no HCLSpec object tied to this.
+			//
+			// For documentation purposes though, we keep it visible
+			// in order to change this later if it becomes relevant.
+			useProto: false,
 		},
 		endpoint: DefaultUiEndpoint,
 	}
