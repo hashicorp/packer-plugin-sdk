@@ -36,7 +36,7 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.7.0 // indirect
 	github.com/hashicorp/go-version v1.6.0
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
-	github.com/hashicorp/hcl/v2 v2.19.1
+	github.com/hashicorp/hcl/v2 v2.20.0
 	github.com/hashicorp/vault/api v1.10.0
 	github.com/hashicorp/yamux v0.1.1
 	github.com/imdario/mergo v0.3.12 // indirect
