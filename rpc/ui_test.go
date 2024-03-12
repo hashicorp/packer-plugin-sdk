@@ -5,6 +5,7 @@ package rpc
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"reflect"
 	"testing"
@@ -28,12 +29,18 @@ type testUi struct {
 	progressBarCloseCalled bool
 }
 
+func (u *testUi) Askf(query string, args ...any) (string, error) {
+	return u.Ask(fmt.Sprintf(query, args...))
+}
 func (u *testUi) Ask(query string) (string, error) {
 	u.askCalled = true
 	u.askQuery = query
 	return "foo", nil
 }
 
+func (u *testUi) Errorf(message string, args ...any) {
+	u.Error(fmt.Sprintf(message, args...))
+}
 func (u *testUi) Error(message string) {
 	u.errorCalled = true
 	u.errorMessage = message
@@ -50,6 +57,9 @@ func (u *testUi) Message(message string) {
 	u.messageMessage = message
 }
 
+func (u *testUi) Sayf(message string, args ...any) {
+	u.Say(fmt.Sprintf(message, args...))
+}
 func (u *testUi) Say(message string) {
 	u.sayCalled = true
 	u.sayMessage = message
