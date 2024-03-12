@@ -4,6 +4,7 @@
 package rpc
 
 import (
+	"fmt"
 	"log"
 
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
@@ -31,11 +32,17 @@ type UiMachineArgs struct {
 	Args     []string
 }
 
+func (u *Ui) Askf(query string, args ...any) (string, error) {
+	return u.Ask(fmt.Sprintf(query, args...))
+}
 func (u *Ui) Ask(query string) (result string, err error) {
 	err = u.client.Call("Ui.Ask", query, &result)
 	return
 }
 
+func (u *Ui) Errorf(message string, args ...any) {
+	u.Error(fmt.Sprintf(message, args...))
+}
 func (u *Ui) Error(message string) {
 	if err := u.client.Call("Ui.Error", message, new(interface{})); err != nil {
 		log.Printf("Error in Ui.Error RPC call: %s", err)
@@ -59,6 +66,9 @@ func (u *Ui) Message(message string) {
 	}
 }
 
+func (u *Ui) Sayf(message string, args ...any) {
+	u.Say(fmt.Sprintf(message, args...))
+}
 func (u *Ui) Say(message string) {
 	if err := u.client.Call("Ui.Say", message, new(interface{})); err != nil {
 		log.Printf("Error in Ui.Say RPC call: %s", err)
