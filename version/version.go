@@ -6,7 +6,6 @@
 package version
 
 import (
-	"bytes"
 	"fmt"
 
 	"github.com/hashicorp/go-version"
@@ -81,6 +80,7 @@ func NewPluginVersion(vers, versionPrerelease, versionMetadata string) *PluginVe
 	if versionMetadata != "" {
 		versionRawString = fmt.Sprintf("%s+%s", versionRawString, versionMetadata)
 	}
+
 	// This call initializes the SemVer to make sure that if Packer crashes due
 	// to an invalid SemVer it's at the very beginning of the Packer run.
 	semVer := version.Must(version.NewVersion(versionRawString))
@@ -112,18 +112,18 @@ type PluginVersion struct {
 func (p *PluginVersion) SetMetadata(meta string) {
 	p.versionMetadata = meta
 }
-func (p *PluginVersion) FormattedVersion() string {
-	var versionString bytes.Buffer
-	fmt.Fprintf(&versionString, "%s", p.version)
-	if p.versionPrerelease != "" {
-		fmt.Fprintf(&versionString, "-%s", p.versionPrerelease)
 
-		if GitCommit != "" {
-			fmt.Fprintf(&versionString, " (%s)", GitCommit)
-		}
+func (p *PluginVersion) FormattedVersion() string {
+	versionString := p.semVer.String()
+
+	// Given there could be some metadata already, we add the commit to the
+	// reported version as part of the metadata, with a `-` spearator if
+	// the metadata is already there, otherwise we make it the metadata
+	if GitCommit != "" {
+		versionString = fmt.Sprintf("%s (%s)", versionString, GitCommit)
 	}
 
-	return versionString.String()
+	return versionString
 }
 
 func (p *PluginVersion) SemVer() *version.Version {

@@ -101,6 +101,13 @@ func TestFormattedVersionString(t *testing.T) {
 	ver := InitializePluginVersion("1.0.0", "dev")
 	formatted := ver.FormattedVersion()
 	if formatted != expectedVersion {
-		t.Fatalf("Expected formatted version %q; got %q", expectedVersion, formatted)
+		t.Errorf("Expected formatted version %q; got %q", expectedVersion, formatted)
+	}
+
+	expectedVersion = fmt.Sprintf("1.0.0-dev+meta (%s)", GitCommit)
+	ver = NewPluginVersion("1.0.0", "dev", "meta")
+	formatted = ver.FormattedVersion()
+	if formatted != expectedVersion {
+		t.Errorf("Expected formatted version %q; got %q", expectedVersion, formatted)
 	}
 }
