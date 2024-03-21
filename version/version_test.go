@@ -62,6 +62,14 @@ func Test_PluginVersionCreate(t *testing.T) {
 			true,
 			"",
 		},
+		{
+			"4-parts version, should not be accepted",
+			"1.1.1.1",
+			"",
+			"",
+			true,
+			"",
+		},
 	}
 
 	for _, tt := range tests {

@@ -47,6 +47,11 @@ func InitializePluginVersion(vers, versionPrerelease string) *PluginVersion {
 // As NewRawVersion, if the version is invalid, it will panic.
 func NewRawVersion(rawSemVer string) *PluginVersion {
 	vers := version.Must(version.NewVersion(rawSemVer))
+
+	if len(vers.Segments()) != 3 {
+		panic(fmt.Sprintf("versions should only have 3 segments, %q had %d", rawSemVer, len(vers.Segments())))
+	}
+
 	return &PluginVersion{
 		version:           vers.Core().String(),
 		versionPrerelease: vers.Prerelease(),
@@ -81,16 +86,7 @@ func NewPluginVersion(vers, versionPrerelease, versionMetadata string) *PluginVe
 		versionRawString = fmt.Sprintf("%s+%s", versionRawString, versionMetadata)
 	}
 
-	// This call initializes the SemVer to make sure that if Packer crashes due
-	// to an invalid SemVer it's at the very beginning of the Packer run.
-	semVer := version.Must(version.NewVersion(versionRawString))
-
-	return &PluginVersion{
-		version:           semVer.Core().String(),
-		versionPrerelease: semVer.Prerelease(),
-		versionMetadata:   semVer.Metadata(),
-		semVer:            semVer,
-	}
+	return NewRawVersion(versionRawString)
 }
 
 type PluginVersion struct {
