@@ -11,7 +11,7 @@ require (
 	github.com/agext/levenshtein v1.2.3
 	github.com/antchfx/xpath v1.1.11 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
-	github.com/aws/aws-sdk-go v1.44.114
+	github.com/aws/aws-sdk-go v1.45.6
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
 	github.com/dylanmei/iso8601 v0.1.0 // indirect
 	github.com/dylanmei/winrmtest v0.0.0-20210303004826-fbc9ae56efb6
@@ -75,6 +75,12 @@ require (
 )
 
 require (
+	github.com/vmihailenco/msgpack/v5 v5.3.5
+	google.golang.org/grpc v1.50.1
+	google.golang.org/protobuf v1.28.1
+)
+
+require (
 	cloud.google.com/go/compute v1.12.1 // indirect
 	cloud.google.com/go/compute/metadata v0.1.1 // indirect
 	cloud.google.com/go/iam v0.6.0 // indirect
@@ -110,14 +116,13 @@ require (
 	github.com/posener/complete v1.2.3 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
+	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
 	golang.org/x/oauth2 v0.1.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20221027153422-115e99e71e1c // indirect
-	google.golang.org/grpc v1.50.1 // indirect
-	google.golang.org/protobuf v1.28.1 // indirect
 )
 
 go 1.20

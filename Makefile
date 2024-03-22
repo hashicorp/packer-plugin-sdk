@@ -59,7 +59,7 @@ generate: install-gen-deps ## Generate dynamically generated code
 	@find ./ -type f | xargs grep -l '^// Code generated' | xargs rm -f
 	PROJECT_ROOT="$(CURDIR)" go generate ./...
 	go fmt bootcommand/boot_command.go
-# 	go run ./cmd/generate-fixer-deprecations
+	protoc rpc/hcl_spec.proto --go_out=. --go_opt=paths=source_relative
 
 generate-check: generate ## Check go code generation is on par
 	@echo "==> Checking that auto-generated code is not changed..."

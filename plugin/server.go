@@ -54,7 +54,7 @@ const (
 	//
 	// Api version 4 did not have the notion of a minor version, so Packer will
 	// error with a weird error message.
-	APIVersionMajor, APIVersionMinor = "5", "0"
+	APIVersionMajor, APIVersionMinor = "5", "1"
 )
 
 var ErrManuallyStartedPlugin = errors.New(
