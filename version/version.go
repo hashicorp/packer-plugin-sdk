@@ -123,12 +123,6 @@ func (p *PluginVersion) FormattedVersion() string {
 }
 
 func (p *PluginVersion) SemVer() *version.Version {
-	if p.semVer != nil {
-		// SemVer is an instance of version.Version. This has the secondary
-		// benefit of verifying during tests and init time that our version is a
-		// proper semantic version, which should always be the case.
-		p.semVer = version.Must(version.NewVersion(p.version))
-	}
 	return p.semVer
 }
 
