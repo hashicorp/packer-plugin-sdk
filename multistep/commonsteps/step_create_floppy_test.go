@@ -1,10 +1,12 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package commonsteps
 
 import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -19,8 +21,7 @@ import (
 const TestFixtures = "test-fixtures"
 
 func TestStepCreateFloppy_Impl(t *testing.T) {
-	var raw interface{}
-	raw = new(StepCreateFloppy)
+	var raw interface{} = new(StepCreateFloppy)
 	if _, ok := raw.(multistep.Step); !ok {
 		t.Fatalf("StepCreateFloppy should be a step")
 	}
@@ -39,7 +40,7 @@ func TestStepCreateFloppy(t *testing.T) {
 	state := testStepCreateFloppyState(t)
 	step := new(StepCreateFloppy)
 
-	dir, err := ioutil.TempDir("", "packer")
+	dir, err := os.MkdirTemp("", "packer")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -102,7 +103,7 @@ func TestStepCreateFloppy_missing(t *testing.T) {
 	state := testStepCreateFloppyState(t)
 	step := new(StepCreateFloppy)
 
-	dir, err := ioutil.TempDir("", "packer")
+	dir, err := os.MkdirTemp("", "packer")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -147,7 +148,7 @@ func TestStepCreateFloppy_notfound(t *testing.T) {
 	state := testStepCreateFloppyState(t)
 	step := new(StepCreateFloppy)
 
-	dir, err := ioutil.TempDir("", "packer")
+	dir, err := os.MkdirTemp("", "packer")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -245,7 +246,7 @@ func TestStepCreateFloppyDirectories(t *testing.T) {
 			for _, c := range test.dirs {
 				step.Directories = append(step.Directories, filepath.Join(dir, filepath.FromSlash(c)))
 			}
-			log.Println(fmt.Sprintf("Trying against floppy_dirs : %v", step.Directories))
+			log.Printf("Trying against floppy_dirs : %v\n", step.Directories)
 
 			// run the step
 			if action := step.Run(context.Background(), state); action != multistep.ActionContinue {

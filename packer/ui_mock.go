@@ -1,9 +1,12 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package packer
 
 import (
 	"bytes"
+	"fmt"
 	"io"
-	"io/ioutil"
 	"testing"
 	"time"
 )
@@ -14,8 +17,8 @@ func TestUi(t *testing.T) Ui {
 	var buf bytes.Buffer
 	return &BasicUi{
 		Reader:      &buf,
-		Writer:      ioutil.Discard,
-		ErrorWriter: ioutil.Discard,
+		Writer:      io.Discard,
+		ErrorWriter: io.Discard,
 		PB:          &NoopProgressTracker{},
 	}
 }
@@ -43,12 +46,18 @@ type MockUi struct {
 	ProgressBarCloseCalled bool
 }
 
+func (u *MockUi) Askf(query string, args ...any) (string, error) {
+	return u.Ask(fmt.Sprintf(query, args...))
+}
 func (u *MockUi) Ask(query string) (string, error) {
 	u.AskCalled = true
 	u.AskQuery = query
 	return "foo", nil
 }
 
+func (u *MockUi) Errorf(message string, args ...any) {
+	u.Error(fmt.Sprintf(message, args...))
+}
 func (u *MockUi) Error(message string) {
 	u.ErrorCalled = true
 	u.ErrorMessage = message
@@ -65,6 +74,9 @@ func (u *MockUi) Message(message string) {
 	u.MessageMessage = message
 }
 
+func (u *MockUi) Sayf(message string, args ...any) {
+	u.Say(fmt.Sprintf(message, args...))
+}
 func (u *MockUi) Say(message string) {
 	u.SayCalled = true
 	sayMessage := SayMessage{

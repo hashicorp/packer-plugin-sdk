@@ -1,8 +1,11 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package ssh
 
 import (
 	"bytes"
-	"crypto/dsa"
+	"crypto/dsa" //nolint:all
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"fmt"

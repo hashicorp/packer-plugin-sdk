@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package adapter
 
 import (
@@ -39,13 +42,13 @@ well.
 func scpUploadSession(opts []byte, rest string, in io.Reader, out io.Writer, comm packersdk.Communicator) error {
 	rest = strings.TrimSpace(rest)
 	if len(rest) == 0 {
-		fmt.Fprintf(out, scpEmptyError)
+		fmt.Fprint(out, scpEmptyError)
 		return errors.New("no scp target specified")
 	}
 
 	d, err := tmp.Dir("ansible-upload")
 	if err != nil {
-		fmt.Fprintf(out, scpEmptyError)
+		fmt.Fprint(out, scpEmptyError)
 		return err
 	}
 	defer os.RemoveAll(d)
@@ -57,20 +60,20 @@ func scpUploadSession(opts []byte, rest string, in io.Reader, out io.Writer, com
 	// irrelevant.
 	state := &scpUploadState{target: rest, srcRoot: d, comm: comm}
 
-	fmt.Fprintf(out, scpOK) // signal the client to start the transfer.
+	fmt.Fprint(out, scpOK) // signal the client to start the transfer.
 	return state.Protocol(bufio.NewReader(in), out)
 }
 
 func scpDownloadSession(opts []byte, rest string, in io.Reader, out io.Writer, comm packersdk.Communicator) error {
 	rest = strings.TrimSpace(rest)
 	if len(rest) == 0 {
-		fmt.Fprintf(out, scpEmptyError)
+		fmt.Fprint(out, scpEmptyError)
 		return errors.New("no scp source specified")
 	}
 
 	d, err := tmp.Dir("ansible-download")
 	if err != nil {
-		fmt.Fprintf(out, scpEmptyError)
+		fmt.Fprint(out, scpEmptyError)
 		return err
 	}
 	defer os.RemoveAll(d)
@@ -78,20 +81,20 @@ func scpDownloadSession(opts []byte, rest string, in io.Reader, out io.Writer, c
 	if bytes.Contains([]byte{'d'}, opts) {
 		// the only ansible module that supports downloading via scp is fetch,
 		// fetch only supports file downloads as of Ansible 2.1.
-		fmt.Fprintf(out, scpEmptyError)
+		fmt.Fprint(out, scpEmptyError)
 		return errors.New("directory downloads not supported")
 	}
 
 	f, err := os.Create(filepath.Join(d, filepath.Base(rest)))
 	if err != nil {
-		fmt.Fprintf(out, scpEmptyError)
+		fmt.Fprint(out, scpEmptyError)
 		return err
 	}
 	defer f.Close()
 
 	err = comm.Download(rest, f)
 	if err != nil {
-		fmt.Fprintf(out, scpEmptyError)
+		fmt.Fprint(out, scpEmptyError)
 		return err
 	}
 
@@ -115,7 +118,7 @@ func (state *scpDownloadState) FileProtocol(path string, info os.FileInfo, in *b
 	defer f.Close()
 
 	io.CopyN(out, f, size)
-	fmt.Fprintf(out, scpOK)
+	fmt.Fprint(out, scpOK)
 
 	return scpResponse(in)
 }
@@ -154,12 +157,12 @@ func (state *scpUploadState) Protocol(in *bufio.Reader, out io.Writer) error {
 			return state.FileProtocol(in, out)
 		case 'E':
 			state.dir = filepath.Dir(state.dir)
-			fmt.Fprintf(out, scpOK)
+			fmt.Fprint(out, scpOK)
 			return nil
 		case 'D':
 			return state.DirProtocol(in, out)
 		default:
-			fmt.Fprintf(out, scpEmptyError)
+			fmt.Fprint(out, scpEmptyError)
 			return fmt.Errorf("unexpected message: %c", b)
 		}
 	}
@@ -175,10 +178,10 @@ func (state *scpUploadState) FileProtocol(in *bufio.Reader, out io.Writer) error
 	var name string
 	_, err := fmt.Fscanf(in, "%04o %d %s\n", &mode, &size, &name)
 	if err != nil {
-		fmt.Fprintf(out, scpEmptyError)
+		fmt.Fprint(out, scpEmptyError)
 		return fmt.Errorf("invalid file message: %v", err)
 	}
-	fmt.Fprintf(out, scpOK)
+	fmt.Fprint(out, scpOK)
 
 	var fi os.FileInfo = fileInfo{name: name, size: size, mode: mode, mtime: state.mtime}
 
@@ -189,7 +192,7 @@ func (state *scpUploadState) FileProtocol(in *bufio.Reader, out io.Writer) error
 
 	err = state.comm.Upload(dest, io.LimitReader(in, fi.Size()), &fi)
 	if err != nil {
-		fmt.Fprintf(out, scpEmptyError)
+		fmt.Fprint(out, scpEmptyError)
 		return err
 	}
 
@@ -197,17 +200,17 @@ func (state *scpUploadState) FileProtocol(in *bufio.Reader, out io.Writer) error
 		return err
 	}
 
-	fmt.Fprintf(out, scpOK)
+	fmt.Fprint(out, scpOK)
 	return nil
 }
 
 func (state *scpUploadState) TimeProtocol(in *bufio.Reader, out io.Writer) error {
 	var m, a int64
 	if _, err := fmt.Fscanf(in, "%d 0 %d 0\n", &m, &a); err != nil {
-		fmt.Fprintf(out, scpEmptyError)
+		fmt.Fprint(out, scpEmptyError)
 		return err
 	}
-	fmt.Fprintf(out, scpOK)
+	fmt.Fprint(out, scpOK)
 
 	state.atime = time.Unix(a, 0)
 	state.mtime = time.Unix(m, 0)
@@ -220,10 +223,10 @@ func (state *scpUploadState) DirProtocol(in *bufio.Reader, out io.Writer) error 
 	var name string
 
 	if _, err := fmt.Fscanf(in, "%04o %d %s\n", &mode, &length, &name); err != nil {
-		fmt.Fprintf(out, scpEmptyError)
+		fmt.Fprint(out, scpEmptyError)
 		return fmt.Errorf("invalid directory message: %v", err)
 	}
-	fmt.Fprintf(out, scpOK)
+	fmt.Fprint(out, scpOK)
 
 	path := filepath.Join(state.dir, name)
 	if err := os.Mkdir(path, mode); err != nil {

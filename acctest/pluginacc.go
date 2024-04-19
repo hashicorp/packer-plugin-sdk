@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package acctest
 
 import (
@@ -22,6 +25,10 @@ const TestEnvVar = "PACKER_ACC"
 type PluginTestCase struct {
 	// Init, if true `packer init` will be executed prior to `packer build`.
 	Init bool
+	// BuildExtraArgs is the list of arguments to be passed as extra to the packer build
+	// command.
+	// These arguments are injected before the already present `--machine-readable` option.
+	BuildExtraArgs []string
 	// CheckInit is called after packer init step is executed in order to test that
 	// the step executed successfully. If this is not set, then the next
 	// step will be called
@@ -56,9 +63,7 @@ type TestTeardownFunc func() error
 //nolint:errcheck
 func TestPlugin(t *testing.T, testCase *PluginTestCase) {
 	if os.Getenv(TestEnvVar) == "" {
-		t.Skip(fmt.Sprintf(
-			"Acceptance tests skipped unless env '%s' set",
-			TestEnvVar))
+		t.Skipf("Acceptance tests skipped unless env '%s' set", TestEnvVar)
 		return
 	}
 
@@ -117,8 +122,14 @@ func TestPlugin(t *testing.T, testCase *PluginTestCase) {
 		}
 	}
 
+	buildArgs := []string{"build"}
+	for _, arg := range testCase.BuildExtraArgs {
+		buildArgs = append(buildArgs, arg)
+	}
+	buildArgs = append(buildArgs, "--machine-readable", templatePath)
+
 	// Run build
-	buildCommand := exec.Command(packerbin, "build", "--machine-readable", templatePath)
+	buildCommand := exec.Command(packerbin, buildArgs...)
 	buildCommand.Env = append(buildCommand.Env, os.Environ()...)
 	buildCommand.Env = append(buildCommand.Env, "PACKER_LOG=1",
 		fmt.Sprintf("PACKER_LOG_PATH=%s", logfile))

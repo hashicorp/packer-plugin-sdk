@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package shell defines configuration fields that are common to many different
 // kinds of shell. For example, this common configuration is imported by the
 // "shell", "shell-local", and "powershell" provisioners. This provides

@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package ssh
 
 import (
@@ -8,8 +11,7 @@ import (
 )
 
 func TestPasswordKeyboardInteractive_Impl(t *testing.T) {
-	var raw interface{}
-	raw = PasswordKeyboardInteractive("foo")
+	var raw interface{} = PasswordKeyboardInteractive("foo")
 	if _, ok := raw.(ssh.KeyboardInteractiveChallenge); !ok {
 		t.Fatal("PasswordKeyboardInteractive must implement KeyboardInteractiveChallenge")
 	}

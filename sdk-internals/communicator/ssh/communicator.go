@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package ssh implements the SSH communicator. Plugin maintainers should not
 // import this package directly, instead using the tooling in the
 // "packer-plugin-sdk/communicator" module.
@@ -10,7 +13,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -158,9 +160,9 @@ func (c *comm) Start(ctx context.Context, cmd *packersdk.RemoteCmd) (err error) 
 		err := session.Wait()
 		exitStatus := 0
 		if err != nil {
-			switch err.(type) {
+			switch err := err.(type) {
 			case *ssh.ExitError:
-				exitStatus = err.(*ssh.ExitError).ExitStatus()
+				exitStatus = err.ExitStatus()
 				log.Printf("[ERROR] Remote command exited with '%d': %s", exitStatus, cmd.Command)
 			case *ssh.ExitMissingError:
 				log.Printf("[ERROR] Remote command exited without exit status or exit signal.")
@@ -204,7 +206,7 @@ func (c *comm) DownloadDir(src string, dst string, excl []string) error {
 				return err
 			}
 
-			if len(fi) < 0 {
+			if len(fi) == 0 {
 				return fmt.Errorf("empty response from server")
 			}
 
@@ -487,7 +489,6 @@ func (c *comm) connectToAgent() {
 	}
 
 	log.Printf("[INFO] agent forwarding enabled")
-	return
 }
 
 func (c *comm) sftpUploadSession(path string, input io.Reader, fi *os.FileInfo) error {
@@ -525,8 +526,9 @@ func (c *comm) sftpUploadDirSession(dst string, src string, excl []string) error
 	sftpFunc := func(client *sftp.Client) error {
 		rootDst := dst
 		if src[len(src)-1] != '/' {
-			log.Printf("[DEBUG] No trailing slash, creating the source directory name")
-			rootDst = filepath.Join(dst, filepath.Base(src))
+			srcBase := filepath.Base(src)
+			log.Printf("[DEBUG] sftp: No trailing slash, creating directory %s/%s", dst, srcBase)
+			rootDst = filepath.Join(dst, srcBase)
 		}
 		walkFunc := func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -544,9 +546,12 @@ func (c *comm) sftpUploadDirSession(dst string, src string, excl []string) error
 			// to the sftp server
 			finalDst = filepath.ToSlash(finalDst)
 
+			log.Printf("[DEBUG] sftp: uploading %q to %q", relSrc, finalDst)
+
 			// Skip the creation of the target destination directory since
 			// it should exist and we might not even own it
 			if finalDst == dst {
+				log.Printf("[DEBUG] sftp: skipping creation of %q", dst)
 				return nil
 			}
 
@@ -688,12 +693,13 @@ func (c *comm) scpUploadDirSession(dst string, src string, excl []string) error 
 		}
 
 		if src[len(src)-1] != '/' {
-			log.Printf("[DEBUG] No trailing slash, creating the source directory name")
+			srcBase := filepath.Base(src)
+			log.Printf("[DEBUG] scp: No trailing slash, creating directory %s/%s", dst, srcBase)
 			fi, err := os.Stat(src)
 			if err != nil {
 				return err
 			}
-			return scpUploadDirProtocol(filepath.Base(src), w, r, uploadEntries, fi)
+			return scpUploadDirProtocol(srcBase, w, r, uploadEntries, fi)
 		} else {
 			// Trailing slash, so only upload the contents
 			return uploadEntries()
@@ -713,7 +719,7 @@ func (c *comm) scpDownloadSession(path string, output io.Writer) error {
 			return err
 		}
 
-		if len(fi) < 0 {
+		if len(fi) == 0 {
 			return fmt.Errorf("empty response from server")
 		}
 
@@ -819,7 +825,7 @@ func (c *comm) scpSession(scpCommand string, f func(io.Writer, *bufio.Reader) er
 			// Otherwise, we have an ExitError, meaning we can just read the
 			// exit status
 			log.Printf("[DEBUG] non-zero exit status: %d, %v", exitErr.ExitStatus(), err)
-			stdoutB, err := ioutil.ReadAll(stdoutR)
+			stdoutB, err := io.ReadAll(stdoutR)
 			if err != nil {
 				return err
 			}
@@ -897,7 +903,7 @@ func scpUploadFile(dst string, src io.Reader, w io.Writer, r *bufio.Reader, fi *
 		if _, err := io.Copy(tf, src); err != nil {
 			return fmt.Errorf("Error copying input data into local temporary "+
 				"file. Check that TEMPDIR has enough space. Please see "+
-				"https://www.packer.io/docs/other/environment-variables#tmpdir"+
+				"https://developer.hashicorp.com/packer/docs/configure#tmpdir"+
 				"for more info. Error: %s", err)
 		}
 
@@ -960,6 +966,8 @@ func scpUploadDirProtocol(name string, w io.Writer, r *bufio.Reader, f func() er
 }
 
 func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader) error {
+	log.Printf("[DEBUG] scp: uploading directory %s", root)
+
 	for _, fi := range fs {
 		realPath := filepath.Join(root, fi.Name())
 

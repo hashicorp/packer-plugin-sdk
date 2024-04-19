@@ -1,9 +1,12 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package provisioneracc
 
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -154,7 +157,7 @@ func LoadBuilderFragment(templateFragmentPath string) (string, error) {
 	}
 	defer fragmentFile.Close()
 
-	fragmentString, err := ioutil.ReadAll(fragmentFile)
+	fragmentString, err := io.ReadAll(fragmentFile)
 	if err != nil {
 		return "", fmt.Errorf("Unable to read %s", fragmentAbsPath)
 	}

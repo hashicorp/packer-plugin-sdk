@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package rpc
 
 import (
@@ -63,6 +66,12 @@ func TestDatasource(t *testing.T) {
 	d.outputSpec = map[string]hcldec.Spec{
 		"foo": &hcldec.AttrSpec{Name: "foo", Type: cty.String, Required: false},
 	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			t.Errorf("Call to ConfigSpec for datasource panicked: %v", r)
+		}
+	}()
 	spec := dsClient.OutputSpec()
 	if !reflect.DeepEqual(spec, d.outputSpec) {
 		t.Fatalf("unknown outputSpec value: %#v", spec)
@@ -80,8 +89,7 @@ func TestDatasource(t *testing.T) {
 }
 
 func TestDatasource_Implements(t *testing.T) {
-	var raw interface{}
-	raw = new(datasource)
+	var raw interface{} = new(datasource)
 	if _, ok := raw.(packer.Datasource); !ok {
 		t.Fatal("not a datasource")
 	}

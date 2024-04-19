@@ -1,0 +1,172 @@
+name: go-test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+env:
+  TEST_RESULTS_PATH: /tmp/test-results
+permissions:
+  contents: read
+jobs:
+  linux-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version:
+          - '1.20'
+          - '1.21.x'
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Setup go
+        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe #v4.1.0
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Checkout code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+
+      - name: Check that go.mod does not contain a replace
+        run: |
+          if grep -Eq "^\s*replace" <go.mod; then
+            echo "go.mod contains a replace but should not." >&2
+            false
+          fi
+
+      - name: Create test directory
+        run: |
+          mkdir -p ${{ env.TEST_RESULTS_PATH }}/packer-plugin-sdk
+
+      - name: Run gofmt
+        run: |
+            make fmt-check
+
+      - name: Run Go Generate Check
+        run: |
+            make generate-check
+
+      - name: Install gotestsum
+        run: go install gotest.tools/gotestsum@v1.8.2
+
+      # Required for passing tests as we need to have a replace in the go.mod
+      # otherwise we'll get compile-time errors when running them
+      - name: Fix gocty
+        run: |
+          make install-gen-deps
+          packer-sdc fix .
+          go mod tidy
+
+      - name: Run Go tests
+        run: |
+          PACKAGE_NAMES="$(go list ./...)"
+          echo "Running $(echo "$PACKAGE_NAMES" | wc -w) packages"
+          echo "$PACKAGE_NAMES"
+          echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
+
+      # Save coverage report parts
+      - name: Upload and save artifacts
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        with:
+          name: linux test results
+          path: ${{ env.TEST_RESULTS_PATH }}
+
+  windows-tests:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        go-version:
+          - '1.20'
+          - '1.21.x'
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Run git config #Windows-only
+        run: git config --global core.autocrlf false
+
+      - name: Setup Go
+        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe #v4.1.0
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Checkout code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+
+      - name: Install gotestsum
+        shell: bash
+        run: go install gotest.tools/gotestsum@v1.8.2
+
+      # Required for passing tests as we need to have a replace in the go.mod
+      # otherwise we'll get compile-time errors when running them
+      - name: Fix gocty
+        run: |
+          make install-gen-deps
+          packer-sdc fix .
+          go mod tidy
+
+      - name: Run Go tests
+        shell: bash
+        run: |
+          PACKAGE_NAMES="$(go list ./...)"
+          echo "Running $(echo "$PACKAGE_NAMES" | wc -w) packages"
+          echo "$PACKAGE_NAMES"
+          echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
+
+      # Save coverage report parts
+      - name: Upload and save artifacts
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        with:
+          name: windows test results
+          path: ${{ env.TEST_RESULTS_PATH }}
+
+  darwin-tests:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        go-version:
+          - '1.20'
+          - '1.21.x'
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Setup go
+        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe #v4.1.0
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Checkout code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+
+      - name: Create test directory
+        run: |
+          mkdir -p ${{ env.TEST_RESULTS_PATH }}/packer-plugin-sdk
+
+      - name: Install gotestsum
+        run: go install gotest.tools/gotestsum@v1.8.2
+
+      # Required for passing tests as we need to have a replace in the go.mod
+      # otherwise we'll get compile-time errors when running them
+      - name: Fix gocty
+        run: |
+          make install-gen-deps
+          packer-sdc fix .
+          go mod tidy
+
+      - name: Run Go tests
+        run: |
+          PACKAGE_NAMES="$(go list ./...)"
+          echo "Running $(echo "$PACKAGE_NAMES" | wc -w) packages"
+          echo "$PACKAGE_NAMES"
+          echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
+
+      # Save coverage report parts
+      - name: Upload and save artifacts
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        with:
+          name: macos test results
+          path: ${{ env.TEST_RESULTS_PATH }}

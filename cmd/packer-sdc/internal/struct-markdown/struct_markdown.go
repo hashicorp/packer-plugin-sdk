@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package struct_markdown
 
 import (
@@ -5,7 +8,6 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -45,7 +47,7 @@ func (cmd *Command) Run(args []string) int {
 
 	for dir := filepath.Dir(absFilePath); len(dir) > 0 && projectRoot == ""; dir = filepath.Dir(dir) {
 		base := filepath.Base(dir)
-		if base == "packer" {
+		if base == "packer" || base == "packer-internal" {
 			projectRoot = dir
 			filePath, _ = filepath.Rel(projectRoot, absFilePath)
 			docsFolder = filepath.Join("website", "content", "partials")
@@ -69,7 +71,7 @@ func (cmd *Command) Run(args []string) int {
 		log.Fatal("Failed to guess project ROOT. If this is a Packer plugin project please make sure the root directory begins with`packer-plugin-*`")
 	}
 
-	b, err := ioutil.ReadFile(fname)
+	b, err := os.ReadFile(fname)
 	if err != nil {
 		log.Fatalf("ReadFile: %+v", err)
 	}

@@ -1,9 +1,12 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package commonsteps
 
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"reflect"
 	"testing"
@@ -70,7 +73,7 @@ func TestStepHTTPServer_Run(t *testing.T) {
 				if err != nil {
 					t.Fatalf("http.Get: %v", err)
 				}
-				b, err := ioutil.ReadAll(resp.Body)
+				b, err := io.ReadAll(resp.Body)
 				if err != nil {
 					t.Fatalf("readall: %v", err)
 				}

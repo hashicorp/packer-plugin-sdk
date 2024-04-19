@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package plugin
 
 import (
@@ -42,12 +45,12 @@ func TestSet(t *testing.T) {
 	set.RegisterProvisioner("example-2", new(MockProvisioner))
 	set.RegisterDatasource("example", new(MockDatasource))
 	set.RegisterDatasource("example-2", new(MockDatasource))
-	set.SetVersion(pluginVersion.InitializePluginVersion(
-		"1.1.1", ""))
+	set.SetVersion(pluginVersion.NewPluginVersion(
+		"1.1.1", "", ""))
 
 	outputDesc := set.description()
 
-	sdkVersion := pluginVersion.InitializePluginVersion(pluginVersion.Version, pluginVersion.VersionPrerelease)
+	sdkVersion := pluginVersion.NewPluginVersion(pluginVersion.Version, pluginVersion.VersionPrerelease, "")
 	if diff := cmp.Diff(SetDescription{
 		Version:        "1.1.1",
 		SDKVersion:     sdkVersion.String(),

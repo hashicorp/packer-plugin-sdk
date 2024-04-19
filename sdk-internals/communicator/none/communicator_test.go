@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package none
 
 import (
@@ -7,8 +10,7 @@ import (
 )
 
 func TestCommIsCommunicator(t *testing.T) {
-	var raw interface{}
-	raw = &comm{}
+	var raw interface{} = &comm{}
 	if _, ok := raw.(packersdk.Communicator); !ok {
 		t.Fatalf("comm must be a communicator")
 	}

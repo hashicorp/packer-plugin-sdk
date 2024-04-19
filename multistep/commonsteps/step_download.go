@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package commonsteps
 
 import (
@@ -28,8 +31,9 @@ import (
 // progress reporting, interrupt handling, etc.
 //
 // Uses:
-//   cache packer.Cache
-//   ui    packersdk.Ui
+//
+//	cache packer.Cache
+//	ui    packersdk.Ui
 type StepDownload struct {
 	// The checksum and the type of the checksum for the download
 	Checksum string
@@ -121,7 +125,7 @@ func (s *StepDownload) Run(ctx context.Context, state multistep.StateBag) multis
 			// TODO(adrien): make go-getter allow using files in place.
 			// ovf files usually point to a file in the same directory, so
 			// using them in place is the only way.
-			ui.Say(fmt.Sprintf("Using ovf inplace"))
+			ui.Say("Using ovf inplace")
 			dst = source
 		} else {
 			dst, err = s.download(ctx, ui, source)
@@ -217,11 +221,16 @@ func (s *StepDownload) download(ctx context.Context, ui packersdk.Ui, source str
 	}
 	src := u.String()
 	if u.Scheme == "" || strings.ToLower(u.Scheme) == "file" {
-		// If a local filepath, then we need to preprocess to make sure the
-		// path doens't have any multiple successive path separators; if it
+		// If a local filepath, then we need to pre-process to make sure the
+		// path doesn't have any multiple successive path separators; if it
 		// does, go-getter will read this as a specialized go-getter-specific
 		// subdirectory command, which it most likely isn't.
 		src = filepath.Clean(u.String())
+		// Starting with Go 1.21.0 filepath.Clean on Windows treats paths containing file: as invalid
+		// so they are prefixed with a dot (.) followed by the os.PathSeparator
+		if runtime.GOOS == "windows" && (src[0] == '.' && os.IsPathSeparator(src[1])) {
+			src = src[2:]
+		}
 		if _, err := os.Stat(filepath.Clean(u.Path)); err != nil {
 			// Cleaned path isn't present on system so it must be some other
 			// scheme. Don't error right away; see if go-getter can figure it

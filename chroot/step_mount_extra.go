@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package chroot
 
 import (
@@ -16,7 +19,8 @@ import (
 // StepMountExtra mounts the attached device.
 //
 // Produces:
-//   mount_extra_cleanup CleanupFunc - To perform early cleanup
+//
+//	mount_extra_cleanup CleanupFunc - To perform early cleanup
 type StepMountExtra struct {
 	ChrootMounts [][]string
 	mounts       []string

@@ -24,6 +24,11 @@ See the [Extending Packer](https://www.packer.io/docs/plugins/creation#extending
 
 See the [Extending Packer](https://www.packer.io/docs/plugins/creation#extending-packer) section on the Packer website.
 
+## Testing
+
+The SDK embeds tests to ensure we don't introduce a regression in the future. Up to version 0.5.0 of the SDK, tests would be runnable with `make test` on their own but since we removed the `replace` statement for `go-cty` tests won't work out-of-the-box. Users will need to  invoke `packer-sdc fix .` in order to fix the `go.mod` and `go.sum` files before running tests.
+Please do not commit these changes, as adding this `replace` section to the `go.mod` file will make it impossible for dependents to run `go install` for `packer-sdc` afterwards.
+
 ## Packer Scope (Plugins VS Core)
 
 ### Packer Core

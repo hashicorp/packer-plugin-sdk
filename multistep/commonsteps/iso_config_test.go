@@ -1,5 +1,7 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 //go:build !windows
-// +build !windows
 
 package commonsteps
 
@@ -19,34 +21,6 @@ func testISOConfig() ISOConfig {
 		RawSingleISOUrl: "http://www.packer.io/the-OS.iso",
 	}
 }
-
-var cs_bsd_style = `
-MD5 (other.iso) = bAr
-MD5 (the-OS.iso) = baZ
-`
-
-var cs_bsd_style_subdir = `
-MD5 (other.iso) = bAr
-MD5 (./subdir/the-OS.iso) = baZ
-`
-
-var cs_gnu_style = `
-bAr0 *the-OS.iso
-baZ0  other.iso
-`
-
-var cs_gnu_style_subdir = `
-bAr0 *./subdir/the-OS.iso
-baZ0  other.iso
-`
-
-var cs_bsd_style_no_newline = `
-MD5 (other.iso) = bAr
-MD5 (the-OS.iso) = baZ`
-
-var cs_gnu_style_no_newline = `
-bAr0 *the-OS.iso
-baZ0  other.iso`
 
 func TestISOConfigPrepare_ISOChecksum(t *testing.T) {
 	i := testISOConfig()
@@ -86,10 +60,8 @@ func TestISOConfigPrepare_ISOChecksumURLBad(t *testing.T) {
 }
 
 func TestISOConfigPrepare_ISOChecksumType(t *testing.T) {
-	i := testISOConfig()
-
 	// Test none
-	i = testISOConfig()
+	i := testISOConfig()
 	i.ISOChecksum = "none"
 	warns, err := i.Prepare(nil)
 	if len(warns) == 0 {

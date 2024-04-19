@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // mapstructure-to-hcl2 fills the gaps between hcl2 and mapstructure for Packer
 //
 // By generating a struct that the HCL2 ecosystem understands making use of
@@ -8,13 +11,13 @@
 //
 // Here are a few differences/gaps betweens hcl2 and mapstructure:
 //
-//  * in HCL2 all basic struct fields (string/int/struct) that are not pointers
-//   are required ( must be set ). In mapstructure everything is optional.
+//   - in HCL2 all basic struct fields (string/int/struct) that are not pointers
+//     are required ( must be set ). In mapstructure everything is optional.
 //
-//  * mapstructure allows to 'squash' fields
-//  (ex: Field CommonStructType `mapstructure:",squash"`) this allows to
-//  decorate structs and reuse configuration code. HCL2 parsing libs don't have
-//  anything similar.
+//   - mapstructure allows to 'squash' fields
+//     (ex: Field CommonStructType `mapstructure:",squash"`) this allows to
+//     decorate structs and reuse configuration code. HCL2 parsing libs don't have
+//     anything similar.
 //
 // mapstructure-to-hcl2 will parse Packer's config files and generate the HCL2
 // compliant code that will allow to not change any of the current builders in
@@ -41,6 +44,16 @@ func TestCommand_Run(t *testing.T) {
 			FileCheck{
 				Expected: []string{"../test-data/packer-plugin-happycloud/builder/happycloud/config.hcl2spec.go"},
 			},
+		},
+		{
+			[]string{"-type", "Config", "../test-data/field-conflict/test_mapstructure_field_conflict.go"},
+			1,
+			FileCheck{},
+		},
+		{
+			[]string{"-type", "Config", "../test-data/tag-conflict/test_mapstructure_tag_conflict.go"},
+			1,
+			FileCheck{},
 		},
 	}
 	for _, tt := range tests {

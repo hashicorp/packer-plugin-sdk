@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package packer
 
 import (
@@ -24,9 +27,12 @@ type TTY interface {
 // is formatted and various levels of output.
 type Ui interface {
 	Ask(string) (string, error)
+	Askf(string, ...any) (string, error)
 	Say(string)
+	Sayf(string, ...any)
 	Message(string)
 	Error(string)
+	Errorf(string, ...any)
 	Machine(string, ...string)
 	// TrackProgress(src string, currentSize, totalSize int64, stream io.ReadCloser) (body io.ReadCloser)
 	getter.ProgressTracker
@@ -48,6 +54,10 @@ type BasicUi struct {
 }
 
 var _ Ui = new(BasicUi)
+
+func (rw *BasicUi) Askf(query string, args ...any) (string, error) {
+	return rw.Ask(fmt.Sprintf(query, args...))
+}
 
 func (rw *BasicUi) Ask(query string) (string, error) {
 	rw.l.Lock()
@@ -96,6 +106,10 @@ func (rw *BasicUi) Ask(query string) (string, error) {
 	}
 }
 
+func (rw *BasicUi) Sayf(message string, args ...any) {
+	rw.Say(fmt.Sprintf(message, args...))
+}
+
 func (rw *BasicUi) Say(message string) {
 	rw.l.Lock()
 	defer rw.l.Unlock()
@@ -122,6 +136,10 @@ func (rw *BasicUi) Message(message string) {
 	if err != nil {
 		log.Printf("[ERR] Failed to write to UI: %s", err)
 	}
+}
+
+func (rw *BasicUi) Errorf(message string, args ...any) {
+	rw.Error(fmt.Sprintf(message, args...))
 }
 
 func (rw *BasicUi) Error(message string) {
@@ -161,6 +179,13 @@ type SafeUi struct {
 
 var _ Ui = new(SafeUi)
 
+func (u *SafeUi) Askf(s string, args ...any) (string, error) {
+	u.Sem <- 1
+	ret, err := u.Ui.Askf(s, args...)
+	<-u.Sem
+
+	return ret, err
+}
 func (u *SafeUi) Ask(s string) (string, error) {
 	u.Sem <- 1
 	ret, err := u.Ui.Ask(s)
@@ -169,6 +194,11 @@ func (u *SafeUi) Ask(s string) (string, error) {
 	return ret, err
 }
 
+func (u *SafeUi) Sayf(s string, args ...any) {
+	u.Sem <- 1
+	u.Ui.Sayf(s, args...)
+	<-u.Sem
+}
 func (u *SafeUi) Say(s string) {
 	u.Sem <- 1
 	u.Ui.Say(s)
@@ -181,6 +211,11 @@ func (u *SafeUi) Message(s string) {
 	<-u.Sem
 }
 
+func (u *SafeUi) Errorf(s string, args ...any) {
+	u.Sem <- 1
+	u.Ui.Errorf(s, args...)
+	<-u.Sem
+}
 func (u *SafeUi) Error(s string) {
 	u.Sem <- 1
 	u.Ui.Error(s)

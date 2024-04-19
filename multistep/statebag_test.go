@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package multistep
 
 import (
@@ -5,8 +8,7 @@ import (
 )
 
 func TestBasicStateBag_ImplRunner(t *testing.T) {
-	var raw interface{}
-	raw = &BasicStateBag{}
+	var raw interface{} = &BasicStateBag{}
 	if _, ok := raw.(StateBag); !ok {
 		t.Fatalf("must be a StateBag")
 	}

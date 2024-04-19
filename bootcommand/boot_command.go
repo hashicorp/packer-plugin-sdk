@@ -611,14 +611,20 @@ var g = &grammar{
 						ignoreCase: true,
 						want:       "\"right\"i",
 					},
+					&litMatcher{
+						pos:        position{line: 71, col: 32, offset: 1699},
+						val:        "menu",
+						ignoreCase: true,
+						want:       "\"menu\"i",
+					},
 				},
 			},
 		},
 		{
 			name: "NonZeroDigit",
-			pos:  position{line: 73, col: 1, offset: 1698},
+			pos:  position{line: 73, col: 1, offset: 1708},
 			expr: &charClassMatcher{
-				pos:        position{line: 73, col: 16, offset: 1713},
+				pos:        position{line: 73, col: 16, offset: 1723},
 				val:        "[1-9]",
 				ranges:     []rune{'1', '9'},
 				ignoreCase: false,
@@ -627,9 +633,9 @@ var g = &grammar{
 		},
 		{
 			name: "Digit",
-			pos:  position{line: 74, col: 1, offset: 1719},
+			pos:  position{line: 74, col: 1, offset: 1729},
 			expr: &charClassMatcher{
-				pos:        position{line: 74, col: 9, offset: 1727},
+				pos:        position{line: 74, col: 9, offset: 1737},
 				val:        "[0-9]",
 				ranges:     []rune{'0', '9'},
 				ignoreCase: false,
@@ -638,48 +644,48 @@ var g = &grammar{
 		},
 		{
 			name: "TimeUnit",
-			pos:  position{line: 75, col: 1, offset: 1733},
+			pos:  position{line: 75, col: 1, offset: 1743},
 			expr: &choiceExpr{
-				pos: position{line: 75, col: 13, offset: 1745},
+				pos: position{line: 75, col: 13, offset: 1755},
 				alternatives: []interface{}{
 					&litMatcher{
-						pos:        position{line: 75, col: 13, offset: 1745},
+						pos:        position{line: 75, col: 13, offset: 1755},
 						val:        "ns",
 						ignoreCase: false,
 						want:       "\"ns\"",
 					},
 					&litMatcher{
-						pos:        position{line: 75, col: 20, offset: 1752},
+						pos:        position{line: 75, col: 20, offset: 1762},
 						val:        "us",
 						ignoreCase: false,
 						want:       "\"us\"",
 					},
 					&litMatcher{
-						pos:        position{line: 75, col: 27, offset: 1759},
+						pos:        position{line: 75, col: 27, offset: 1769},
 						val:        "µs",
 						ignoreCase: false,
 						want:       "\"µs\"",
 					},
 					&litMatcher{
-						pos:        position{line: 75, col: 34, offset: 1767},
+						pos:        position{line: 75, col: 34, offset: 1777},
 						val:        "ms",
 						ignoreCase: false,
 						want:       "\"ms\"",
 					},
 					&litMatcher{
-						pos:        position{line: 75, col: 41, offset: 1774},
+						pos:        position{line: 75, col: 41, offset: 1784},
 						val:        "s",
 						ignoreCase: false,
 						want:       "\"s\"",
 					},
 					&litMatcher{
-						pos:        position{line: 75, col: 47, offset: 1780},
+						pos:        position{line: 75, col: 47, offset: 1790},
 						val:        "m",
 						ignoreCase: false,
 						want:       "\"m\"",
 					},
 					&litMatcher{
-						pos:        position{line: 75, col: 53, offset: 1786},
+						pos:        position{line: 75, col: 53, offset: 1796},
 						val:        "h",
 						ignoreCase: false,
 						want:       "\"h\"",
@@ -690,11 +696,11 @@ var g = &grammar{
 		{
 			name:        "_",
 			displayName: "\"whitespace\"",
-			pos:         position{line: 77, col: 1, offset: 1792},
+			pos:         position{line: 77, col: 1, offset: 1802},
 			expr: &zeroOrMoreExpr{
-				pos: position{line: 77, col: 19, offset: 1810},
+				pos: position{line: 77, col: 19, offset: 1820},
 				expr: &charClassMatcher{
-					pos:        position{line: 77, col: 19, offset: 1810},
+					pos:        position{line: 77, col: 19, offset: 1820},
 					val:        "[ \\n\\t\\r]",
 					chars:      []rune{' ', '\n', '\t', '\r'},
 					ignoreCase: false,
@@ -704,11 +710,11 @@ var g = &grammar{
 		},
 		{
 			name: "EOF",
-			pos:  position{line: 79, col: 1, offset: 1822},
+			pos:  position{line: 79, col: 1, offset: 1832},
 			expr: &notExpr{
-				pos: position{line: 79, col: 8, offset: 1829},
+				pos: position{line: 79, col: 8, offset: 1839},
 				expr: &anyMatcher{
-					line: 79, col: 9, offset: 1830,
+					line: 79, col: 9, offset: 1840,
 				},
 			},
 		},
@@ -897,18 +903,17 @@ func Entrypoint(ruleName string) Option {
 //
 // Example usage:
 //
-//     input := "input"
-//     stats := Stats{}
-//     _, err := Parse("input-file", []byte(input), Statistics(&stats, "no match"))
-//     if err != nil {
-//         log.Panicln(err)
-//     }
-//     b, err := json.MarshalIndent(stats.ChoiceAltCnt, "", "  ")
-//     if err != nil {
-//         log.Panicln(err)
-//     }
-//     fmt.Println(string(b))
-//
+//	input := "input"
+//	stats := Stats{}
+//	_, err := Parse("input-file", []byte(input), Statistics(&stats, "no match"))
+//	if err != nil {
+//	    log.Panicln(err)
+//	}
+//	b, err := json.MarshalIndent(stats.ChoiceAltCnt, "", "  ")
+//	if err != nil {
+//	    log.Panicln(err)
+//	}
+//	fmt.Println(string(b))
 func Statistics(stats *Stats, choiceNoMatch string) Option {
 	return func(p *parser) Option {
 		oldStats := p.Stats

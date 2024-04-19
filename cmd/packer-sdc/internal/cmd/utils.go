@@ -1,7 +1,9 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package cmd
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -43,7 +45,7 @@ func (fc FileCheck) Verify(t *testing.T, dir string) {
 		}
 	}
 	for file, expectedContent := range fc.ExpectedContent {
-		content, err := ioutil.ReadFile(filepath.Join(dir, file))
+		content, err := os.ReadFile(filepath.Join(dir, file))
 		if err != nil {
 			t.Fatalf("ioutil.ReadFile: %v", err)
 		}

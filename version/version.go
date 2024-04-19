@@ -1,9 +1,11 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package version helps plugin creators set and track the plugin version using
 // the same convenience functions used by the Packer core.
 package version
 
 import (
-	"bytes"
 	"fmt"
 
 	"github.com/hashicorp/go-version"
@@ -13,36 +15,78 @@ import (
 var GitCommit string
 
 // Package version helps plugin creators set and track the sdk version using
-var Version = "0.3.2"
+var Version = "0.5.4"
 
 // A pre-release marker for the version. If this is "" (empty string)
 // then it means that it is a final release. Otherwise, this is a pre-release
 // such as "dev" (in development), "beta", "rc1", etc.
-var VersionPrerelease = ""
+var VersionPrerelease = "dev"
+
+// The metadata for the version, this is optional information to add around
+// a particular release.
+//
+// This has no impact on the ordering of plugins, and is ignored for non-human eyes.
+var VersionMetadata = ""
 
 // SDKVersion is used by the plugin set to allow Packer to recognize
 // what version of the sdk the plugin is.
-var SDKVersion = InitializePluginVersion(Version, VersionPrerelease)
+var SDKVersion = NewPluginVersion(Version, VersionPrerelease, VersionMetadata)
 
 // InitializePluginVersion initializes the SemVer and returns a version var.
-// If the provided "version" string is not valid, the call to version.Must
-// will panic. Therefore, this function should always be called in a package
-// init() function to make sure that plugins are following proper semantic
-// versioning and to make sure that plugins which aren't following proper
-// semantic versioning crash immediately rather than later.
+//
+// Deprecated: InitializePluginVersion does not support metadata out of the
+// box, and should be replaced by either NewPluginVersion or NewRawVersion.
 func InitializePluginVersion(vers, versionPrerelease string) *PluginVersion {
-	if vers == "" {
+	return NewPluginVersion(vers, versionPrerelease, "")
+}
+
+// NewRawVersion is made for more freeform version strings. It won't accept
+// much more than what `NewPluginVersion` already does, but is another
+// convenient form to create a version if preferred.
+//
+// As NewRawVersion, if the version is invalid, it will panic.
+func NewRawVersion(rawSemVer string) *PluginVersion {
+	vers := version.Must(version.NewVersion(rawSemVer))
+
+	if len(vers.Segments()) != 3 {
+		panic(fmt.Sprintf("versions should only have 3 segments, %q had %d", rawSemVer, len(vers.Segments())))
+	}
+
+	return &PluginVersion{
+		version:           vers.Core().String(),
+		versionPrerelease: vers.Prerelease(),
+		versionMetadata:   vers.Metadata(),
+		semVer:            vers,
+	}
+}
+
+// NewPluginVersion initializes the SemVer and returns a PluginVersion from it.
+// If the provided "version" string is not valid, the call to version.Must
+// will panic.
+//
+// This function should always be called in a package init() function to make
+// sure that plugins are following proper semantic versioning and to make sure
+// that plugins which aren't following proper semantic versioning crash
+// immediately rather than later.
+//
+// If the core version number is empty, it will default to 0.0.0.
+func NewPluginVersion(vers, versionPrerelease, versionMetadata string) *PluginVersion {
+	var versionRawString = vers
+
+	if versionRawString == "" {
 		// Defaults to "0.0.0". Useful when binary is created for development purpose.
-		vers = "0.0.0"
+		versionRawString = "0.0.0"
 	}
-	pv := PluginVersion{
-		version:           vers,
-		versionPrerelease: versionPrerelease,
+
+	if versionPrerelease != "" {
+		versionRawString = fmt.Sprintf("%s-%s", versionRawString, versionPrerelease)
 	}
-	// This call initializes the SemVer to make sure that if Packer crashes due
-	// to an invalid SemVer it's at the very beginning of the Packer run.
-	pv.semVer = version.Must(version.NewVersion(vers))
-	return &pv
+
+	if versionMetadata != "" {
+		versionRawString = fmt.Sprintf("%s+%s", versionRawString, versionMetadata)
+	}
+
+	return NewRawVersion(versionRawString)
 }
 
 type PluginVersion struct {
@@ -52,22 +96,30 @@ type PluginVersion struct {
 	// then it means that it is a final release. Otherwise, this is a pre-release
 	// such as "dev" (in development), "beta", "rc1", etc.
 	versionPrerelease string
+	// Extra metadata that can be part of the version.
+	//
+	// This is legal in semver, and has to be the last part of the version
+	// string, starting with a `+`.
+	versionMetadata string
 	// The Semantic Version of the plugin. Used for version constraint comparisons
 	semVer *version.Version
 }
 
-func (p *PluginVersion) FormattedVersion() string {
-	var versionString bytes.Buffer
-	fmt.Fprintf(&versionString, "%s", p.version)
-	if p.versionPrerelease != "" {
-		fmt.Fprintf(&versionString, "-%s", p.versionPrerelease)
+func (p *PluginVersion) SetMetadata(meta string) {
+	p.versionMetadata = meta
+}
 
-		if GitCommit != "" {
-			fmt.Fprintf(&versionString, " (%s)", GitCommit)
-		}
+func (p *PluginVersion) FormattedVersion() string {
+	versionString := p.semVer.String()
+
+	// Given there could be some metadata already, we add the commit to the
+	// reported version as part of the metadata, with a `-` spearator if
+	// the metadata is already there, otherwise we make it the metadata
+	if GitCommit != "" {
+		versionString = fmt.Sprintf("%s (%s)", versionString, GitCommit)
 	}
 
-	return versionString.String()
+	return versionString
 }
 
 func (p *PluginVersion) SemVer() *version.Version {
@@ -88,10 +140,11 @@ func (p *PluginVersion) GetVersionPrerelease() string {
 	return p.versionPrerelease
 }
 
+func (p *PluginVersion) GetMetadata() string {
+	return p.versionMetadata
+}
+
 // String returns the complete version string, including prerelease
 func (p *PluginVersion) String() string {
-	if p.versionPrerelease != "" {
-		return fmt.Sprintf("%s-%s", p.version, p.versionPrerelease)
-	}
-	return p.version
+	return p.semVer.String()
 }

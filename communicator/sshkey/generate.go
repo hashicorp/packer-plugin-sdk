@@ -1,7 +1,10 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package sshkey
 
 import (
-	"crypto/dsa"
+	"crypto/dsa" //nolint:all
 	"crypto/ecdsa"
 	"crypto/ed25519"
 	"crypto/elliptic"

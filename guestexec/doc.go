@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 /*
 Package guestexec provides a shim for running common operating system commands
 on the guest/remote instance that is being provisioned. It helps provisioners

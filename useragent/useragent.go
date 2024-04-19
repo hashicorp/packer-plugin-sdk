@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package useragent creates a user agent for builders to use when calling out
 // to cloud APIs or other addresses.
 package useragent

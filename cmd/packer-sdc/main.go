@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package main
 
 import (
@@ -5,6 +8,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/fix"
 	mapstructure_to_hcl2 "github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/mapstructure-to-hcl2"
 	"github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/plugincheck"
 	"github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc/internal/renderdocs"
@@ -40,6 +44,9 @@ func main() {
 		},
 		"plugin-check": func() (cli.Command, error) {
 			return &plugincheck.Command{}, nil
+		},
+		"fix": func() (cli.Command, error) {
+			return &fix.Command{}, nil
 		},
 	}
 

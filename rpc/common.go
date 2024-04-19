@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package rpc
 
 import (
@@ -11,7 +14,7 @@ import (
 )
 
 // commonClient allows to rpc call funcs that can be defined on the different
-// build blocks of packer
+// build blocks of Packer.
 type commonClient struct {
 	// endpoint is usually the type of build block we are connecting to.
 	//
@@ -22,7 +25,8 @@ type commonClient struct {
 }
 
 type commonServer struct {
-	mux              *muxBroker
+	mux *muxBroker
+	// a HCL2 enabled component such as a Builder
 	selfConfigurable interface {
 		ConfigSpec() hcldec.ObjectSpec
 	}

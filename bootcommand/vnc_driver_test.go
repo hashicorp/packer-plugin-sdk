@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package bootcommand
 
 import (
@@ -23,12 +26,14 @@ func (s *sender) KeyEvent(u uint32, down bool) error {
 }
 
 func Test_vncSpecialLookup(t *testing.T) {
-	in := "<rightShift><rightshiftoff><RIGHTSHIFTON>"
+	in := "<rightShift><rightshiftoff><RIGHTSHIFTON><menu>"
 	expected := []event{
 		{0xFFE2, true},
 		{0xFFE2, false},
 		{0xFFE2, false},
 		{0xFFE2, true},
+		{0xFF67, true},
+		{0xFF67, false},
 	}
 	s := &sender{}
 	d := NewVNCDriver(s, time.Duration(0))

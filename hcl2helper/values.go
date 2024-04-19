@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package hcl2helper
 
 import (
@@ -73,6 +76,26 @@ func HCL2ValueFromConfig(conf interface{}, configSpec map[string]hcldec.Spec) ct
 	resp := map[string]cty.Value{}
 	for k, v := range c {
 		spec := configSpec[k]
+
+		// During testing, I hit this problem and this felt bad to debug
+		// as I was working on other parts of the code at the same time.
+		//
+		// In the end, this may happen when the generated flat configs and
+		// the structures returned by the plugin are not synchronised, which
+		// causes the object spec to be out-of-sync with the data expected.
+		//
+		// Rather than letting the hcl library panic on a nil pointer problem,
+		// we do it here, with suggestions for users on how to potentially
+		// fix the problem, without needing to delve into the behaviour of
+		// the SDK and the HCL libraries.
+		if spec == nil {
+			panic(`The converted value failed to have its spec inferred from it, and will panic later down the process.
+This is likely due to an object spec being out of date in the plugin's code.
+You may retry this configuration with an up-to-date plugin, or if this is the latest version, please report this, as it is likely a bug to be fixed.
+If you are developing the plugin, please regenerate the HCL-related code with 'make generate', then rebuild the plugin with the up-to-date structures.
+
+If this doesn't fix your problem, this is likely a Packer bug, please consider opening an issue on the project so the team can look at it.`)
+		}
 
 		switch st := spec.(type) {
 		case *hcldec.BlockListSpec:

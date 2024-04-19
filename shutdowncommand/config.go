@@ -1,6 +1,9 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 //go:generate packer-sdc struct-markdown
 
-//Package shutdowncommand is a helper module for builder plugin configuration.
+// Package shutdowncommand is a helper module for builder plugin configuration.
 package shutdowncommand
 
 import (

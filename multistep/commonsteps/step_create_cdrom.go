@@ -1,10 +1,12 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package commonsteps
 
 import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -313,7 +315,7 @@ func (s *StepCreateCD) AddContent(dst, path, content string) error {
 	if err != nil {
 		return fmt.Errorf("error creating new directory %s: %s", dstDir, err)
 	}
-	err = ioutil.WriteFile(dstPath, []byte(content), 0666)
+	err = os.WriteFile(dstPath, []byte(content), 0666)
 	if err != nil {
 		return fmt.Errorf("Error writing file %s on CD: %s", path, err)
 	}

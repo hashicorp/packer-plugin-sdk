@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package commonsteps
 
 import (
@@ -26,8 +29,7 @@ func testCommConfig() *communicator.Config {
 }
 
 func TestStepProvision_Impl(t *testing.T) {
-	var raw interface{}
-	raw = new(StepProvision)
+	var raw interface{} = new(StepProvision)
 	if _, ok := raw.(multistep.Step); !ok {
 		t.Fatalf("provision should be a step")
 	}

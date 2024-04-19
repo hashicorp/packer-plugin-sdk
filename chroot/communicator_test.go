@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package chroot
 
 import (
@@ -7,8 +10,8 @@ import (
 )
 
 func TestCommunicator_ImplementsCommunicator(t *testing.T) {
-	var raw interface{}
-	raw = &Communicator{}
+	var raw interface{} = &Communicator{}
+
 	if _, ok := raw.(packersdk.Communicator); !ok {
 		t.Fatalf("Communicator should be a communicator")
 	}

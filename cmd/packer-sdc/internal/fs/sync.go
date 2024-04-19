@@ -1,9 +1,11 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package fs
 
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -41,7 +43,7 @@ func SyncDir(src, dst string) error {
 		return errors.Wrapf(err, "cannot mkdir %s", dst)
 	}
 
-	entries, err := ioutil.ReadDir(src)
+	entries, err := os.ReadDir(src)
 	if err != nil {
 		return errors.Wrapf(err, "cannot read directory %s", dst)
 	}
@@ -64,7 +66,7 @@ func SyncDir(src, dst string) error {
 	}
 
 	// Remove files in dst that aren't in src
-	entries, err = ioutil.ReadDir(dst)
+	entries, err = os.ReadDir(dst)
 	if err != nil {
 		return errors.Wrapf(err, "cannot read directory %s", dst)
 	}

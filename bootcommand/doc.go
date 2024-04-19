@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package bootcommand generates and sends boot commands to the remote instance.
 //
 // This package is relevant to people who want to create new builders, particularly

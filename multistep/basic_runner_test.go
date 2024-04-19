@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package multistep
 
 import (
@@ -7,8 +10,7 @@ import (
 )
 
 func TestBasicRunner_ImplRunner(t *testing.T) {
-	var raw interface{}
-	raw = &BasicRunner{}
+	var raw interface{} = &BasicRunner{}
 	if _, ok := raw.(Runner); !ok {
 		t.Fatalf("BasicRunner must be a Runner")
 	}

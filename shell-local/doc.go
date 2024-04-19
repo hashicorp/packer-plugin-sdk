@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 /*
 Package shell-local is designed to make it easier to shell out locally on the
 machine running Packer. The top level tools in this package are probably not

@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package chroot
 
 import (
@@ -16,8 +19,9 @@ import (
 // StepCopyFiles copies some files from the host into the chroot environment.
 //
 // Produces:
-//   copy_files_cleanup CleanupFunc - A function to clean up the copied files
-//   early.
+//
+//	copy_files_cleanup CleanupFunc - A function to clean up the copied files
+//	early.
 type StepCopyFiles struct {
 	Files []string
 	files []string
