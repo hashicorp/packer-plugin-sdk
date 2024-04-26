@@ -4,12 +4,15 @@
 package config
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/hashicorp/hcl/v2/hcldec"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
+	"github.com/zclconf/go-cty/cty"
 )
 
 func TestDecode(t *testing.T) {
@@ -204,6 +207,71 @@ func TestDecode_fixerRecommendations(t *testing.T) {
 
 		if !strings.Contains(err.Error(), tc.Expected) {
 			t.Fatalf("Expected: %s\nActual: %s\n; Reason: %s", tc.Expected, err.Error(), tc.Reason)
+		}
+	}
+}
+
+type CustomFuncTestConfig struct {
+	Name string
+	ctx  interpolate.Context
+}
+
+func (tc CustomFuncTestConfig) FlatMapstructure() interface{ HCL2Spec() map[string]hcldec.Spec } {
+	return &FlatCustomFuncTestConfig{}
+}
+
+type FlatCustomFuncTestConfig struct {
+	Name string `cty:"name" hcl:"name"`
+}
+
+func (fc *FlatCustomFuncTestConfig) HCL2Spec() map[string]hcldec.Spec {
+	return map[string]hcldec.Spec{
+		"name": &hcldec.AttrSpec{Name: "name", Type: cty.String, Required: false},
+	}
+}
+
+func TestDecode_WithCustomFunc(t *testing.T) {
+
+	cases := []struct {
+		Name  string
+		Input []interface{}
+	}{
+		{
+			Name: "HCL2 template - function should not be wiped",
+			Input: []interface{}{cty.ObjectVal(
+				map[string]cty.Value{
+					"name": cty.StringVal("{{ pre }}"),
+				},
+			)},
+		},
+	}
+
+	for _, tc := range cases {
+		ctx := interpolate.Context{
+			Funcs: map[string]interface{}{},
+		}
+
+		preFunc := func() string {
+			return "YO"
+		}
+
+		ctx.Funcs["pre"] = preFunc
+
+		result := CustomFuncTestConfig{
+			Name: "",
+			ctx:  ctx,
+		}
+
+		err := Decode(&result, &DecodeOpts{
+			InterpolateContext: &result.ctx,
+			Interpolate:        true,
+		}, tc.Input...)
+		if err != nil {
+			t.Errorf("Decode should succeed, but failed: %s", err)
+		}
+
+		if fmt.Sprintf("%p", preFunc) != fmt.Sprintf("%p", result.ctx.Funcs["pre"]) {
+			t.Errorf("expected %p to be the same as %p, but was not.", preFunc, result.ctx.Funcs["pre"])
 		}
 	}
 }
