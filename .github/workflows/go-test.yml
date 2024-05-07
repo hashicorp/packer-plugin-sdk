@@ -23,12 +23,12 @@ jobs:
       contents: read
     steps:
       - name: Setup go
-        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe # 5.0.0
+        uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # v5.0.0
         with:
           go-version: ${{ matrix.go-version }}
 
       - name: Checkout code
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # 4.1.4
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
 
       - name: Check that go.mod does not contain a replace
         run: |
@@ -67,13 +67,6 @@ jobs:
           echo "$PACKAGE_NAMES"
           echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
 
-      # Save coverage report parts
-      - name: Upload and save artifacts
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
-        with:
-          name: linux test results
-          path: ${{ env.TEST_RESULTS_PATH }}
-
   windows-tests:
     runs-on: windows-latest
     strategy:
@@ -89,12 +82,12 @@ jobs:
         run: git config --global core.autocrlf false
 
       - name: Setup Go
-        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe # 5.0.0
+        uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # v5.0.0
         with:
           go-version: ${{ matrix.go-version }}
 
       - name: Checkout code
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # 4.1.4
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
 
       - name: Install gotestsum
         shell: bash
@@ -116,13 +109,6 @@ jobs:
           echo "$PACKAGE_NAMES"
           echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
 
-      # Save coverage report parts
-      - name: Upload and save artifacts
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
-        with:
-          name: windows test results
-          path: ${{ env.TEST_RESULTS_PATH }}
-
   darwin-tests:
     runs-on: macos-latest
     strategy:
@@ -135,12 +121,12 @@ jobs:
       contents: read
     steps:
       - name: Setup go
-        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe # 5.0.0
+        uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # v5.0.0
         with:
           go-version: ${{ matrix.go-version }}
 
       - name: Checkout code
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # 4.1.4
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
 
       - name: Create test directory
         run: |
@@ -163,10 +149,3 @@ jobs:
           echo "Running $(echo "$PACKAGE_NAMES" | wc -w) packages"
           echo "$PACKAGE_NAMES"
           echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
-
-      # Save coverage report parts
-      - name: Upload and save artifacts
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
-        with:
-          name: macos test results
-          path: ${{ env.TEST_RESULTS_PATH }}
