@@ -67,13 +67,6 @@ jobs:
           echo "$PACKAGE_NAMES"
           echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
 
-      # Save coverage report parts
-      - name: Upload and save artifacts
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
-        with:
-          name: linux test results
-          path: ${{ env.TEST_RESULTS_PATH }}
-
   windows-tests:
     runs-on: windows-latest
     strategy:
@@ -116,13 +109,6 @@ jobs:
           echo "$PACKAGE_NAMES"
           echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
 
-      # Save coverage report parts
-      - name: Upload and save artifacts
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
-        with:
-          name: windows test results
-          path: ${{ env.TEST_RESULTS_PATH }}
-
   darwin-tests:
     runs-on: macos-latest
     strategy:
@@ -163,10 +149,3 @@ jobs:
           echo "Running $(echo "$PACKAGE_NAMES" | wc -w) packages"
           echo "$PACKAGE_NAMES"
           echo "$PACKAGE_NAMES" | xargs -I {} gotestsum --format=short-verbose --junitfile "$TEST_RESULTS_PATH"/packer-plugin-sdk/gotestsum-report.xml -- -count 1 -p 2 {};
-
-      # Save coverage report parts
-      - name: Upload and save artifacts
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
-        with:
-          name: macos test results
-          path: ${{ env.TEST_RESULTS_PATH }}
