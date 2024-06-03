@@ -4,11 +4,14 @@ package sshkey
 
 import (
 	"fmt"
+	"strings"
 )
 
 const _AlgorithmName = "rsadsaecdsaed25519"
 
 var _AlgorithmIndex = [...]uint8{0, 3, 6, 11, 18}
+
+const _AlgorithmLowerName = "rsadsaecdsaed25519"
 
 func (i Algorithm) String() string {
 	if i < 0 || i >= Algorithm(len(_AlgorithmIndex)-1) {
@@ -17,13 +20,34 @@ func (i Algorithm) String() string {
 	return _AlgorithmName[_AlgorithmIndex[i]:_AlgorithmIndex[i+1]]
 }
 
-var _AlgorithmValues = []Algorithm{0, 1, 2, 3}
+// An "invalid array index" compiler error signifies that the constant values have changed.
+// Re-run the stringer command to generate them again.
+func _AlgorithmNoOp() {
+	var x [1]struct{}
+	_ = x[RSA-(0)]
+	_ = x[DSA-(1)]
+	_ = x[ECDSA-(2)]
+	_ = x[ED25519-(3)]
+}
+
+var _AlgorithmValues = []Algorithm{RSA, DSA, ECDSA, ED25519}
 
 var _AlgorithmNameToValueMap = map[string]Algorithm{
-	_AlgorithmName[0:3]:   0,
-	_AlgorithmName[3:6]:   1,
-	_AlgorithmName[6:11]:  2,
-	_AlgorithmName[11:18]: 3,
+	_AlgorithmName[0:3]:        RSA,
+	_AlgorithmLowerName[0:3]:   RSA,
+	_AlgorithmName[3:6]:        DSA,
+	_AlgorithmLowerName[3:6]:   DSA,
+	_AlgorithmName[6:11]:       ECDSA,
+	_AlgorithmLowerName[6:11]:  ECDSA,
+	_AlgorithmName[11:18]:      ED25519,
+	_AlgorithmLowerName[11:18]: ED25519,
+}
+
+var _AlgorithmNames = []string{
+	_AlgorithmName[0:3],
+	_AlgorithmName[3:6],
+	_AlgorithmName[6:11],
+	_AlgorithmName[11:18],
 }
 
 // AlgorithmString retrieves an enum value from the enum constants string name.
@@ -32,12 +56,23 @@ func AlgorithmString(s string) (Algorithm, error) {
 	if val, ok := _AlgorithmNameToValueMap[s]; ok {
 		return val, nil
 	}
+
+	if val, ok := _AlgorithmNameToValueMap[strings.ToLower(s)]; ok {
+		return val, nil
+	}
 	return 0, fmt.Errorf("%s does not belong to Algorithm values", s)
 }
 
 // AlgorithmValues returns all values of the enum
 func AlgorithmValues() []Algorithm {
 	return _AlgorithmValues
+}
+
+// AlgorithmStrings returns a slice of all String values of the enum
+func AlgorithmStrings() []string {
+	strs := make([]string, len(_AlgorithmNames))
+	copy(strs, _AlgorithmNames)
+	return strs
 }
 
 // IsAAlgorithm returns "true" if the value is listed in the enum definition. "false" otherwise
