@@ -11,7 +11,7 @@ ci: testrace ## Test in continuous integration
 install-gen-deps: ## Install dependencies for code generation
 	@go install github.com/mna/pigeon@v1.1.0
 	# Pinning enumer at master branch; the latest tagged release is out of date.
-	@go install github.com/alvaroloes/enumer@master
+	@go install github.com/dmarkham/enumer@master
 
 	@go install github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc
 
