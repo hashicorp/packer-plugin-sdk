@@ -166,7 +166,7 @@ func (cmd *Command) Run(args []string) int {
 			switch fieldType {
 			case "time.Duration":
 				fieldType = `duration string | ex: "1h5m2s"`
-			case "config.Trilean":
+			case "config.Trilean", "confighelper.Trilean":
 				fieldType = `boolean`
 			case "config.NameValues":
 				fieldType = `[]{name string, value string}`
