@@ -39,15 +39,24 @@ type Set struct {
 	Datasources    map[string]packersdk.Datasource
 }
 
+// ProtocolVersion2 serves as a compatibility argument to the SetDescription
+// so plugins can report whether or not they support protobuf/msgpack for
+// serialising some of their entities (typically ObjectSpec) to protobuf.
+//
+// If absent from the SetDescription, it means only gob is supported, and both
+// Packer and the plugins should use that for communication.
+const ProtocolVersion2 = "v2"
+
 // SetDescription describes a Set.
 type SetDescription struct {
-	Version        string   `json:"version"`
-	SDKVersion     string   `json:"sdk_version"`
-	APIVersion     string   `json:"api_version"`
-	Builders       []string `json:"builders"`
-	PostProcessors []string `json:"post_processors"`
-	Provisioners   []string `json:"provisioners"`
-	Datasources    []string `json:"datasources"`
+	Version         string   `json:"version"`
+	SDKVersion      string   `json:"sdk_version"`
+	APIVersion      string   `json:"api_version"`
+	Builders        []string `json:"builders"`
+	PostProcessors  []string `json:"post_processors"`
+	Provisioners    []string `json:"provisioners"`
+	Datasources     []string `json:"datasources"`
+	ProtocolVersion string   `json:"protocol_version"`
 }
 
 ////
@@ -158,13 +167,14 @@ func (i *Set) start(kind, name string) error {
 
 func (i *Set) description() SetDescription {
 	return SetDescription{
-		Version:        i.version,
-		SDKVersion:     i.sdkVersion,
-		APIVersion:     i.apiVersion,
-		Builders:       i.buildersDescription(),
-		PostProcessors: i.postProcessorsDescription(),
-		Provisioners:   i.provisionersDescription(),
-		Datasources:    i.datasourceDescription(),
+		Version:         i.version,
+		SDKVersion:      i.sdkVersion,
+		APIVersion:      i.apiVersion,
+		Builders:        i.buildersDescription(),
+		PostProcessors:  i.postProcessorsDescription(),
+		Provisioners:    i.provisionersDescription(),
+		Datasources:     i.datasourceDescription(),
+		ProtocolVersion: ProtocolVersion2,
 	}
 }
 
