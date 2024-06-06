@@ -99,7 +99,7 @@ func (lc ListenRangeConfig) Listen(ctx context.Context) (*Listener, error) {
 			return ErrPortFileLocked(port)
 		}
 
-		l, err := lc.ListenConfig.Listen(ctx, lc.Network, fmt.Sprintf("%s:%d", lc.Addr, port))
+		l, err := lc.ListenConfig.Listen(ctx, lc.Network, net.JoinHostPort(lc.Addr, fmt.Sprint(port)))
 		if err != nil {
 			if err := lock.Unlock(); err != nil {
 				log.Fatalf("Could not unlock file lock for port %d: %v", port, err)

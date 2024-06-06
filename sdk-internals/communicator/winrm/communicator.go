@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"os"
 	"path/filepath"
 	"strings"
@@ -193,7 +194,7 @@ func (c *Communicator) getClientConfig() *winrmcp.Config {
 }
 
 func (c *Communicator) newCopyClient() (*winrmcp.Winrmcp, error) {
-	addr := fmt.Sprintf("%s:%d", c.endpoint.Host, c.endpoint.Port)
+	addr := net.JoinHostPort(c.endpoint.Host, fmt.Sprint(c.endpoint.Port))
 	clientConfig := c.getClientConfig()
 	return winrmcp.New(addr, clientConfig)
 }

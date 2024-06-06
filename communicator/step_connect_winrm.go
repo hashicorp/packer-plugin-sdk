@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -213,7 +214,7 @@ func (s *StepConnectWinRM) waitForWinRM(state multistep.StateBag, ctx context.Co
 // setNoProxy configures the $NO_PROXY env var
 func setNoProxy(host string, port int) error {
 	current := os.Getenv("NO_PROXY")
-	p := fmt.Sprintf("%s:%d", host, port)
+	p := net.JoinHostPort(host, fmt.Sprint(port))
 	if current == "" {
 		return os.Setenv("NO_PROXY", p)
 	}
