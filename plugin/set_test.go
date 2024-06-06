@@ -52,13 +52,14 @@ func TestSet(t *testing.T) {
 
 	sdkVersion := pluginVersion.NewPluginVersion(pluginVersion.Version, pluginVersion.VersionPrerelease, "")
 	if diff := cmp.Diff(SetDescription{
-		Version:        "1.1.1",
-		SDKVersion:     sdkVersion.String(),
-		APIVersion:     "x" + APIVersionMajor + "." + APIVersionMinor,
-		Builders:       []string{"example", "example-2"},
-		PostProcessors: []string{"example", "example-2"},
-		Provisioners:   []string{"example", "example-2"},
-		Datasources:    []string{"example", "example-2"},
+		Version:         "1.1.1",
+		SDKVersion:      sdkVersion.String(),
+		APIVersion:      "x" + APIVersionMajor + "." + APIVersionMinor,
+		Builders:        []string{"example", "example-2"},
+		PostProcessors:  []string{"example", "example-2"},
+		Provisioners:    []string{"example", "example-2"},
+		Datasources:     []string{"example", "example-2"},
+		ProtocolVersion: ProtocolVersion2,
 	}, outputDesc); diff != "" {
 		t.Fatalf("Unexpected description: %s", diff)
 	}
