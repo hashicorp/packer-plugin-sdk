@@ -7,13 +7,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"golang.org/x/term"
 	"io"
 	"log"
 	"net"
 	"os"
 	"strings"
 	"time"
+
+	"golang.org/x/term"
 
 	helperssh "github.com/hashicorp/packer-plugin-sdk/communicator/ssh"
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
@@ -101,8 +102,7 @@ func (s *StepConnectSSH) waitForSSH(state multistep.StateBag, ctx context.Contex
 	if s.Config.SSHBastionHost != "" {
 		// The protocol is hardcoded for now, but may be configurable one day
 		bProto = "tcp"
-		bAddr = fmt.Sprintf(
-			"%s:%d", s.Config.SSHBastionHost, s.Config.SSHBastionPort)
+		bAddr = net.JoinHostPort(s.Config.SSHBastionHost, fmt.Sprint(s.Config.SSHBastionPort))
 
 		conf, err := sshBastionConfig(s.Config)
 		if err != nil {
@@ -112,7 +112,7 @@ func (s *StepConnectSSH) waitForSSH(state multistep.StateBag, ctx context.Contex
 	}
 
 	if s.Config.SSHProxyHost != "" {
-		pAddr = fmt.Sprintf("%s:%d", s.Config.SSHProxyHost, s.Config.SSHProxyPort)
+		pAddr = net.JoinHostPort(s.Config.SSHProxyHost, fmt.Sprint(s.Config.SSHProxyPort))
 		if s.Config.SSHProxyUsername != "" {
 			pAuth = new(proxy.Auth)
 			pAuth.User = s.Config.SSHProxyUsername
@@ -165,7 +165,7 @@ func (s *StepConnectSSH) waitForSSH(state multistep.StateBag, ctx context.Contex
 
 		// Attempt to connect to SSH port
 		var connFunc func() (net.Conn, error)
-		address := fmt.Sprintf("%s:%d", host, port)
+		address := net.JoinHostPort(host, fmt.Sprint(port))
 		if bAddr != "" {
 			log.Printf("[INFO] connecting with SSH to host %s through bastion at %s",
 				address, bAddr)

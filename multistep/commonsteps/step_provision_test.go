@@ -5,6 +5,7 @@ package commonsteps
 
 import (
 	"fmt"
+	"net"
 	"os"
 	"testing"
 
@@ -43,7 +44,7 @@ func TestPopulateProvisionHookData(t *testing.T) {
 	packerRunUUID := "1fa225b8-27d1-42d1-9117-221772213962"
 	httpIP := "10.0.2.2"
 	httpPort := 2222
-	httpAddr := fmt.Sprintf("%s:%d", httpIP, httpPort)
+	httpAddr := net.JoinHostPort(httpIP, fmt.Sprint(httpPort))
 
 	state.Put("generated_data", generatedData)
 	state.Put("instance_id", instanceId)
