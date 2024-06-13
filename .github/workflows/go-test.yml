@@ -16,8 +16,8 @@ jobs:
     strategy:
       matrix:
         go-version:
-          - '1.20'
           - '1.21.x'
+          - '1.22.x'
     permissions:
       id-token: write
       contents: read
@@ -72,8 +72,8 @@ jobs:
     strategy:
       matrix:
         go-version:
-          - '1.20'
           - '1.21.x'
+          - '1.22.x'
     permissions:
       id-token: write
       contents: read
@@ -114,8 +114,8 @@ jobs:
     strategy:
       matrix:
         go-version:
-          - '1.20'
           - '1.21.x'
+          - '1.22.x'
     permissions:
       id-token: write
       contents: read
