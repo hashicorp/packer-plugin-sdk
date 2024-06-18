@@ -1,9 +1,11 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+version: 2
 project_name: packer-plugin-sdk
-build:
-  skip: true
+builds:
+  -
+    skip: true
 release:
   ids:
     - 'none'
