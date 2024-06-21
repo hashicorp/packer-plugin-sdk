@@ -69,3 +69,58 @@ func TestSet(t *testing.T) {
 		t.Fatalf("Unexpected error: %s", diff)
 	}
 }
+
+func TestSetProtobufArgParsing(t *testing.T) {
+	testCases := []struct {
+		name     string
+		useProto bool
+		in, out  []string
+	}{
+		{
+			name:     "no --protobuf argument provided",
+			in:       []string{"start", "builder", "example"},
+			out:      []string{"start", "builder", "example"},
+			useProto: false,
+		},
+		{
+			name:     "providing --protobuf as first argument",
+			in:       []string{"--protobuf", "start", "builder", "example"},
+			out:      []string{"start", "builder", "example"},
+			useProto: true,
+		},
+		{
+			name:     "providing --protobuf as last argument",
+			in:       []string{"start", "builder", "example", "--protobuf"},
+			out:      []string{"start", "builder", "example"},
+			useProto: true,
+		},
+		{
+			name:     "providing --protobuf as middle argument",
+			in:       []string{"start", "builder", "--protobuf", "example"},
+			out:      []string{"start", "builder", "example"},
+			useProto: true,
+		},
+		{
+			name:     "providing --protobuf multiple times",
+			in:       []string{"--protobuf", "start", "builder", "--protobuf", "example", "--protobuf"},
+			out:      []string{"start", "builder", "example"},
+			useProto: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			set := NewSet()
+			got := set.parseProtobufFlag(tc.in...)
+
+			if diff := cmp.Diff(got, tc.out); diff != "" {
+				t.Errorf("Unexpected args: %s", diff)
+			}
+
+			if set.useProto != tc.useProto {
+				t.Errorf("expected useProto to be %t when %s but got %t", tc.useProto, tc.name, set.useProto)
+			}
+		})
+
+	}
+}

@@ -120,29 +120,15 @@ func (i *Set) Run() error {
 //
 // It then returns the args without it for the commands to process them.
 func (i *Set) parseProtobufFlag(args ...string) []string {
-	protobufPos := -1
-	for i, arg := range args {
+	parsedArgs := make([]string, 0, len(args))
+	for _, arg := range args {
 		if arg == "--protobuf" {
-			protobufPos = i
-			break
+			i.useProto = true
+			continue
 		}
+		parsedArgs = append(parsedArgs, arg)
 	}
-
-	if protobufPos == -1 {
-		return args
-	}
-
-	i.useProto = true
-
-	if protobufPos == 0 {
-		return args[1:]
-	}
-
-	if protobufPos == len(args)-1 {
-		return args[:len(args)-1]
-	}
-
-	return append(args[:protobufPos], args[protobufPos+1:]...)
+	return parsedArgs
 }
 
 func (i *Set) RunCommand(args ...string) error {
