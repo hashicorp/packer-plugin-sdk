@@ -41,6 +41,9 @@ jobs:
         run: |
           mkdir -p ${{ env.TEST_RESULTS_PATH }}/packer-plugin-sdk
 
+      - name: Install buf
+        uses: bufbuild/buf-setup-action@v1.33.0
+
       - name: Run gofmt
         run: |
             make fmt-check

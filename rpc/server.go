@@ -35,6 +35,13 @@ type PluginServer struct {
 	streamId uint32
 	server   *rpc.Server
 	closeMux bool
+	// UseProto forces the server to use protobuf/msgpack for serialization
+	// instead of gob.
+	// Setting UseProto on a server endpoint that only supports gob is
+	// treated as a noop.
+	// This field is set by the plugin `Set` type for plugins who support
+	// protocol version v2.
+	UseProto bool
 }
 
 // NewServer returns a new Packer RPC server.
@@ -85,6 +92,7 @@ func (s *PluginServer) RegisterBuilder(b packer.Builder) error {
 		commonServer: commonServer{
 			selfConfigurable: b,
 			mux:              s.mux,
+			useProto:         s.UseProto,
 		},
 		builder: b,
 	})
@@ -95,6 +103,13 @@ func (s *PluginServer) RegisterCommunicator(c packer.Communicator) error {
 		c: c,
 		commonServer: commonServer{
 			mux: s.mux,
+			// Setting useProto to false is essentially a noop for
+			// this type of server since they don't exchange cty
+			// values, and there's no HCLSpec object tied to this.
+			//
+			// For documentation purposes though, we keep it visible
+			// in order to change this later if it becomes relevant.
+			useProto: false,
 		},
 	})
 }
@@ -111,6 +126,7 @@ func (s *PluginServer) RegisterPostProcessor(p packer.PostProcessor) error {
 		commonServer: commonServer{
 			selfConfigurable: p,
 			mux:              s.mux,
+			useProto:         s.UseProto,
 		},
 		p: p,
 	})
@@ -121,6 +137,7 @@ func (s *PluginServer) RegisterProvisioner(p packer.Provisioner) error {
 		commonServer: commonServer{
 			selfConfigurable: p,
 			mux:              s.mux,
+			useProto:         s.UseProto,
 		},
 		p: p,
 	})
@@ -131,6 +148,7 @@ func (s *PluginServer) RegisterDatasource(d packer.Datasource) error {
 		commonServer: commonServer{
 			selfConfigurable: d,
 			mux:              s.mux,
+			useProto:         s.UseProto,
 		},
 		d: d,
 	})

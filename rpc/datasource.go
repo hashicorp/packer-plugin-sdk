@@ -7,10 +7,12 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
+	"log"
 
 	"github.com/hashicorp/hcl/v2/hcldec"
 	"github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty/msgpack"
 )
 
 // An implementation of packer.Datasource where the data source is actually
@@ -52,10 +54,21 @@ func (d *datasource) OutputSpec() hcldec.ObjectSpec {
 		err := fmt.Errorf("Datasource.OutputSpec failed: %v", err)
 		panic(err.Error())
 	}
-	res := hcldec.ObjectSpec{}
-	err := gob.NewDecoder(bytes.NewReader(resp.OutputSpec)).Decode(&res)
+
+	if !d.useProto {
+		log.Printf("[DEBUG] - datasource: receiving OutputSpec as gob")
+		res := hcldec.ObjectSpec{}
+		err := gob.NewDecoder(bytes.NewReader(resp.OutputSpec)).Decode(&res)
+		if err != nil {
+			panic(fmt.Sprintf("datasource: failed to deserialise HCL spec from gob: %s", err))
+		}
+		return res
+	}
+
+	log.Printf("[DEBUG] - datasource: receiving OutputSpec as gob")
+	res, err := protobufToHCL2Spec(resp.OutputSpec)
 	if err != nil {
-		panic("ici:" + err.Error())
+		panic(fmt.Sprintf("datasource: failed to deserialise HCL spec from protobuf: %s", err))
 	}
 	return res
 }
@@ -66,20 +79,35 @@ type ExecuteResponse struct {
 }
 
 func (d *datasource) Execute() (cty.Value, error) {
-	res := new(cty.Value)
 	resp := new(ExecuteResponse)
 	if err := d.client.Call(d.endpoint+".Execute", new(interface{}), resp); err != nil {
 		err := fmt.Errorf("Datasource.Execute failed: %v", err)
-		return *res, err
+		return cty.NilVal, err
 	}
-	err := gob.NewDecoder(bytes.NewReader(resp.Value)).Decode(&res)
+
+	if !d.useProto {
+		log.Printf("[DEBUG] - datasource: receiving Execute as gob")
+		res := cty.Value{}
+		err := gob.NewDecoder(bytes.NewReader(resp.Value)).Decode(&res)
+		if err != nil {
+			return res, fmt.Errorf("failed to unmarshal cty.Value from gob blob: %s", err)
+		}
+		if resp.Error != nil {
+			err = resp.Error
+		}
+		return res, err
+	}
+
+	log.Printf("[DEBUG] - datasource: receiving Execute as msgpack")
+	res, err := msgpack.Unmarshal(resp.Value, cty.DynamicPseudoType)
 	if err != nil {
-		return *res, err
+		return cty.NilVal, fmt.Errorf("failed to unmarshal cty.Value from msgpack blob: %s", err)
 	}
+
 	if resp.Error != nil {
 		err = resp.Error
 	}
-	return *res, err
+	return res, err
 }
 
 // DatasourceServer wraps a packer.Datasource implementation and makes it
@@ -103,18 +131,43 @@ func (d *DatasourceServer) Configure(args *DatasourceConfigureArgs, reply *Datas
 
 func (d *DatasourceServer) OutputSpec(args *DatasourceConfigureArgs, reply *OutputSpecResponse) error {
 	spec := d.d.OutputSpec()
-	b := bytes.NewBuffer(nil)
-	err := gob.NewEncoder(b).Encode(spec)
-	reply.OutputSpec = b.Bytes()
+
+	if !d.useProto {
+		log.Printf("[DEBUG] - datasource: sending OutputSpec as gob")
+		b := &bytes.Buffer{}
+		err := gob.NewEncoder(b).Encode(spec)
+		reply.OutputSpec = b.Bytes()
+		return err
+	}
+
+	log.Printf("[DEBUG] - datasource: sending OutputSpec as protobuf")
+	ret, err := hcl2SpecToProtobuf(spec)
+	if err != nil {
+		return err
+	}
+	reply.OutputSpec = ret
+
 	return err
 }
 
 func (d *DatasourceServer) Execute(args *interface{}, reply *ExecuteResponse) error {
 	spec, err := d.d.Execute()
 	reply.Error = NewBasicError(err)
-	b := bytes.NewBuffer(nil)
-	err = gob.NewEncoder(b).Encode(spec)
-	reply.Value = b.Bytes()
+
+	if !d.useProto {
+		log.Printf("[DEBUG] - datasource: sending Execute as gob")
+		b := &bytes.Buffer{}
+		err = gob.NewEncoder(b).Encode(spec)
+		reply.Value = b.Bytes()
+		if reply.Error != nil {
+			err = reply.Error
+		}
+		return err
+	}
+
+	log.Printf("[DEBUG] - datasource: sending Execute as msgpack")
+	raw, err := msgpack.Marshal(spec, cty.DynamicPseudoType)
+	reply.Value = raw
 	if reply.Error != nil {
 		err = reply.Error
 	}
