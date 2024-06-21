@@ -78,34 +78,34 @@ func TestSetProtobufArgParsing(t *testing.T) {
 	}{
 		{
 			name:     "no --protobuf argument provided",
-			in:       []string{"example", "example-2"},
-			out:      []string{"example", "example-2"},
+			in:       []string{"start", "builder", "example"},
+			out:      []string{"start", "builder", "example"},
 			useProto: false,
 		},
 		{
 			name:     "providing --protobuf as first argument",
-			in:       []string{"--protobuf", "example", "example-2"},
-			out:      []string{"example", "example-2"},
+			in:       []string{"--protobuf", "start", "builder", "example"},
+			out:      []string{"start", "builder", "example"},
 			useProto: true,
 		},
 		{
 			name:     "providing --protobuf as last argument",
-			in:       []string{"example", "example-2", "--protobuf"},
-			out:      []string{"example", "example-2"},
+			in:       []string{"start", "builder", "example", "--protobuf"},
+			out:      []string{"start", "builder", "example"},
 			useProto: true,
 		},
 		{
 			name:     "providing --protobuf as middle argument",
-			in:       []string{"example", "--protobuf", "example-2"},
-			out:      []string{"example", "example-2"},
+			in:       []string{"start", "builder", "--protobuf", "example"},
+			out:      []string{"start", "builder", "example"},
 			useProto: true,
 		},
-		//{
-		//name:     "providing --protobuf multiple times",
-		//in:       []string{"--protobuf", "--protobuf", "example-2"},
-		//out:      []string{"example-2"},
-		//useProto: true,
-		//},
+		{
+			name:     "providing --protobuf multiple times",
+			in:       []string{"--protobuf", "start", "builder", "--protobuf", "example", "--protobuf"},
+			out:      []string{"start", "builder", "example"},
+			useProto: true,
+		},
 	}
 
 	for _, tc := range testCases {
