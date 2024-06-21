@@ -133,15 +133,6 @@ func (i *Set) parseProtobufFlag(args ...string) []string {
 	}
 
 	i.useProto = true
-
-	if protobufPos == 0 {
-		return args[1:]
-	}
-
-	if protobufPos == len(args)-1 {
-		return args[:len(args)-1]
-	}
-
 	return append(args[:protobufPos], args[protobufPos+1:]...)
 }
 
