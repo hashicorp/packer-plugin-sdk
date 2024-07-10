@@ -58,6 +58,8 @@ type HTTPConfig struct {
 	// interface with a non-loopback address. Either `http_bind_address` or
 	// `http_interface` can be specified.
 	HTTPInterface string `mapstructure:"http_interface" undocumented:"true"`
+	// If true the HTTP server will only be bound to an IPv4 interface
+	HTTPOnlyIPv4 bool `mapstructure:"http_only_ipv4"`
 }
 
 func (c *HTTPConfig) Prepare(ctx *interpolate.Context) []error {
