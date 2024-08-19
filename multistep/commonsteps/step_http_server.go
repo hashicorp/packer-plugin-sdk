@@ -20,12 +20,12 @@ import (
 
 func HTTPServerFromHTTPConfig(cfg *HTTPConfig) *StepHTTPServer {
 	return &StepHTTPServer{
-		HTTPDir:      cfg.HTTPDir,
-		HTTPContent:  cfg.HTTPContent,
-		HTTPPortMin:  cfg.HTTPPortMin,
-		HTTPPortMax:  cfg.HTTPPortMax,
-		HTTPAddress:  cfg.HTTPAddress,
-		HTTPOnlyIPv4: cfg.HTTPOnlyIPv4,
+		HTTPDir:             cfg.HTTPDir,
+		HTTPContent:         cfg.HTTPContent,
+		HTTPPortMin:         cfg.HTTPPortMin,
+		HTTPPortMax:         cfg.HTTPPortMax,
+		HTTPAddress:         cfg.HTTPAddress,
+		HTTPNetworkProcotol: cfg.HTTPNetworkProtocol,
 	}
 }
 
@@ -41,12 +41,12 @@ func HTTPServerFromHTTPConfig(cfg *HTTPConfig) *StepHTTPServer {
 //
 //	http_port int - The port the HTTP server started on.
 type StepHTTPServer struct {
-	HTTPDir      string
-	HTTPContent  map[string]string
-	HTTPPortMin  int
-	HTTPPortMax  int
-	HTTPAddress  string
-	HTTPOnlyIPv4 bool
+	HTTPDir             string
+	HTTPContent         map[string]string
+	HTTPPortMin         int
+	HTTPPortMax         int
+	HTTPAddress         string
+	HTTPNetworkProcotol string
 
 	l *net.Listener
 }
@@ -104,15 +104,11 @@ func (s *StepHTTPServer) Run(ctx context.Context, state multistep.StateBag) mult
 
 	// Find an available TCP port for our HTTP server
 	var err error
-	network := "tcp"
-	if s.HTTPOnlyIPv4 {
-		network = "tcp4"
-	}
 	s.l, err = net.ListenRangeConfig{
 		Min:     s.HTTPPortMin,
 		Max:     s.HTTPPortMax,
 		Addr:    s.HTTPAddress,
-		Network: network,
+		Network: s.HTTPNetworkProcotol,
 	}.Listen(ctx)
 
 	if err != nil {

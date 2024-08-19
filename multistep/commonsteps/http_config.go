@@ -7,8 +7,18 @@ package commonsteps
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
+)
+
+// These are the different valid network procotol values for "http_network_protocol"
+const (
+	NetworkProtocolTCP       string = "tcp"
+	NetworkProcotolTCP4             = "tcp4"
+	NetworkProtocolTCP6             = "tcp6"
+	NetworkProtocolUnix             = "unix"
+	NetworkProcotlUnixPacket        = "unixpacket"
 )
 
 // Packer will create an http server serving `http_directory` when it is set, a
@@ -58,8 +68,9 @@ type HTTPConfig struct {
 	// interface with a non-loopback address. Either `http_bind_address` or
 	// `http_interface` can be specified.
 	HTTPInterface string `mapstructure:"http_interface" undocumented:"true"`
-	// If true the HTTP server will only be bound to an IPv4 interface
-	HTTPOnlyIPv4 bool `mapstructure:"http_only_ipv4"`
+	// Defines the HTTP Network protocol. Valid options are `tcp`, `tcp4`, `tcp6`,
+	// `unix`, and `unixpacket`. This value defaults to `tcp`.
+	HTTPNetworkProtocol string `mapstructure:"http_network_protocol"`
 }
 
 func (c *HTTPConfig) Prepare(ctx *interpolate.Context) []error {
@@ -91,6 +102,31 @@ func (c *HTTPConfig) Prepare(ctx *interpolate.Context) []error {
 	if len(c.HTTPContent) > 0 && len(c.HTTPDir) > 0 {
 		errs = append(errs,
 			errors.New("http_content cannot be used in conjunction with http_dir. Consider using the file function to load file in memory and serve them with http_content: https://www.packer.io/docs/templates/hcl_templates/functions/file/file"))
+	}
+
+	if c.HTTPNetworkProtocol == "" {
+		c.HTTPNetworkProtocol = "tcp"
+	}
+
+	validProtocol := false
+	validProtocols := []string{
+		NetworkProtocolTCP,
+		NetworkProcotolTCP4,
+		NetworkProtocolTCP6,
+		NetworkProtocolUnix,
+		NetworkProcotlUnixPacket,
+	}
+
+	for _, protocol := range validProtocols {
+		if c.HTTPNetworkProtocol == protocol {
+			validProtocol = true
+			break
+		}
+	}
+
+	if !validProtocol {
+		errs = append(errs,
+			fmt.Errorf("http_network_protocol is invalid. Must be one of: %v", validProtocols))
 	}
 
 	return errs
