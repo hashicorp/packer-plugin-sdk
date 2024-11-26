@@ -117,5 +117,25 @@ func GetAWSSecret(name, key string) (string, error) {
 		Key:  key,
 	}
 
-	return client.GetSecret(spec)
+	return client.GetSecret(spec, false)
+}
+
+func GetRawAWSSecret(name string) (string, error) {
+	if len(name) == 0 {
+		return "", errors.New("At least one secret name must be provided")
+	}
+
+	// client uses AWS SDK CredentialChain method. So,credentials can
+	// be loaded from credential file, environment variables, or IAM
+	// roles.
+	client := awssmapi.New(
+		&awssmapi.AWSConfig{},
+	)
+
+	spec := &awssmapi.SecretSpec{
+		Name: name,
+		Key:  "",
+	}
+
+	return client.GetSecret(spec, true)
 }
