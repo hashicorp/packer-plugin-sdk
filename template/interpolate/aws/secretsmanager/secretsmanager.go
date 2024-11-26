@@ -52,7 +52,7 @@ func (c *Client) newSession(config *AWSConfig) *session.Session {
 
 // GetSecret return an AWS Secret Manager secret
 // in plain text from a given secret name
-func (c *Client) GetSecret(spec *SecretSpec) (string, error) {
+func (c *Client) GetSecret(spec *SecretSpec, raw bool) (string, error) {
 	params := &secretsmanager.GetSecretValueInput{
 		SecretId:     aws.String(spec.Name),
 		VersionStage: aws.String("AWSCURRENT"),
@@ -71,7 +71,7 @@ func (c *Client) GetSecret(spec *SecretSpec) (string, error) {
 		Name:         *resp.Name,
 		SecretString: *resp.SecretString,
 	}
-	value, err := getSecretValue(&secret, spec)
+	value, err := getSecretValue(&secret, spec, raw)
 	if err != nil {
 		return "", err
 	}
@@ -79,12 +79,12 @@ func (c *Client) GetSecret(spec *SecretSpec) (string, error) {
 	return value, nil
 }
 
-func getSecretValue(s *SecretString, spec *SecretSpec) (string, error) {
+func getSecretValue(s *SecretString, spec *SecretSpec, raw bool) (string, error) {
 	var secretValue map[string]interface{}
 	blob := []byte(s.SecretString)
 
-	//For those plaintext secrets just return the value
-	if !json.Valid(blob) {
+	//For those plaintext secrets just return the value or if raw is requested
+	if !json.Valid(blob) || raw {
 		return s.SecretString, nil
 	}
 
