@@ -54,6 +54,9 @@ type HTTPConfig struct {
 	// This is the bind address for the HTTP server. Defaults to 0.0.0.0 so that
 	// it will work with any network interface.
 	HTTPAddress string `mapstructure:"http_bind_address"`
+	// Use to specify a specific ip/fqdn a vm should use to reach the callback http server upon completion.
+	// This is required when running via workflows/pipelines which are running within a kubernetes cluster.
+	HTTPCallbackAddress string `mapstructure:"http_callback_address"`
 	// This is the bind interface for the HTTP server. Defaults to the first
 	// interface with a non-loopback address. Either `http_bind_address` or
 	// `http_interface` can be specified.
