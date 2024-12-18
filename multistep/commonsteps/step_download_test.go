@@ -15,7 +15,9 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/google/go-cmp/cmp"
 	urlhelper "github.com/hashicorp/go-getter/v2/helper/url"
@@ -285,6 +287,50 @@ func TestStepDownload_download(t *testing.T) {
 		t.Fatalf("Bad: non expected error %s", err.Error())
 	}
 	os.RemoveAll(step.TargetPath)
+}
+
+func TestStepDownload_short_timeout(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Log("skipping download test on windows right now.")
+		return
+	}
+
+	os.Setenv("PACKER_GETTER_READ_TIMEOUT", "1ns")
+	prepareGetterClient()
+
+	// we need to re prepare the getterClient with default behavior once the test
+	// is completed
+	defer prepareGetterClient()
+	defer os.Unsetenv("PACKER_GETTER_READ_TIMEOUT")
+
+	srvr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		<-time.After(time.Microsecond * 100)
+		w.Write([]byte("should not receive this"))
+	}))
+
+	defer srvr.Close()
+	step := &StepDownload{
+		Checksum:    "sha1:f572d396fae9206628714fb2ce00f72e94f2258f",
+		Description: "ISO",
+		ResultKey:   "iso_path",
+		Url:         nil,
+	}
+	ui := &packersdk.BasicUi{
+		Reader: new(bytes.Buffer),
+		Writer: new(bytes.Buffer),
+		PB:     &packersdk.NoopProgressTracker{},
+	}
+
+	_, err := step.download(context.TODO(), ui, srvr.URL+"/root/another.txt?")
+
+	contextDeadlineErrorMsg := "context deadline exceeded"
+	if err == nil {
+		t.Fatalf("Bad: expected a '%s' error", contextDeadlineErrorMsg)
+	}
+	if !strings.Contains(err.Error(), contextDeadlineErrorMsg) {
+		t.Fatalf("Bad: expected a '%s' error, got %s", contextDeadlineErrorMsg, err.Error())
+	}
+
 }
 
 func TestStepDownload_WindowsParseSourceURL(t *testing.T) {
