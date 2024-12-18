@@ -64,40 +64,59 @@ type StepDownload struct {
 // The timeout must be long enough to accommodate large/slow downloads.
 const defaultGetterReadTimeout time.Duration = 30 * time.Minute
 
-var defaultGetterClient = getter.Client{
-	// Disable writing and reading through symlinks.
-	DisableSymlinks: true,
-	// The order of the Getters in the list may affect the result
-	// depending if the Request.Src is detected as valid by multiple getters
-	Getters: []getter.Getter{
-		&getter.GitGetter{
-			Timeout: defaultGetterReadTimeout,
-			Detectors: []getter.Detector{
-				new(getter.GitHubDetector),
-				new(getter.GitDetector),
-				new(getter.BitBucketDetector),
-				new(getter.GitLabDetector),
+var getterReadTimeout = defaultGetterReadTimeout
+var defaultGetterClient = getter.Client{}
+
+func init() {
+	prepareGetterClient()
+}
+
+// prepareGetterClient is run in the init function but is actually extracted
+// to make testing easier by providing a way to re prepare the client
+func prepareGetterClient() {
+	getterReadTimeout := defaultGetterReadTimeout
+	if env, exists := os.LookupEnv("PACKER_GETTER_READ_TIMEOUT"); exists {
+		parsedDuration, err := time.ParseDuration(env)
+		if err != nil {
+			panic(err)
+		}
+		getterReadTimeout = parsedDuration
+	}
+	defaultGetterClient = getter.Client{
+		// Disable writing and reading through symlinks.
+		DisableSymlinks: true,
+		// The order of the Getters in the list may affect the result
+		// depending if the Request.Src is detected as valid by multiple getters
+		Getters: []getter.Getter{
+			&getter.GitGetter{
+				Timeout: getterReadTimeout,
+				Detectors: []getter.Detector{
+					new(getter.GitHubDetector),
+					new(getter.GitDetector),
+					new(getter.BitBucketDetector),
+					new(getter.GitLabDetector),
+				},
+			},
+			&getter.HgGetter{
+				Timeout: getterReadTimeout,
+			},
+			new(getter.SmbClientGetter),
+			new(getter.SmbMountGetter),
+			&getter.HttpGetter{
+				Netrc:                 true,
+				XTerraformGetDisabled: true,
+				HeadFirstTimeout:      getterReadTimeout,
+				ReadTimeout:           getterReadTimeout,
+			},
+			new(getter.FileGetter),
+			&gcs.Getter{
+				Timeout: getterReadTimeout,
+			},
+			&s3.Getter{
+				Timeout: getterReadTimeout,
 			},
 		},
-		&getter.HgGetter{
-			Timeout: defaultGetterReadTimeout,
-		},
-		new(getter.SmbClientGetter),
-		new(getter.SmbMountGetter),
-		&getter.HttpGetter{
-			Netrc:                 true,
-			XTerraformGetDisabled: true,
-			HeadFirstTimeout:      defaultGetterReadTimeout,
-			ReadTimeout:           defaultGetterReadTimeout,
-		},
-		new(getter.FileGetter),
-		&gcs.Getter{
-			Timeout: defaultGetterReadTimeout,
-		},
-		&s3.Getter{
-			Timeout: defaultGetterReadTimeout,
-		},
-	},
+	}
 }
 
 func (s *StepDownload) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
