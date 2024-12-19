@@ -30,23 +30,24 @@ func init() {
 
 // Funcs are the interpolation funcs that are available within interpolations.
 var FuncGens = map[string]interface{}{
-	"build_name":         funcGenBuildName,
-	"build_type":         funcGenBuildType,
-	"env":                funcGenEnv,
-	"isotime":            funcGenIsotime,
-	"strftime":           funcGenStrftime,
-	"pwd":                funcGenPwd,
-	"split":              funcGenSplitter,
-	"template_dir":       funcGenTemplateDir,
-	"timestamp":          funcGenTimestamp,
-	"uuid":               funcGenUuid,
-	"user":               funcGenUser,
-	"packer_version":     funcGenPackerVersion,
-	"consul_key":         funcGenConsul,
-	"vault":              funcGenVault,
-	"sed":                funcGenSed,
-	"build":              funcGenBuild,
-	"aws_secretsmanager": funcGenAwsSecrets,
+	"build_name":             funcGenBuildName,
+	"build_type":             funcGenBuildType,
+	"env":                    funcGenEnv,
+	"isotime":                funcGenIsotime,
+	"strftime":               funcGenStrftime,
+	"pwd":                    funcGenPwd,
+	"split":                  funcGenSplitter,
+	"template_dir":           funcGenTemplateDir,
+	"timestamp":              funcGenTimestamp,
+	"uuid":                   funcGenUuid,
+	"user":                   funcGenUser,
+	"packer_version":         funcGenPackerVersion,
+	"consul_key":             funcGenConsul,
+	"vault":                  funcGenVault,
+	"sed":                    funcGenSed,
+	"build":                  funcGenBuild,
+	"aws_secretsmanager":     funcGenAwsSecrets,
+	"aws_secretsmanager_raw": funcGenAwsRawSecrets,
 
 	"replace":     replace,
 	"replace_all": replace_all,
@@ -295,6 +296,22 @@ func funcGenAwsSecrets(ctx *Context) interface{} {
 		default:
 			return "", errors.New("only secret name and optional secret key can be provided.")
 		}
+	}
+}
+
+// This function acts essentially like `funcGenAwsSecrets`, with the exception
+// that it will always return a plaintext secret, regardless of the type of
+// secret.
+//
+// That is, if the secret is a plaintext, both functions behave the same,
+// however, if the secret is an object, this will return the raw JSON object
+// from secrets manager, while the alternative errors without a key being specified.
+func funcGenAwsRawSecrets(ctx *Context) interface{} {
+	return func(secretName string) (string, error) {
+		if !ctx.EnableEnv {
+			return "", errors.New("AWS Secrets Manager is only allowed in the variables section")
+		}
+		return commontpl.GetRawAWSSecret(secretName)
 	}
 }
 

@@ -25,6 +25,7 @@ func TestGetSecret(t *testing.T) {
 	testCases := []struct {
 		description string
 		arg         *SecretSpec
+		raw         bool
 		mock        secretsmanager.GetSecretValueOutput
 		want        string
 		ok          bool
@@ -32,6 +33,7 @@ func TestGetSecret(t *testing.T) {
 		{
 			description: "input has valid secret name, secret has single key",
 			arg:         &SecretSpec{Name: "test/secret"},
+			raw:         false,
 			mock: secretsmanager.GetSecretValueOutput{
 				Name:         aws.String("test/secret"),
 				SecretString: aws.String(`{"key": "test"}`),
@@ -45,6 +47,7 @@ func TestGetSecret(t *testing.T) {
 				Name: "test/secret",
 				Key:  "key",
 			},
+			raw: false,
 			mock: secretsmanager.GetSecretValueOutput{
 				Name:         aws.String("test/secret"),
 				SecretString: aws.String(`{"key": "test"}`),
@@ -58,6 +61,7 @@ func TestGetSecret(t *testing.T) {
 				Name: "test/secret",
 				Key:  "second_key",
 			},
+			raw: false,
 			mock: secretsmanager.GetSecretValueOutput{
 				Name:         aws.String("test/secret"),
 				SecretString: aws.String(`{"first_key": "first_val", "second_key": "second_val"}`),
@@ -70,6 +74,7 @@ func TestGetSecret(t *testing.T) {
 			arg: &SecretSpec{
 				Name: "test/secret",
 			},
+			raw: false,
 			mock: secretsmanager.GetSecretValueOutput{
 				Name:         aws.String("test/secret"),
 				SecretString: aws.String(`{"first_key": "first_val", "second_key": "second_val"}`),
@@ -82,6 +87,7 @@ func TestGetSecret(t *testing.T) {
 				Name: "test/secret",
 				Key:  "nonexistent",
 			},
+			raw: false,
 			mock: secretsmanager.GetSecretValueOutput{
 				Name:         aws.String("test/secret"),
 				SecretString: aws.String(`{"key": "test"}`),
@@ -94,6 +100,7 @@ func TestGetSecret(t *testing.T) {
 				Name: "test/secret",
 				Key:  "nonexistent",
 			},
+			raw: false,
 			mock: secretsmanager.GetSecretValueOutput{
 				Name:         aws.String("test/secret"),
 				SecretString: aws.String(`{"first_key": "first_val", "second_key": "second_val"}`),
@@ -106,6 +113,7 @@ func TestGetSecret(t *testing.T) {
 				Name: "test/secret",
 				Key:  "nonexistent",
 			},
+			raw:  false,
 			mock: secretsmanager.GetSecretValueOutput{},
 			ok:   false,
 		},
@@ -114,6 +122,7 @@ func TestGetSecret(t *testing.T) {
 			arg: &SecretSpec{
 				Name: "test",
 			},
+			raw: false,
 			mock: secretsmanager.GetSecretValueOutput{
 				Name:         aws.String("test"),
 				SecretString: aws.String("ThisIsThePassword"),
@@ -124,6 +133,7 @@ func TestGetSecret(t *testing.T) {
 		{
 			description: "input as secret stored with 'String: int' value",
 			arg:         &SecretSpec{Name: "test"},
+			raw:         false,
 			mock: secretsmanager.GetSecretValueOutput{
 				Name:         aws.String("test"),
 				SecretString: aws.String(`{"port": 5432}`),
@@ -131,13 +141,34 @@ func TestGetSecret(t *testing.T) {
 			want: "5432",
 			ok:   true,
 		},
+		{
+			description: "input as secret stored as json object, returned as json",
+			arg:         &SecretSpec{Name: "test"},
+			raw:         true,
+			mock: secretsmanager.GetSecretValueOutput{
+				Name:         aws.String("test"),
+				SecretString: aws.String(`{"foo":{"bar":"baz"}}`),
+			},
+			want: `{"foo":{"bar":"baz"}}`,
+			ok:   true,
+		},
+		{
+			description: "input as secret stored as json with object, fails without raw",
+			arg:         &SecretSpec{Name: "test"},
+			raw:         false,
+			mock: secretsmanager.GetSecretValueOutput{
+				Name:         aws.String("test"),
+				SecretString: aws.String(`{"foo":{"bar":"baz"}}`),
+			},
+			ok: false,
+		},
 	}
 
 	for _, test := range testCases {
 		c := &Client{
 			api: mockedSecret{Resp: test.mock},
 		}
-		got, err := c.GetSecret(test.arg)
+		got, err := c.GetSecret(test.arg, test.raw)
 		if test.ok {
 			if got != test.want {
 				t.Fatalf("want %v, got %v, error %v, using arg %v", test.want, got, err, test.arg)

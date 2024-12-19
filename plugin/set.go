@@ -33,21 +33,31 @@ type Set struct {
 	version        string
 	sdkVersion     string
 	apiVersion     string
+	useProto       bool
 	Builders       map[string]packersdk.Builder
 	PostProcessors map[string]packersdk.PostProcessor
 	Provisioners   map[string]packersdk.Provisioner
 	Datasources    map[string]packersdk.Datasource
 }
 
+// ProtocolVersion2 serves as a compatibility argument to the SetDescription
+// so plugins can report whether or not they support protobuf/msgpack for
+// serialising some of their entities (typically ObjectSpec) to protobuf.
+//
+// If absent from the SetDescription, it means only gob is supported, and both
+// Packer and the plugins should use that for communication.
+const ProtocolVersion2 = "v2"
+
 // SetDescription describes a Set.
 type SetDescription struct {
-	Version        string   `json:"version"`
-	SDKVersion     string   `json:"sdk_version"`
-	APIVersion     string   `json:"api_version"`
-	Builders       []string `json:"builders"`
-	PostProcessors []string `json:"post_processors"`
-	Provisioners   []string `json:"provisioners"`
-	Datasources    []string `json:"datasources"`
+	Version         string   `json:"version"`
+	SDKVersion      string   `json:"sdk_version"`
+	APIVersion      string   `json:"api_version"`
+	Builders        []string `json:"builders"`
+	PostProcessors  []string `json:"post_processors"`
+	Provisioners    []string `json:"provisioners"`
+	Datasources     []string `json:"datasources"`
+	ProtocolVersion string   `json:"protocol_version"`
 }
 
 ////
@@ -106,10 +116,27 @@ func (i *Set) Run() error {
 	return i.RunCommand(args...)
 }
 
+// parseProtobufFlag walks over the args to find if `--protobuf` is set.
+//
+// It then returns the args without it for the commands to process them.
+func (i *Set) parseProtobufFlag(args ...string) []string {
+	parsedArgs := make([]string, 0, len(args))
+	for _, arg := range args {
+		if arg == "--protobuf" {
+			i.useProto = true
+			continue
+		}
+		parsedArgs = append(parsedArgs, arg)
+	}
+	return parsedArgs
+}
+
 func (i *Set) RunCommand(args ...string) error {
 	if len(args) < 1 {
 		return fmt.Errorf("needs at least one argument")
 	}
+
+	args = i.parseProtobufFlag(args...)
 
 	switch args[0] {
 	case "describe":
@@ -130,6 +157,7 @@ func (i *Set) start(kind, name string) error {
 	if err != nil {
 		return err
 	}
+	server.UseProto = i.useProto
 
 	log.Printf("[TRACE] starting %s %s", kind, name)
 
@@ -158,13 +186,14 @@ func (i *Set) start(kind, name string) error {
 
 func (i *Set) description() SetDescription {
 	return SetDescription{
-		Version:        i.version,
-		SDKVersion:     i.sdkVersion,
-		APIVersion:     i.apiVersion,
-		Builders:       i.buildersDescription(),
-		PostProcessors: i.postProcessorsDescription(),
-		Provisioners:   i.provisionersDescription(),
-		Datasources:    i.datasourceDescription(),
+		Version:         i.version,
+		SDKVersion:      i.sdkVersion,
+		APIVersion:      i.apiVersion,
+		Builders:        i.buildersDescription(),
+		PostProcessors:  i.postProcessorsDescription(),
+		Provisioners:    i.provisionersDescription(),
+		Datasources:     i.datasourceDescription(),
+		ProtocolVersion: ProtocolVersion2,
 	}
 }
 
