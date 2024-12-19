@@ -20,11 +20,12 @@ import (
 
 func HTTPServerFromHTTPConfig(cfg *HTTPConfig) *StepHTTPServer {
 	return &StepHTTPServer{
-		HTTPDir:     cfg.HTTPDir,
-		HTTPContent: cfg.HTTPContent,
-		HTTPPortMin: cfg.HTTPPortMin,
-		HTTPPortMax: cfg.HTTPPortMax,
-		HTTPAddress: cfg.HTTPAddress,
+		HTTPDir:             cfg.HTTPDir,
+		HTTPContent:         cfg.HTTPContent,
+		HTTPPortMin:         cfg.HTTPPortMin,
+		HTTPPortMax:         cfg.HTTPPortMax,
+		HTTPAddress:         cfg.HTTPAddress,
+		HTTPNetworkProcotol: cfg.HTTPNetworkProtocol,
 	}
 }
 
@@ -40,11 +41,12 @@ func HTTPServerFromHTTPConfig(cfg *HTTPConfig) *StepHTTPServer {
 //
 //	http_port int - The port the HTTP server started on.
 type StepHTTPServer struct {
-	HTTPDir     string
-	HTTPContent map[string]string
-	HTTPPortMin int
-	HTTPPortMax int
-	HTTPAddress string
+	HTTPDir             string
+	HTTPContent         map[string]string
+	HTTPPortMin         int
+	HTTPPortMax         int
+	HTTPAddress         string
+	HTTPNetworkProcotol string
 
 	l *net.Listener
 }
@@ -106,7 +108,7 @@ func (s *StepHTTPServer) Run(ctx context.Context, state multistep.StateBag) mult
 		Min:     s.HTTPPortMin,
 		Max:     s.HTTPPortMax,
 		Addr:    s.HTTPAddress,
-		Network: "tcp",
+		Network: s.HTTPNetworkProcotol,
 	}.Listen(ctx)
 
 	if err != nil {
