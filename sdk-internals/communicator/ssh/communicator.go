@@ -672,7 +672,7 @@ func (c *comm) scpUploadSession(path string, input io.Reader, fi *os.FileInfo) e
 		return scpUploadFile(target_file, input, w, stdoutR, fi)
 	}
 
-	return c.scpSession("scp -vt "+target_dir, scpFunc)
+	return c.scpSession("scp -vdt "+target_dir, scpFunc)
 }
 
 func (c *comm) scpUploadDirSession(dst string, src string, excl []string) error {
@@ -706,7 +706,7 @@ func (c *comm) scpUploadDirSession(dst string, src string, excl []string) error 
 		}
 	}
 
-	return c.scpSession("scp -rvt "+dst, scpFunc)
+	return c.scpSession("scp -rdvt "+dst, scpFunc)
 }
 
 func (c *comm) scpDownloadSession(path string, output io.Writer) error {
