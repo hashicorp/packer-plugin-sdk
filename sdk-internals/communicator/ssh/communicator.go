@@ -688,7 +688,6 @@ func (c *comm) scpUploadDirSession(dst string, src string, excl []string) error 
 			if err != nil {
 				return err
 			}
-
 			return scpUploadDir(src, entries, w, r)
 		}
 
@@ -965,8 +964,19 @@ func scpUploadDirProtocol(name string, w io.Writer, r *bufio.Reader, f func() er
 	return err
 }
 
-func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader) error {
-	log.Printf("[DEBUG] scp: uploading directory %s", root)
+func scpUploadDirWithTracking(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader, visited map[string]bool) error {
+
+	realRoot, err := filepath.EvalSymlinks(root)
+	if err != nil {
+		return err
+	}
+
+	if visited[realRoot] {
+		log.Printf("[DEBUG] scp: skipping visited directory: %s", realRoot)
+		return nil
+	} else {
+		visited[realRoot] = true
+	}
 
 	for _, fi := range fs {
 		realPath := filepath.Join(root, fi.Name())
@@ -1022,7 +1032,7 @@ func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader) e
 				return err
 			}
 
-			return scpUploadDir(realPath, entries, w, r)
+			return scpUploadDirWithTracking(realPath, entries, w, r, visited)
 		}, fi)
 		if err != nil {
 			return err
@@ -1030,4 +1040,10 @@ func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader) e
 	}
 
 	return nil
+}
+
+func scpUploadDir(root string, fs []os.FileInfo, w io.Writer, r *bufio.Reader) error {
+	log.Printf("[DEBUG] scp: uploading directory %s", root)
+	visited := make(map[string]bool)
+	return scpUploadDirWithTracking(root, fs, w, r, visited)
 }
