@@ -1,4 +1,4 @@
-module github.com/hashicorp/packer-plugin-sdk
+module github.com/kp2099/packer-plugin-sdk
 
 require github.com/zclconf/go-cty v1.13.3 // go-cty v1.11.0 removed gob encoding support so it cannot work with the Packer SDK as-is, you need to run `packer-sdc fix .' to change that
 
