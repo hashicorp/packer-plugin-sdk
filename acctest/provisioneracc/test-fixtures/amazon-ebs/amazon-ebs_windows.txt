@@ -12,7 +12,7 @@
     "owners": "amazon"
   },
   "ami_name": "packer-acc-test",
-  "user_data_file": "../../builder/amazon/ebs/acceptance/test-fixtures/scripts/bootstrap_win.txt",
+  "user_data_file": "../scripts/bootstrap_win.txt",
   "communicator": "winrm",
   "winrm_username": "Administrator",
   "winrm_password": "SuperS3cr3t!!!!",
