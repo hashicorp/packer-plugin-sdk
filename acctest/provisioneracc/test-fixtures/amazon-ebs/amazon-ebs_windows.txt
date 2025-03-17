@@ -5,7 +5,7 @@
   "source_ami_filter": {
     "filters": {
       "virtualization-type": "hvm",
-      "name": "*Windows_Server-2012-R2*English-64Bit-Base*",
+      "name": "*Windows_Server-2022-English-Core-Base*",
       "root-device-type": "ebs"
     },
     "most_recent": true,
