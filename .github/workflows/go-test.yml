@@ -18,6 +18,8 @@ jobs:
         go-version:
           - '1.21.x'
           - '1.22.x'
+          - '1.23.x'
+          - '1.24.x'
     permissions:
       id-token: write
       contents: read
@@ -77,6 +79,8 @@ jobs:
         go-version:
           - '1.21.x'
           - '1.22.x'
+          - '1.23.x'
+          - '1.24.x'
     permissions:
       id-token: write
       contents: read
@@ -119,6 +123,8 @@ jobs:
         go-version:
           - '1.21.x'
           - '1.22.x'
+          - '1.23.x'
+          - '1.24.x'
     permissions:
       id-token: write
       contents: read
