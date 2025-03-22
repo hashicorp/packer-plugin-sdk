@@ -4,6 +4,7 @@
 // Package ssh implements the SSH communicator. Plugin maintainers should not
 // import this package directly, instead using the tooling in the
 // "packer-plugin-sdk/communicator" module.
+
 package ssh
 
 import (
@@ -17,6 +18,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -449,24 +451,34 @@ func (c *comm) connectToAgent() {
 		return
 	}
 
-	// open connection to the local agent
-	socketLocation := os.Getenv("SSH_AUTH_SOCK")
-	if socketLocation == "" {
-		log.Printf("[INFO] no local agent socket, will not connect agent")
-		return
-	}
-	agentConn, err := net.Dial("unix", socketLocation)
-	if err != nil {
-		log.Printf("[ERROR] could not connect to local agent socket: %s", socketLocation)
-		return
-	}
+	var forwardingAgent agent.ExtendedAgent
+	var err error
+	// open connection to the local agent and add in auth
+	if runtime.GOOS == "windows" {
+		forwardingAgent, err = getSSHAgent()
+		if err != nil {
+			log.Printf("[ERROR] Failed to get SSH agent: %v", err)
+			return
+		}
 
-	// create agent and add in auth
-	forwardingAgent := agent.NewClient(agentConn)
-	if forwardingAgent == nil {
-		log.Printf("[ERROR] Could not create agent client")
-		agentConn.Close()
-		return
+	} else {
+		socketLocation := os.Getenv("SSH_AUTH_SOCK")
+		if socketLocation == "" {
+			log.Printf("[INFO] no local agent socket, will not connect agent")
+			return
+		}
+		agentConn, err := net.Dial("unix", socketLocation)
+		if err != nil {
+			log.Printf("[ERROR] could not connect to local agent socket: %s", socketLocation)
+			return
+		}
+
+		forwardingAgent = agent.NewClient(agentConn)
+		if forwardingAgent == nil {
+			log.Printf("[ERROR] Could not create agent client")
+			agentConn.Close()
+			return
+		}
 	}
 
 	// add callback for forwarding agent to SSH config
