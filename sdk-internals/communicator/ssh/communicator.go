@@ -4,7 +4,6 @@
 // Package ssh implements the SSH communicator. Plugin maintainers should not
 // import this package directly, instead using the tooling in the
 // "packer-plugin-sdk/communicator" module.
-
 package ssh
 
 import (
@@ -445,19 +444,19 @@ func (c *comm) connectToAgent() {
 		return
 	}
 
-	log.Printf("[INFO] ### My local code of SSH agent Mon2.")
 	if c.config.DisableAgentForwarding {
 		log.Printf("[INFO] SSH agent forwarding is disabled.")
 		return
 	}
 
-	// open connection to the local agent and add in auth
+	// open connection to the local agent
 	agentConn, err := GetSSHAgentConnection()
 	if err != nil {
 		log.Printf("[ERROR] Failed to get SSH agent: %v", err)
 		return
 	}
 
+	// create agent and add in auth
 	forwardingAgent := agent.NewClient(agentConn)
 	if forwardingAgent == nil {
 		log.Printf("[ERROR] Could not create agent client")
