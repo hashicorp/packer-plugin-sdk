@@ -445,7 +445,7 @@ func (c *comm) connectToAgent() {
 		return
 	}
 
-	log.Printf("[INFO] ### My local code of SSH agent sun4.")
+	log.Printf("[INFO] ### My local code of SSH agent Mon.")
 	if c.config.DisableAgentForwarding {
 		log.Printf("[INFO] SSH agent forwarding is disabled.")
 		return
