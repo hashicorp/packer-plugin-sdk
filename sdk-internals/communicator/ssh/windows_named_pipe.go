@@ -10,7 +10,9 @@
 package ssh
 
 import (
+	"fmt"
 	"github.com/Microsoft/go-winio"
+	"net"
 )
 
 func getSSHAgentConnection() (net.Conn, error) {

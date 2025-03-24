@@ -5,6 +5,12 @@
 
 package communicator
 
+import (
+	"fmt"
+	"github.com/Microsoft/go-winio"
+	"net"
+)
+
 func getSSHAgentConnection() (net.Conn, error) {
 	pipePath := "\\\\.\\pipe\\openssh-ssh-agent"
 
