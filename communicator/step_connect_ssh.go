@@ -307,7 +307,7 @@ func sshBastionConfig(config *Config) (*gossh.ClientConfig, error) {
 	}
 
 	if config.SSHBastionAgentAuth {
-		sshAgent, err := getSSHAgentConnection()
+		sshAgent, err := ssh.GetSSHAgentConnection()
 		if err != nil {
 			return nil, fmt.Errorf("Cannot connect to SSH Agent %s", err)
 		}

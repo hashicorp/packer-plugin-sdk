@@ -341,7 +341,7 @@ func (c *Config) SSHConfigFunc() func(multistep.StateBag) (*ssh.ClientConfig, er
 		}
 
 		if c.SSHAgentAuth {
-			sshAgent, err := getSSHAgentConnection()
+			sshAgent, err := packerssh.GetSSHAgentConnection()
 			if err != nil {
 				return nil, fmt.Errorf("Cannot connect to SSH Agent %s", err)
 			}

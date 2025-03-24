@@ -15,7 +15,7 @@ import (
 	"os"
 )
 
-func getSSHAgentConnection() (net.Conn, error) {
+func GetSSHAgentConnection() (net.Conn, error) {
 	authSock := os.Getenv("SSH_AUTH_SOCK")
 	if authSock == "" {
 		return nil, fmt.Errorf("SSH_AUTH_SOCK is not set")
