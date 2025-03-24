@@ -18,7 +18,6 @@ import (
 	"net"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -446,39 +445,24 @@ func (c *comm) connectToAgent() {
 		return
 	}
 
+	log.Printf("[INFO] ### My local code of SSH agent sun4.")
 	if c.config.DisableAgentForwarding {
 		log.Printf("[INFO] SSH agent forwarding is disabled.")
 		return
 	}
 
-	var forwardingAgent agent.ExtendedAgent
-	var err error
 	// open connection to the local agent and add in auth
-	if runtime.GOOS == "windows" {
-		forwardingAgent, err = getSSHAgent()
-		if err != nil {
-			log.Printf("[ERROR] Failed to get SSH agent: %v", err)
-			return
-		}
+	agentConn, err := getSSHAgentConnection()
+	if err != nil {
+		log.Printf("[ERROR] Failed to get SSH agent: %v", err)
+		return
+	}
 
-	} else {
-		socketLocation := os.Getenv("SSH_AUTH_SOCK")
-		if socketLocation == "" {
-			log.Printf("[INFO] no local agent socket, will not connect agent")
-			return
-		}
-		agentConn, err := net.Dial("unix", socketLocation)
-		if err != nil {
-			log.Printf("[ERROR] could not connect to local agent socket: %s", socketLocation)
-			return
-		}
-
-		forwardingAgent = agent.NewClient(agentConn)
-		if forwardingAgent == nil {
-			log.Printf("[ERROR] Could not create agent client")
-			agentConn.Close()
-			return
-		}
+	forwardingAgent := agent.NewClient(agentConn)
+	if forwardingAgent == nil {
+		log.Printf("[ERROR] Could not create agent client")
+		agentConn.Close()
+		return
 	}
 
 	// add callback for forwarding agent to SSH config

@@ -9,7 +9,6 @@ package communicator
 import (
 	"errors"
 	"fmt"
-	"net"
 	"os"
 	"time"
 
@@ -342,14 +341,9 @@ func (c *Config) SSHConfigFunc() func(multistep.StateBag) (*ssh.ClientConfig, er
 		}
 
 		if c.SSHAgentAuth {
-			authSock := os.Getenv("SSH_AUTH_SOCK")
-			if authSock == "" {
-				return nil, fmt.Errorf("SSH_AUTH_SOCK is not set")
-			}
-
-			sshAgent, err := net.Dial("unix", authSock)
+			sshAgent, err := getSSHAgentConnection()
 			if err != nil {
-				return nil, fmt.Errorf("Cannot connect to SSH Agent socket %q: %s", authSock, err)
+				return nil, fmt.Errorf("Cannot connect to SSH Agent %s", err)
 			}
 
 			sshConfig.Auth = append(sshConfig.Auth, ssh.PublicKeysCallback(agent.NewClient(sshAgent).Signers))
