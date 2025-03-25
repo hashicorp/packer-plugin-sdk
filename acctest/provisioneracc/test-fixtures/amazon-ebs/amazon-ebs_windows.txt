@@ -17,6 +17,7 @@
   "winrm_username": "Administrator",
   "winrm_password": "SuperS3cr3t!!!!",
   "force_deregister" : true,
+  "skip_create_ami": true,
   "tags": {
     "packer-test": "true"
   }
