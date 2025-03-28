@@ -128,6 +128,4 @@ require (
 
 go 1.23.0
 
-toolchain go1.24.1
-
 retract v0.5.0 // v0.5.0 of the SDK was broken because of the replace statement for go-cty
