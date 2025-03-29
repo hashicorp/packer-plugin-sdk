@@ -15,8 +15,9 @@ import (
 	"net"
 )
 
+const pipePath = "\\\\.\\pipe\\openssh-ssh-agent"
+
 func GetSSHAgentConnection() (net.Conn, error) {
-	pipePath := "\\\\.\\pipe\\openssh-ssh-agent"
 
 	sshAgent, err := winio.DialPipe(pipePath, nil)
 	if err != nil {
