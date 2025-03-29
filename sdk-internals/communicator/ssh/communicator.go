@@ -450,14 +450,9 @@ func (c *comm) connectToAgent() {
 	}
 
 	// open connection to the local agent
-	socketLocation := os.Getenv("SSH_AUTH_SOCK")
-	if socketLocation == "" {
-		log.Printf("[INFO] no local agent socket, will not connect agent")
-		return
-	}
-	agentConn, err := net.Dial("unix", socketLocation)
+	agentConn, err := GetSSHAgentConnection()
 	if err != nil {
-		log.Printf("[ERROR] could not connect to local agent socket: %s", socketLocation)
+		log.Printf("[ERROR] Failed to get SSH agent: %v", err)
 		return
 	}
 
