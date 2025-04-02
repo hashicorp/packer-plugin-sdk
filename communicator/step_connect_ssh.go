@@ -307,9 +307,14 @@ func sshBastionConfig(config *Config) (*gossh.ClientConfig, error) {
 	}
 
 	if config.SSHBastionAgentAuth {
-		sshAgent, err := ssh.GetSSHAgentConnection()
+		authSock := os.Getenv("SSH_AUTH_SOCK")
+		if authSock == "" {
+			return nil, fmt.Errorf("SSH_AUTH_SOCK is not set")
+		}
+
+		sshAgent, err := net.Dial("unix", authSock)
 		if err != nil {
-			return nil, fmt.Errorf("Cannot connect to SSH Agent %s", err)
+			return nil, fmt.Errorf("Cannot connect to SSH Agent socket %q: %s", authSock, err)
 		}
 
 		auth = append(auth, gossh.PublicKeysCallback(agent.NewClient(sshAgent).Signers))
