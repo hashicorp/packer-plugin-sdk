@@ -188,9 +188,14 @@ type SSH struct {
 
 	// Tunneling
 
-	//
+	// Remote tunnels forward a port from your local machine to the instance.
+	// Format: ["REMOTE_PORT:LOCAL_HOST:LOCAL_PORT"]
+	// Example: "9090:localhost:80" forwards localhost:9090 on your machine to port 80 on the instance.
 	SSHRemoteTunnels []string `mapstructure:"ssh_remote_tunnels"`
-	//
+
+	// Local tunnels forward a port from the instance to your local machine.
+	// Format: ["LOCAL_PORT:REMOTE_HOST:REMOTE_PORT"]
+	// Example: "8080:localhost:3000" allows the instance to access your local machine’s port 3000 via localhost:8080.
 	SSHLocalTunnels []string `mapstructure:"ssh_local_tunnels"`
 
 	// SSH Internals
