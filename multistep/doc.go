@@ -7,13 +7,12 @@ individual "steps." These steps are strung together and run in sequence
 to achieve a more complex goal. The runner handles cleanup, cancelling, etc.
 if necessary.
 
-## Basic Example
+# Basic Example
 
 Make a step to perform some action. The step can access your "state",
 which is passed between steps by the runner.
 
-```go
-type stepAdd struct{}
+	type stepAdd struct{}
 
 	func (s *stepAdd) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	    // Read our value and assert that it is they type we want
@@ -30,11 +29,7 @@ type stepAdd struct{}
 		// cancelled so that cleanup can be performed.
 	}
 
-```
-
 Make a runner and call your array of Steps.
-
-```go
 
 	func main() {
 	    // Our "bag of state" that we read the value from
@@ -53,14 +48,10 @@ Make a runner and call your array of Steps.
 	    runner.Run(context.Background(), state)
 	}
 
-```
-
 This will produce:
 
-```
-Value is 0
-Value is 1
-Value is 2
-```
+	Value is 0
+	Value is 1
+	Value is 2
 */
 package multistep
