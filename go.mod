@@ -74,7 +74,10 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-require google.golang.org/protobuf v1.33.0
+require (
+	github.com/Microsoft/go-winio v0.6.2
+	google.golang.org/protobuf v1.33.0
+)
 
 require (
 	cloud.google.com/go/compute v1.23.1 // indirect
