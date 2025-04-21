@@ -47,7 +47,7 @@ func (s *StepCopyFiles) Run(ctx context.Context, state multistep.StateBag) multi
 			removeDestinationOption = "--remove-destination"
 		}
 		for _, path := range s.Files {
-			ui.Message(path)
+			ui.Say(path)
 			chrootPath := filepath.Join(mountPath, path)
 			log.Printf("Copying '%s' to '%s'", path, chrootPath)
 

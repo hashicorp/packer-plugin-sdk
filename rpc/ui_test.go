@@ -52,11 +52,6 @@ func (u *testUi) Machine(t string, args ...string) {
 	u.machineArgs = args
 }
 
-func (u *testUi) Message(message string) {
-	u.messageCalled = true
-	u.messageMessage = message
-}
-
 func (u *testUi) Sayf(message string, args ...any) {
 	u.Say(fmt.Sprintf(message, args...))
 }
@@ -117,11 +112,6 @@ func TestUiRPC(t *testing.T) {
 
 	uiClient.Error("message")
 	if ui.errorMessage != "message" {
-		t.Fatalf("bad: %#v", ui.errorMessage)
-	}
-
-	uiClient.Message("message")
-	if ui.messageMessage != "message" {
 		t.Fatalf("bad: %#v", ui.errorMessage)
 	}
 

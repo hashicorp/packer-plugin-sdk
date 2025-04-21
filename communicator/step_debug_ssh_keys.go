@@ -22,7 +22,7 @@ type StepDumpSSHKey struct {
 func (s *StepDumpSSHKey) Run(_ context.Context, state multistep.StateBag) multistep.StepAction {
 	ui := state.Get("ui").(packersdk.Ui)
 
-	ui.Message(fmt.Sprintf("Saving key for debug purposes: %s", s.Path))
+	ui.Say(fmt.Sprintf("Saving key for debug purposes: %s", s.Path))
 
 	err := os.WriteFile(s.Path, s.SSH.SSHPrivateKey, 0700)
 	if err != nil {

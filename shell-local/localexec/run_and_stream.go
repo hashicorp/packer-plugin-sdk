@@ -75,7 +75,7 @@ func RunAndStream(cmd *exec.Cmd, ui packersdk.Ui, sensitive []string) error {
 		for data := range ch {
 			data = cleanOutputLine(data)
 			if data != "" {
-				ui.Message(data)
+				ui.Say(data)
 			}
 		}
 	}

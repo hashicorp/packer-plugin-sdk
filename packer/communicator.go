@@ -149,7 +149,7 @@ OutputLoop:
 			}
 		case output := <-stdoutCh:
 			if output != "" {
-				ui.Message(r.cleanOutputLine(output))
+				ui.Say(r.cleanOutputLine(output))
 			}
 		case <-r.exitCh:
 			break OutputLoop
@@ -161,7 +161,7 @@ OutputLoop:
 	// Make sure we finish off stdout/stderr because we may have gotten
 	// a message from the exit channel before finishing these first.
 	for output := range stdoutCh {
-		ui.Message(r.cleanOutputLine(output))
+		ui.Say(r.cleanOutputLine(output))
 	}
 
 	for output := range stderrCh {

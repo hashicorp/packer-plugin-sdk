@@ -104,7 +104,7 @@ func (s *StepCreateCD) Run(ctx context.Context, state multistep.StateBag) multis
 		return multistep.ActionHalt
 	}
 
-	ui.Message("Done copying paths from CD_dirs")
+	ui.Say("Done copying paths from CD_dirs")
 
 	// Set the path to the CD so it can be used later
 	state.Put("cd_path", CDPath)

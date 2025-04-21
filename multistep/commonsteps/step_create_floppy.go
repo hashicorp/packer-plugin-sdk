@@ -132,7 +132,7 @@ func (s *StepCreateFloppy) Run(ctx context.Context, state multistep.StateBag) mu
 		}
 		if !info.IsDir() {
 			crawlDirectoryFiles = append(crawlDirectoryFiles, path)
-			ui.Message(fmt.Sprintf("Adding file: %s", path))
+			ui.Say(fmt.Sprintf("Adding file: %s", path))
 		}
 		return nil
 	}
@@ -142,7 +142,7 @@ func (s *StepCreateFloppy) Run(ctx context.Context, state multistep.StateBag) mu
 	var filelist = make(chan string)
 	go globFiles(s.Files, filelist)
 
-	ui.Message("Copying files flatly from floppy_files")
+	ui.Say("Copying files flatly from floppy_files")
 	for {
 		filename, ok := <-filelist
 		if !ok {
@@ -157,7 +157,7 @@ func (s *StepCreateFloppy) Run(ctx context.Context, state multistep.StateBag) mu
 
 		// walk through directory adding files to the root of the fs
 		if finfo.IsDir() {
-			ui.Message(fmt.Sprintf("Copying directory: %s", filename))
+			ui.Say(fmt.Sprintf("Copying directory: %s", filename))
 
 			err := filepath.Walk(filename, crawlDirectory)
 			if err != nil {
@@ -178,17 +178,17 @@ func (s *StepCreateFloppy) Run(ctx context.Context, state multistep.StateBag) mu
 		}
 
 		// add just a single file
-		ui.Message(fmt.Sprintf("Copying file: %s", filename))
+		ui.Say(fmt.Sprintf("Copying file: %s", filename))
 		if err = s.Add(cache, filename); err != nil {
 			state.Put("error", fmt.Errorf("Error adding file from floppy_files : %s : %s", filename, err))
 			return multistep.ActionHalt
 		}
 		s.FilesAdded[filename] = true
 	}
-	ui.Message("Done copying files from floppy_files")
+	ui.Say("Done copying files from floppy_files")
 
 	// Collect all paths (expanding wildcards) into pathqueue
-	ui.Message("Collecting paths from floppy_dirs")
+	ui.Say("Collecting paths from floppy_dirs")
 	var pathqueue []string
 	for _, filename := range s.Directories {
 		if strings.ContainsAny(filename, "*?[") {
@@ -203,21 +203,21 @@ func (s *StepCreateFloppy) Run(ctx context.Context, state multistep.StateBag) mu
 		}
 		pathqueue = append(pathqueue, filename)
 	}
-	ui.Message(fmt.Sprintf("Resulting paths from floppy_dirs : %v", pathqueue))
+	ui.Say(fmt.Sprintf("Resulting paths from floppy_dirs : %v", pathqueue))
 
 	// Go over each path in pathqueue and copy it.
 	for _, src := range pathqueue {
-		ui.Message(fmt.Sprintf("Recursively copying : %s", src))
+		ui.Say(fmt.Sprintf("Recursively copying : %s", src))
 		err = s.Add(cache, src)
 		if err != nil {
 			state.Put("error", fmt.Errorf("Error adding path %s to floppy: %s", src, err))
 			return multistep.ActionHalt
 		}
 	}
-	ui.Message("Done copying paths from floppy_dirs")
+	ui.Say("Done copying paths from floppy_dirs")
 
 	// Collect files from floppy_content
-	ui.Message("Copying files from floppy_content")
+	ui.Say("Copying files from floppy_content")
 	for path, content := range s.Content {
 		err = s.AddContent(cache, path, content)
 		if err != nil {
@@ -226,7 +226,7 @@ func (s *StepCreateFloppy) Run(ctx context.Context, state multistep.StateBag) mu
 			return multistep.ActionHalt
 		}
 	}
-	ui.Message("Done copying files from floppy_content")
+	ui.Say("Done copying files from floppy_content")
 
 	// Set the path to the floppy so it can be used later
 	state.Put("floppy_path", s.floppyPath)

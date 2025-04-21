@@ -29,17 +29,15 @@ type SayMessage struct {
 }
 
 type MockUi struct {
-	AskCalled      bool
-	AskQuery       string
-	ErrorCalled    bool
-	ErrorMessage   string
-	MachineCalled  bool
-	MachineType    string
-	MachineArgs    []string
-	MessageCalled  bool
-	MessageMessage string
-	SayCalled      bool
-	SayMessages    []SayMessage
+	AskCalled     bool
+	AskQuery      string
+	ErrorCalled   bool
+	ErrorMessage  string
+	MachineCalled bool
+	MachineType   string
+	MachineArgs   []string
+	SayCalled     bool
+	SayMessages   []SayMessage
 
 	TrackProgressCalled    bool
 	ProgressBarAddCalled   bool
@@ -67,11 +65,6 @@ func (u *MockUi) Machine(t string, args ...string) {
 	u.MachineCalled = true
 	u.MachineType = t
 	u.MachineArgs = args
-}
-
-func (u *MockUi) Message(message string) {
-	u.MessageCalled = true
-	u.MessageMessage = message
 }
 
 func (u *MockUi) Sayf(message string, args ...any) {
