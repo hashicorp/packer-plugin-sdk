@@ -60,6 +60,7 @@ func (u *Ui) Machine(t string, args ...string) {
 	}
 }
 
+// Deprecated: Use `Say` instead.
 func (u *Ui) Message(message string) {
 	if err := u.client.Call("Ui.Message", message, new(interface{})); err != nil {
 		log.Printf("Error in Ui.Message RPC call: %s", err)
@@ -94,6 +95,7 @@ func (u *UiServer) Machine(args *UiMachineArgs, reply *interface{}) error {
 	return nil
 }
 
+// Deprecated: Use `Say` instead.
 func (u *UiServer) Message(message *string, reply *interface{}) error {
 	u.ui.Message(*message)
 	*reply = nil

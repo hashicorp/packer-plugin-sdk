@@ -30,6 +30,7 @@ type Ui interface {
 	Askf(string, ...any) (string, error)
 	Say(string)
 	Sayf(string, ...any)
+	// Deprecated: Use `Say` instead.
 	Message(string)
 	Error(string)
 	Errorf(string, ...any)
@@ -124,18 +125,9 @@ func (rw *BasicUi) Say(message string) {
 	}
 }
 
+// Deprecated: Use `Say` instead.
 func (rw *BasicUi) Message(message string) {
-	rw.l.Lock()
-	defer rw.l.Unlock()
-
-	// Use LogSecretFilter to scrub out sensitive variables
-	message = LogSecretFilter.FilterString(message)
-
-	log.Printf("ui: %s", message)
-	_, err := fmt.Fprint(rw.Writer, message+"\n")
-	if err != nil {
-		log.Printf("[ERR] Failed to write to UI: %s", err)
-	}
+	rw.Say(message)
 }
 
 func (rw *BasicUi) Errorf(message string, args ...any) {
