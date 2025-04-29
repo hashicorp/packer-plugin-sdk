@@ -52,6 +52,7 @@ func (u *testUi) Machine(t string, args ...string) {
 	u.machineArgs = args
 }
 
+// Deprecated: Use `Say` instead.
 func (u *testUi) Message(message string) {
 	u.messageCalled = true
 	u.messageMessage = message

@@ -69,9 +69,9 @@ func (u *MockUi) Machine(t string, args ...string) {
 	u.MachineArgs = args
 }
 
+// Deprecated: Use `Say` instead.
 func (u *MockUi) Message(message string) {
-	u.MessageCalled = true
-	u.MessageMessage = message
+	u.Say(message)
 }
 
 func (u *MockUi) Sayf(message string, args ...any) {
