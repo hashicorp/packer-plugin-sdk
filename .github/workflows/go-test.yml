@@ -42,7 +42,7 @@ jobs:
           mkdir -p ${{ env.TEST_RESULTS_PATH }}/packer-plugin-sdk
 
       - name: Install buf
-        uses: bufbuild/buf-setup-action@v1.33.0
+        uses: bufbuild/buf-setup-action@a47c93e0b1648d5651a065437926377d060baa99 # v1.50.0
 
       - name: Run gofmt
         run: |
