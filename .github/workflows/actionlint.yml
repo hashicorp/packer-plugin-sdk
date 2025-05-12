@@ -10,4 +10,4 @@ jobs:
     steps:
       - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
       - name: "Check workflow files"
-        uses: docker://docker.mirror.hashicorp.services/rhysd/actionlint:latest
+        uses: docker://docker.mirror.hashicorp.services/rhysd/actionlint@sha256:93834930f56ca380be3e9a3377670d7aa5921be251b9c774891a39b3629b83b8
