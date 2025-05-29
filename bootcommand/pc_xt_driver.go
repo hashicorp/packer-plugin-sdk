@@ -95,6 +95,12 @@ func NewPCXTDriver(send SendCodeFunc, chunkSize int, interval time.Duration) *pc
 	sMap["tab"] = &scancode{[]string{"0f"}, []string{"8f"}}
 	sMap["up"] = &scancode{[]string{"e0", "48"}, []string{"e0", "c8"}}
 
+	// https://developer.apple.com/accessories/Accessory-Design-Guidelines.pdf
+	sMap["leftcommand"] = sMap["leftsuper"]
+	sMap["rightcommand"] = sMap["rightsuper"]
+	sMap["leftoption"] = sMap["leftalt"]
+	sMap["rightoption"] = sMap["rightalt"]
+
 	scancodeIndex := make(map[string]byte)
 	scancodeIndex["1234567890-="] = 0x02
 	scancodeIndex["!@#$%^&*()_+"] = 0x02

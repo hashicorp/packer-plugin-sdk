@@ -73,6 +73,12 @@ func NewUSBDriver(send SendUsbScanCodes, interval time.Duration) *usbDriver {
 		"leftsuper":  key.CodeLeftGUI,
 		"rightsuper": key.CodeRightGUI,
 		"spacebar":   key.CodeSpacebar,
+
+		// https://developer.apple.com/accessories/Accessory-Design-Guidelines.pdf
+		"leftcommand":  key.CodeLeftGUI,
+		"rightcommand": key.CodeRightGUI,
+		"leftoption":   key.CodeLeftAlt,
+		"rightoption":  key.CodeRightAlt,
 	}
 
 	scancodeIndex := make(map[string]key.Code)
