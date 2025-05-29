@@ -66,6 +66,10 @@ const PackerKeyDefault = 100 * time.Millisecond
 //
 // -   `<leftSuper> <rightSuper>` - Simulates pressing the ⌘ or Windows key.
 //
+// -   `<leftCommand> <rightCommand>` - Simulates pressing the ⌘ key.
+//
+// -   `<leftOption> <rightOption>` - Simulates pressing the ⌥ key.
+//
 //   - `<wait> <wait5> <wait10>` - Adds a 1, 5 or 10 second pause before
 //     sending any additional keys. This is useful if you have to generally
 //     wait for the UI to update before typing more.
