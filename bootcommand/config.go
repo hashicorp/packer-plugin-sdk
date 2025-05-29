@@ -64,7 +64,7 @@ const PackerKeyDefault = 100 * time.Millisecond
 //
 // -   `<leftShift> <rightShift>` - Simulates pressing the shift key.
 //
-// -   `<leftSuper> <rightSuper>` - Simulates pressing the ⌘ or Windows key.
+// -   `<leftSuper> <rightSuper>` - Simulates pressing the super key.
 //
 // -   `<leftCommand> <rightCommand>` - Simulates pressing the ⌘ key.
 //
