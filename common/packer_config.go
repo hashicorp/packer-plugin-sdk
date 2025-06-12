@@ -38,6 +38,10 @@ const (
 	// This key contains a map[string]string of the user variables for
 	// template processing.
 	UserVariablesConfigKey = "packer_user_variables"
+
+	// This key contains a list of sensitive variables that
+	// should not be logged or printed in any way.
+	SensitiveVarsConfigKey = "packer_sensitive_variables"
 )
 
 // PackerConfig is a struct that contains the configuration keys that
