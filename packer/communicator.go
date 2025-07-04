@@ -123,11 +123,6 @@ func (r *RemoteCmd) RunWithUi(ctx context.Context, c Communicator, ui Ui) error 
 		r.Stderr = io.MultiWriter(r.Stderr, stderr_w)
 	}
 
-	// Start the command
-	if err := c.Start(ctx, r); err != nil {
-		return err
-	}
-
 	// Create the channels we'll use for data
 	stdoutCh := iochan.DelimReader(stdout_r, '\n')
 	stderrCh := iochan.DelimReader(stderr_r, '\n')
@@ -140,32 +135,49 @@ func (r *RemoteCmd) RunWithUi(ctx context.Context, c Communicator, ui Ui) error 
 	}()
 
 	// Loop and get all our output
-OutputLoop:
-	for {
-		select {
-		case output := <-stderrCh:
-			if output != "" {
-				ui.Error(r.cleanOutputLine(output))
+	var wg sync.WaitGroup
+	var ctxErr error
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+		exiting := false
+
+		for !exiting {
+			select {
+			case output, ok := <-stderrCh:
+				if ok && output != "" {
+					ui.Error(r.cleanOutputLine(output))
+				}
+			case output, ok := <-stdoutCh:
+				if ok && output != "" {
+					ui.Say(r.cleanOutputLine(output))
+				}
+			case <-r.exitCh:
+				exiting = true
+			case <-ctx.Done():
+				ctxErr = ctx.Err()
+				return
 			}
-		case output := <-stdoutCh:
-			if output != "" {
-				ui.Message(r.cleanOutputLine(output))
-			}
-		case <-r.exitCh:
-			break OutputLoop
-		case <-ctx.Done():
-			return ctx.Err()
 		}
+
+		// Drain remaining messages from stdout and stderr if channels are still open.
+		for output := range stdoutCh {
+			ui.Say(r.cleanOutputLine(output))
+		}
+		for output := range stderrCh {
+			ui.Error(r.cleanOutputLine(output))
+		}
+	}()
+
+	// Start the command
+	if err := c.Start(ctx, r); err != nil {
+		return err
 	}
 
-	// Make sure we finish off stdout/stderr because we may have gotten
-	// a message from the exit channel before finishing these first.
-	for output := range stdoutCh {
-		ui.Message(r.cleanOutputLine(output))
-	}
-
-	for output := range stderrCh {
-		ui.Error(r.cleanOutputLine(output))
+	wg.Wait()
+	if ctxErr != nil {
+		return ctxErr
 	}
 
 	return nil

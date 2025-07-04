@@ -16,7 +16,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/masterzen/winrm"
@@ -82,50 +81,12 @@ func New(config *Config) (*Communicator, error) {
 
 // Start implementation of communicator.Communicator interface
 func (c *Communicator) Start(ctx context.Context, rc *packersdk.RemoteCmd) error {
-	shell, err := c.client.CreateShell()
-	if err != nil {
-		return err
-	}
-
 	log.Printf("[INFO] starting remote command: %s", rc.Command)
-	cmd, err := shell.Execute(rc.Command)
-	if err != nil {
-		return err
-	}
+	exitCode, err := c.client.Run(rc.Command, rc.Stdout, rc.Stderr)
 
-	go runCommand(shell, cmd, rc)
-	return nil
-}
-
-func runCommand(shell *winrm.Shell, cmd *winrm.Command, rc *packersdk.RemoteCmd) {
-	defer shell.Close()
-	var wg sync.WaitGroup
-
-	copyFunc := func(w io.Writer, r io.Reader) {
-		defer wg.Done()
-		io.Copy(w, r)
-	}
-
-	if rc.Stdout != nil && cmd.Stdout != nil {
-		wg.Add(1)
-		go copyFunc(rc.Stdout, cmd.Stdout)
-	} else {
-		log.Printf("[WARN] Failed to read stdout for command '%s'", rc.Command)
-	}
-
-	if rc.Stderr != nil && cmd.Stderr != nil {
-		wg.Add(1)
-		go copyFunc(rc.Stderr, cmd.Stderr)
-	} else {
-		log.Printf("[WARN] Failed to read stderr for command '%s'", rc.Command)
-	}
-
-	cmd.Wait()
-	wg.Wait()
-
-	code := cmd.ExitCode()
-	log.Printf("[INFO] command '%s' exited with code: %d", rc.Command, code)
-	rc.SetExited(code)
+	rc.SetExited(exitCode)
+	log.Printf("[INFO] command '%s' exited with code: %d", rc.Command, exitCode)
+	return err
 }
 
 // Upload implementation of communicator.Communicator interface
