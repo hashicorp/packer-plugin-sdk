@@ -4,20 +4,19 @@
 package secretsmanager
 
 import (
+	"context"
 	"testing"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/secretsmanager"
-	"github.com/aws/aws-sdk-go/service/secretsmanager/secretsmanageriface"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 )
 
 type mockedSecret struct {
-	secretsmanageriface.SecretsManagerAPI
 	Resp secretsmanager.GetSecretValueOutput
 }
 
-// GetSecret return mocked secret value
-func (m mockedSecret) GetSecretValue(in *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error) {
+// GetSecretValue return mocked secret value
+func (m mockedSecret) GetSecretValue(ctx context.Context, in *secretsmanager.GetSecretValueInput, optFns ...func(*secretsmanager.Options)) (*secretsmanager.GetSecretValueOutput, error) {
 	return &m.Resp, nil
 }
 

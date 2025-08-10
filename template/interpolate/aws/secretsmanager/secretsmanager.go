@@ -6,64 +6,73 @@
 package secretsmanager
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/secretsmanager"
-	"github.com/aws/aws-sdk-go/service/secretsmanager/secretsmanageriface"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 )
+
+// SecretsManagerAPI defines the interface for AWS Secrets Manager operations
+type SecretsManagerAPI interface {
+	GetSecretValue(ctx context.Context, params *secretsmanager.GetSecretValueInput, optFns ...func(*secretsmanager.Options)) (*secretsmanager.GetSecretValueOutput, error)
+}
 
 // Client represents an AWS Secrets Manager client
 type Client struct {
 	config *AWSConfig
-	api    secretsmanageriface.SecretsManagerAPI
+	api    SecretsManagerAPI
 }
 
-// New creates an AWS Session Manager Client
+// New creates an AWS Secrets Manager Client
 func New(config *AWSConfig) *Client {
 	c := &Client{
 		config: config,
 	}
 
-	s := c.newSession(config)
-	c.api = secretsmanager.New(s)
+	cfg := c.loadConfig(config)
+	c.api = secretsmanager.NewFromConfig(cfg)
 	return c
 }
 
-func (c *Client) newSession(config *AWSConfig) *session.Session {
-	// Initialize config with error verbosity
-	sessConfig := aws.NewConfig().WithCredentialsChainVerboseErrors(true)
+func (c *Client) loadConfig(awsConfig *AWSConfig) aws.Config {
+	ctx := context.Background()
 
-	if config.Region != "" {
-		sessConfig = sessConfig.WithRegion(config.Region)
+	var opts []func(*config.LoadOptions) error
+
+	if awsConfig.Region != "" {
+		opts = append(opts, config.WithRegion(awsConfig.Region))
 	}
 
-	opts := session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-		Config:            *sessConfig,
+	cfg, err := config.LoadDefaultConfig(ctx, opts...)
+	if err != nil {
+		// In v1, session.Must would panic on error, maintaining same behavior
+		panic(fmt.Sprintf("failed to load AWS config: %v", err))
 	}
 
-	return session.Must(session.NewSessionWithOptions(opts))
+	return cfg
 }
 
 // GetSecret return an AWS Secret Manager secret
 // in plain text from a given secret name
 func (c *Client) GetSecret(spec *SecretSpec, raw bool) (string, error) {
+	ctx := context.Background()
+
 	params := &secretsmanager.GetSecretValueInput{
 		SecretId:     aws.String(spec.Name),
 		VersionStage: aws.String("AWSCURRENT"),
 	}
 
-	resp, err := c.api.GetSecretValue(params)
+	resp, err := c.api.GetSecretValue(ctx, params)
 	if err != nil {
 		return "", err
 	}
 
-	if resp.SecretString == nil {
+	if resp == nil || resp.SecretString == nil {
 		return "", errors.New("Secret is not string")
 	}
 
