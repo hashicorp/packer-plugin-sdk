@@ -82,7 +82,7 @@ func New(config *Config) (*Communicator, error) {
 // Start implementation of communicator.Communicator interface
 func (c *Communicator) Start(ctx context.Context, rc *packersdk.RemoteCmd) error {
 	log.Printf("[INFO] starting remote command: %s", rc.Command)
-	exitCode, err := c.client.Run(rc.Command, rc.Stdout, rc.Stderr)
+	exitCode, err := c.client.RunWithContext(ctx, rc.Command, rc.Stdout, rc.Stderr)
 
 	rc.SetExited(exitCode)
 	log.Printf("[INFO] command '%s' exited with code: %d", rc.Command, exitCode)
