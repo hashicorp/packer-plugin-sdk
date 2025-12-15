@@ -35,6 +35,7 @@ import (
 	"os"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/fatih/structtag"
@@ -51,6 +52,8 @@ var (
 	//go:embed README.md
 	readme string
 )
+
+const HCL_LABEL_INDEX_KEY = "hcllabelindex"
 
 type Command struct {
 	typeNames string
@@ -158,7 +161,7 @@ func (cmd *Command) Run(args []string) int {
 			return 1
 		}
 
-		flatenedStruct, err = addCtyTagToStruct(flatenedStruct)
+		flatenedStruct, err = addTagsToStruct(flatenedStruct)
 		if err != nil {
 			log.Printf("%s.%s: %s", obj.Pkg().Name(), obj.Id(), err)
 			return 1
@@ -268,12 +271,12 @@ func outputStructHCL2SpecBody(w io.Writer, s *types.Struct) {
 // outputHCL2SpecField is called on each field of a struct.
 // outputHCL2SpecField writes the values of the `map[string]hcldec.Spec` map
 // supposed to define the HCL spec of a struct.
-func outputHCL2SpecField(w io.Writer, accessor string, fieldType types.Type, tag *structtag.Tags) {
-	if m2h, err := tag.Get(cmdPrefix); err == nil && m2h.HasOption("self-defined") {
+func outputHCL2SpecField(w io.Writer, accessor string, fieldType types.Type, tags *structtag.Tags) {
+	if m2h, err := tags.Get(cmdPrefix); err == nil && m2h.HasOption("self-defined") {
 		fmt.Fprintf(w, `(&%s{}).HCL2Spec()`, fieldType.String())
 		return
 	}
-	spec, _ := goFieldToCtyType(accessor, fieldType)
+	spec, _ := goFieldToCtyType(accessor, fieldType, tags)
 	switch spec := spec.(type) {
 	case string:
 		fmt.Fprint(w, spec)
@@ -290,21 +293,38 @@ func outputHCL2SpecField(w io.Writer, accessor string, fieldType types.Type, tag
 // a cty.Type or a string. The second argument is used for recursion and is the
 // type that will be used by the parent. For example when fieldType is a []string; a
 // recursive goFieldToCtyType call will return a cty.String.
-func goFieldToCtyType(accessor string, fieldType types.Type) (interface{}, cty.Type) {
+func goFieldToCtyType(accessor string, fieldType types.Type, tags *structtag.Tags) (interface{}, cty.Type) {
 	switch f := fieldType.(type) {
 	case *types.Pointer:
-		return goFieldToCtyType(accessor, f.Elem())
+		return goFieldToCtyType(accessor, f.Elem(), tags)
 	case *types.Basic:
+		if f.Kind() == types.String {
+			hcl, err1 := tags.Get("hcl")
+			hcllabelindex, err2 := tags.Get(HCL_LABEL_INDEX_KEY)
+			if err1 == nil && err2 == nil && hcl.HasOption("label") {
+				index, err := strconv.Atoi(hcllabelindex.Name)
+				if err != nil {
+					panic(err)
+				}
+				return &hcldec.BlockLabelSpec{
+					Index: index,
+					Name:  accessor,
+				}, cty.NilType
+			}
+		}
+
 		ctyType := basicKindToCtyType(f.Kind())
+
 		return &hcldec.AttrSpec{
 			Name:     accessor,
 			Type:     ctyType,
-			Required: false,
+			Required: hasTrueRequiredStructTag(tags),
 		}, ctyType
 	case *types.Map:
 		return &hcldec.AttrSpec{
-			Name: accessor,
-			Type: cty.Map(cty.String), // for now everything can be simplified to a map[string]string
+			Name:     accessor,
+			Type:     cty.Map(cty.String), // for now everything can be simplified to a map[string]string
+			Required: hasTrueRequiredStructTag(tags),
 		}, cty.Map(cty.String)
 	case *types.Named:
 		// Named is the relative type when of a field with a struct.
@@ -315,10 +335,18 @@ func goFieldToCtyType(accessor string, fieldType types.Type) (interface{}, cty.T
 		case *types.Struct:
 			// A struct returns NilType because its HCL2Spec is written in the related file
 			// and we don't need to write it again.
-			return fmt.Sprintf(`&hcldec.BlockSpec{TypeName: "%s",`+
-				` Nested: hcldec.ObjectSpec((*%s)(nil).HCL2Spec())}`, accessor, f.String()), cty.NilType
+			reqString := `false`
+			if hasTrueRequiredStructTag(tags) {
+				reqString = `true`
+			}
+			return fmt.Sprintf(
+				`&hcldec.BlockSpec{TypeName: "%s", `+
+					`Nested: hcldec.ObjectSpec((*%s)(nil).HCL2Spec()), `+
+					`Required: %s}`,
+				accessor, f.String(), reqString,
+			), cty.NilType
 		default:
-			return goFieldToCtyType(accessor, underlyingType)
+			return goFieldToCtyType(accessor, underlyingType, tags)
 		}
 	case *types.Slice:
 		elem := f.Elem()
@@ -336,16 +364,23 @@ func goFieldToCtyType(accessor string, fieldType types.Type) (interface{}, cty.T
 			case *types.Struct:
 				fmt.Fprintf(b, `hcldec.ObjectSpec((*%s)(nil).HCL2Spec())`, elem.String())
 			}
-			return fmt.Sprintf(`&hcldec.BlockListSpec{TypeName: "%s", Nested: %s}`, accessor, b.String()), cty.NilType
+			minCount := 0
+			if hasTrueRequiredStructTag(tags) {
+				minCount = 1
+			}
+			return fmt.Sprintf(
+				`&hcldec.BlockListSpec{TypeName: "%s", Nested: %s, MinItems: %d}`,
+				accessor, b.String(), minCount,
+			), cty.NilType
 		default:
-			_, specType := goFieldToCtyType(accessor, elem)
+			_, specType := goFieldToCtyType(accessor, elem, tags)
 			if specType == cty.NilType {
-				return goFieldToCtyType(accessor, elem.Underlying())
+				return goFieldToCtyType(accessor, elem.Underlying(), tags)
 			}
 			return &hcldec.AttrSpec{
 				Name:     accessor,
 				Type:     cty.List(specType),
-				Required: false,
+				Required: hasTrueRequiredStructTag(tags),
 			}, cty.List(specType)
 		}
 	}
@@ -353,7 +388,7 @@ func goFieldToCtyType(accessor string, fieldType types.Type) (interface{}, cty.T
 	fmt.Fprintf(b, `%#v`, &hcldec.AttrSpec{
 		Name:     accessor,
 		Type:     basicKindToCtyType(types.Bool),
-		Required: false,
+		Required: hasTrueRequiredStructTag(tags),
 	})
 	fmt.Fprintf(b, `/* TODO(azr): could not find type */`)
 	return b.String(), cty.NilType
@@ -381,9 +416,15 @@ func basicKindToCtyType(kind types.BasicKind) cty.Type {
 func outputStructFields(w io.Writer, s *types.Struct) {
 	for i := 0; i < s.NumFields(); i++ {
 		field, tag := s.Field(i), s.Tag(i)
+		st, err := structtag.Parse(tag)
+		if err == nil {
+			// Remove hcllabelindex from the printout because it is not needed
+			// in the generated struct.
+			st.Delete(HCL_LABEL_INDEX_KEY)
+		}
 		fieldNameStr := field.String()
 		fieldNameStr = strings.Replace(fieldNameStr, "field ", "", 1)
-		fmt.Fprintf(w, "	%s `%s`\n", fieldNameStr, tag)
+		fmt.Fprintf(w, "	%s `%s`\n", fieldNameStr, st.String())
 	}
 }
 
@@ -438,19 +479,50 @@ func getUsedImports(s *types.Struct) map[NamePath]*types.Package {
 	return res
 }
 
-func addCtyTagToStruct(s *types.Struct) (*types.Struct, error) {
+func isCtyStringOrStringPointer(field *types.Var) bool {
+	switch f := field.Type().(type) {
+	case *types.Basic:
+		if f.Kind() == types.String {
+			return true
+		}
+	case *types.Pointer:
+		switch fp := f.Elem().(type) {
+		case *types.Basic:
+			if fp.Kind() == types.String {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func addTagsToStruct(s *types.Struct) (*types.Struct, error) {
+	var hclLabelIndex = 0
+
 	vars, tags := structFields(s)
 	for i := range tags {
 		field, tag := vars[i], tags[i]
 		ctyAccessor := ToSnakeCase(field.Name())
+		var hclOptions []string
 		st, err := structtag.Parse(tag)
 		if err == nil {
 			if ms, err := st.Get("mapstructure"); err == nil && ms.Name != "" {
 				ctyAccessor = ms.Name
 			}
+			if hcl, err := st.Get("hcl"); err == nil && hcl.HasOption("label") {
+				if !isCtyStringOrStringPointer(field) {
+					return nil, fmt.Errorf("field %q has an `hcl:\",label\"` struct tag but is not a string or string pointer", ctyAccessor)
+				}
+				hclOptions = append(hclOptions, "label")
+				st.Set(&structtag.Tag{Key: HCL_LABEL_INDEX_KEY, Name: fmt.Sprintf("%d", hclLabelIndex)})
+				hclLabelIndex++
+				if required, err := st.Get("required"); err != nil || required.Name != "true" {
+					return nil, fmt.Errorf("field %q has an `hcl:\",label\"` struct tag, but has a malformed or missing `required:\"true\"` struct tag", ctyAccessor)
+				}
+			}
 		}
 		_ = st.Set(&structtag.Tag{Key: "cty", Name: ctyAccessor})
-		_ = st.Set(&structtag.Tag{Key: "hcl", Name: ctyAccessor})
+		_ = st.Set(&structtag.Tag{Key: "hcl", Name: ctyAccessor, Options: hclOptions})
 		tags[i] = st.String()
 	}
 
@@ -667,4 +739,13 @@ func goFmt(filename string, b []byte) []byte {
 		return b
 	}
 	return fb
+}
+
+func hasTrueRequiredStructTag(st *structtag.Tags) bool {
+	if st == nil {
+		return false
+	}
+
+	requiredTag, err := st.Get("required")
+	return err == nil && requiredTag.Name == "true"
 }
