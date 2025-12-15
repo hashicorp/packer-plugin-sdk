@@ -78,6 +78,12 @@ func NewVNCDriver(c VNCKeyEvent, interval time.Duration) *vncDriver {
 	sMap["tab"] = 0xFF09
 	sMap["up"] = 0xFF52
 
+	// Verified against the built-in VNC server on macOS
+	sMap["leftcommand"] = 0xFFE9
+	sMap["rightcommand"] = 0xFFEA
+	sMap["leftoption"] = 0xFFE7
+	sMap["rightoption"] = 0xFFE8
+
 	return &vncDriver{
 		c:          c,
 		interval:   keyInterval,
