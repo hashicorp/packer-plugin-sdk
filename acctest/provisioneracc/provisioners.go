@@ -243,11 +243,11 @@ func TestProvisionersAgainstBuilders(testCase *ProvisionerTestCase, t *testing.T
 				// Fail test if check failed.
 				if checkErr != nil {
 					cwd, _ := os.Getwd()
-					t.Fatalf(fmt.Sprintf("Error running provisioner acceptance"+
+					t.Fatalf("Error running provisioner acceptance"+
 						" tests: %s\nLogs can be found at %s\nand the "+
 						"acceptance test template can be found at %s",
 						checkErr.Error(), filepath.Join(cwd, logfile),
-						filepath.Join(cwd, templatePath)))
+						filepath.Join(cwd, templatePath))
 				} else {
 					os.Remove(templatePath)
 					os.Remove(logfile)

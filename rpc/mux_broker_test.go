@@ -51,7 +51,7 @@ func TestMuxBroker(t *testing.T) {
 
 	for err := range errChan {
 		if err != nil {
-			t.Fatalf(err.Error())
+			t.Fatal(err)
 		}
 	}
 }

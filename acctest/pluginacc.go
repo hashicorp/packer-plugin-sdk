@@ -84,7 +84,7 @@ func TestPlugin(t *testing.T, testCase *PluginTestCase) {
 
 	// Write config hcl2 template
 	out := bytes.NewBuffer(nil)
-	fmt.Fprintf(out, testCase.Template)
+	fmt.Fprint(out, testCase.Template)
 	outputFile, err := os.Create(templatePath)
 	if err != nil {
 		t.Fatalf("bad: failed to create template file: %s", err.Error())
@@ -111,11 +111,11 @@ func TestPlugin(t *testing.T, testCase *PluginTestCase) {
 		if testCase.CheckInit != nil {
 			if err := testCase.CheckInit(initCommand, initLogfile); err != nil {
 				cwd, _ := os.Getwd()
-				t.Fatalf(fmt.Sprintf("Error running plugin acceptance"+
+				t.Fatalf("Error running plugin acceptance"+
 					" tests: %s\nLogs can be found at %s\nand the "+
 					"acceptance test template can be found at %s",
 					err.Error(), filepath.Join(cwd, initLogfile),
-					filepath.Join(cwd, templatePath)))
+					filepath.Join(cwd, templatePath))
 			} else {
 				os.Remove(initLogfile)
 			}
@@ -151,11 +151,11 @@ func TestPlugin(t *testing.T, testCase *PluginTestCase) {
 	// Fail test if check failed.
 	if checkErr != nil {
 		cwd, _ := os.Getwd()
-		t.Fatalf(fmt.Sprintf("Error running plugin acceptance"+
+		t.Fatalf("Error running plugin acceptance"+
 			" tests: %s\nLogs can be found at %s\nand the "+
 			"acceptance test template can be found at %s",
 			checkErr.Error(), filepath.Join(cwd, logfile),
-			filepath.Join(cwd, templatePath)))
+			filepath.Join(cwd, templatePath))
 	} else {
 		os.Remove(templatePath)
 		os.Remove(logfile)
