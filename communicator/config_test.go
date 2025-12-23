@@ -496,7 +496,7 @@ func TestSSHBastion(t *testing.T) {
 
 			diff := cmp.Diff(tt.config, tt.expectedConfig)
 			if diff != "" {
-				t.Errorf(diff)
+				t.Error(diff)
 			}
 		})
 	}

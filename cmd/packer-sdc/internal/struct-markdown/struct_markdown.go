@@ -205,7 +205,7 @@ func (cmd *Command) Run(args []string) int {
 
 			outputFile, err := os.Create(outputPath)
 			if err != nil {
-				log.Fatalf(err.Error())
+				log.Fatal(err)
 				return 1
 			}
 			defer outputFile.Close()

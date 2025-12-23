@@ -210,17 +210,17 @@ func TestISOConfigPrepare_ISOChecksumLocalFile(t *testing.T) {
 	p := filepath.Join(fixtureDir, "root/subfolder.sum")
 	source, err := os.Open(p)
 	if err != nil {
-		t.Fatalf(err.Error())
+		t.Fatal(err)
 	}
 	defer source.Close()
 	destination, err := os.Create("local.sum")
 	if err != nil {
-		t.Fatalf(err.Error())
+		t.Fatal(err)
 	}
 	defer os.Remove("local.sum")
 	defer destination.Close()
 	if _, err := io.Copy(destination, source); err != nil {
-		t.Fatalf(err.Error())
+		t.Fatal(err)
 	}
 
 	i := ISOConfig{
