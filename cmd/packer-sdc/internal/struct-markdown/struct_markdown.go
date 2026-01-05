@@ -35,9 +35,9 @@ func (cmd *Command) Help() string {
 }
 
 type Version struct {
-	Version string
+	Version      string
 	ReleaseStage string
-	IsLatest bool
+	IsLatest     bool
 }
 
 type VersionResult struct {
