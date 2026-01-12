@@ -62,7 +62,8 @@ func (cmd *Command) Run(args []string) int {
 		base := filepath.Base(dir)
 		if base == "packer" || base == "packer-internal" {
 			if strings.Contains(dir, "web-unified-docs") {
-				var newDir, oldDir string
+				var newDir, oldDir, versionMetadataURL string
+				versionMetadataURL = "https://web-unified-docs-hashicorp.vercel.app/api/content/packer/version-metadata"
 				newDir, _, _ = strings.Cut(dir, "/.content-source-repos")
 				oldDir = dir
 				projectRoot = newDir
@@ -70,7 +71,7 @@ func (cmd *Command) Run(args []string) int {
 				filePath, _ = filepath.Rel(oldDir, absFilePath)
 
 				// Get version metadata from UDR to determine latest version folder
-				resp, err := http.Get("https://web-unified-docs-hashicorp.vercel.app/api/content/packer/version-metadata")
+				resp, err := http.Get(versionMetadataURL)
 				if err != nil {
 					log.Fatalf("Get: %+v", err)
 				}
