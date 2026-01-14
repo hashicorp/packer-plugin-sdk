@@ -5,10 +5,13 @@ package struct_markdown
 
 import (
 	_ "embed"
+	"encoding/json"
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -31,6 +34,16 @@ func (cmd *Command) Help() string {
 ` + readme
 }
 
+type Version struct {
+	Version      string
+	ReleaseStage string
+	IsLatest     bool
+}
+
+type VersionResult struct {
+	Result []Version
+}
+
 func (cmd *Command) Run(args []string) int {
 	if len(args) == 0 {
 		// Default: process the file
@@ -48,10 +61,41 @@ func (cmd *Command) Run(args []string) int {
 	for dir := filepath.Dir(absFilePath); len(dir) > 0 && projectRoot == ""; dir = filepath.Dir(dir) {
 		base := filepath.Base(dir)
 		if base == "packer" || base == "packer-internal" {
-			projectRoot = dir
-			filePath, _ = filepath.Rel(projectRoot, absFilePath)
-			docsFolder = filepath.Join("website", "content", "partials")
-			break
+			if strings.Contains(dir, "web-unified-docs") {
+				var newDir, oldDir, versionMetadataURL string
+				versionMetadataURL = "https://web-unified-docs-hashicorp.vercel.app/api/content/packer/version-metadata"
+				newDir, _, _ = strings.Cut(dir, "/.content-source-repos")
+				oldDir = dir
+				projectRoot = newDir
+
+				filePath, _ = filepath.Rel(oldDir, absFilePath)
+
+				// Get version metadata from UDR to determine latest version folder
+				resp, err := http.Get(versionMetadataURL)
+				if err != nil {
+					log.Fatalf("Get: %+v", err)
+				}
+				b, err := io.ReadAll(resp.Body)
+				if err != nil {
+					log.Fatalf("ReadAll: %+v", err)
+				}
+				var result VersionResult
+				json.Unmarshal(b, &result)
+				var latestVersion string
+				for _, v := range result.Result {
+					if v.IsLatest {
+						latestVersion = v.Version
+						break
+					}
+				}
+				docsFolder = filepath.Join("content", "packer", latestVersion, "content", "partials")
+				break
+			} else {
+				projectRoot = dir
+				filePath, _ = filepath.Rel(projectRoot, absFilePath)
+				docsFolder = filepath.Join("website", "content", "partials")
+				break
+			}
 		}
 		if base == "packer-plugin-sdk" {
 			projectRoot = dir
