@@ -320,6 +320,10 @@ func goFieldToCtyType(accessor string, fieldType types.Type) (interface{}, cty.T
 		default:
 			return goFieldToCtyType(accessor, underlyingType)
 		}
+	case *types.Alias:
+		// Go 1.24+ represents type aliases explicitly (e.g., os.FileMode = fs.FileMode)
+		// Unwrap the alias to get the actual type
+		return goFieldToCtyType(accessor, types.Unalias(f))
 	case *types.Slice:
 		elem := f.Elem()
 		if ptr, isPtr := elem.(*types.Pointer); isPtr {
