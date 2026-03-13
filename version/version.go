@@ -9,7 +9,6 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/go-version"
-	"github.com/hashicorp/packer-plugin-sdk/version"
 )
 
 // The git commit that was compiled. This will be filled in by the compiler.
