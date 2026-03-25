@@ -90,12 +90,9 @@ func (cmd *Command) Run(args []string) int {
 				}
 				docsFolder = filepath.Join("content", "packer", latestVersion, "content", "partials")
 				break
-			} else {
-				projectRoot = dir
-				filePath, _ = filepath.Rel(projectRoot, absFilePath)
-				docsFolder = filepath.Join("website", "content", "partials")
-				break
 			}
+			// Packer repo without web-unified-docs: exit silently without generating docs
+			return 0
 		}
 		if base == "packer-plugin-sdk" {
 			projectRoot = dir
@@ -112,7 +109,7 @@ func (cmd *Command) Run(args []string) int {
 	}
 
 	if projectRoot == "" {
-		log.Fatal("Failed to guess project ROOT. If this is a Packer plugin project please make sure the root directory begins with`packer-plugin-*`")
+		log.Fatal("Failed to guess project ROOT. If this is a Packer plugin project please make sure the root directory begins with `packer-plugin-*`")
 	}
 
 	b, err := os.ReadFile(fname)
