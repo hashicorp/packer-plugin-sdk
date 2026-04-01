@@ -63,6 +63,7 @@ func NewVNCDriver(c VNCKeyEvent, interval time.Duration) *vncDriver {
 	sMap["left"] = 0xFF51
 	sMap["leftalt"] = 0xFFE9
 	sMap["leftctrl"] = 0xFFE3
+	sMap["leftmeta"] = 0xFFE7
 	sMap["leftshift"] = 0xFFE1
 	sMap["leftsuper"] = 0xFFEB
 	sMap["menu"] = 0xFF67
@@ -72,6 +73,7 @@ func NewVNCDriver(c VNCKeyEvent, interval time.Duration) *vncDriver {
 	sMap["right"] = 0xFF53
 	sMap["rightalt"] = 0xFFEA
 	sMap["rightctrl"] = 0xFFE4
+	sMap["rightmeta"] = 0xFFE8
 	sMap["rightshift"] = 0xFFE2
 	sMap["rightsuper"] = 0xFFEC
 	sMap["spacebar"] = 0x020

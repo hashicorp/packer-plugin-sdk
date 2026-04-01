@@ -565,54 +565,66 @@ var g = &grammar{
 					},
 					&litMatcher{
 						pos:        position{line: 69, col: 73, offset: 1571},
+						val:        "leftmeta",
+						ignoreCase: true,
+						want:       "\"leftMeta\"i",
+					},
+					&litMatcher{
+						pos:        position{line: 69, col: 87, offset: 1585},
 						val:        "leftshift",
 						ignoreCase: true,
 						want:       "\"leftShift\"i",
 					},
 					&litMatcher{
-						pos:        position{line: 70, col: 11, offset: 1594},
+						pos:        position{line: 70, col: 11, offset: 1608},
 						val:        "rightalt",
 						ignoreCase: true,
 						want:       "\"rightAlt\"i",
 					},
 					&litMatcher{
-						pos:        position{line: 70, col: 25, offset: 1608},
+						pos:        position{line: 70, col: 25, offset: 1622},
 						val:        "rightctrl",
 						ignoreCase: true,
 						want:       "\"rightCtrl\"i",
 					},
 					&litMatcher{
-						pos:        position{line: 70, col: 40, offset: 1623},
+						pos:        position{line: 70, col: 40, offset: 1637},
+						val:        "rightmeta",
+						ignoreCase: true,
+						want:       "\"rightMeta\"i",
+					},
+					&litMatcher{
+						pos:        position{line: 70, col: 55, offset: 1652},
 						val:        "rightshift",
 						ignoreCase: true,
 						want:       "\"rightShift\"i",
 					},
 					&litMatcher{
-						pos:        position{line: 70, col: 56, offset: 1639},
+						pos:        position{line: 70, col: 71, offset: 1668},
 						val:        "leftsuper",
 						ignoreCase: true,
 						want:       "\"leftSuper\"i",
 					},
 					&litMatcher{
-						pos:        position{line: 70, col: 71, offset: 1654},
+						pos:        position{line: 70, col: 86, offset: 1683},
 						val:        "rightsuper",
 						ignoreCase: true,
 						want:       "\"rightSuper\"i",
 					},
 					&litMatcher{
-						pos:        position{line: 71, col: 11, offset: 1678},
+						pos:        position{line: 71, col: 11, offset: 1707},
 						val:        "left",
 						ignoreCase: true,
 						want:       "\"left\"i",
 					},
 					&litMatcher{
-						pos:        position{line: 71, col: 21, offset: 1688},
+						pos:        position{line: 71, col: 21, offset: 1717},
 						val:        "right",
 						ignoreCase: true,
 						want:       "\"right\"i",
 					},
 					&litMatcher{
-						pos:        position{line: 71, col: 32, offset: 1699},
+						pos:        position{line: 71, col: 32, offset: 1728},
 						val:        "menu",
 						ignoreCase: true,
 						want:       "\"menu\"i",
@@ -622,9 +634,9 @@ var g = &grammar{
 		},
 		{
 			name: "NonZeroDigit",
-			pos:  position{line: 73, col: 1, offset: 1708},
+			pos:  position{line: 73, col: 1, offset: 1737},
 			expr: &charClassMatcher{
-				pos:        position{line: 73, col: 16, offset: 1723},
+				pos:        position{line: 73, col: 16, offset: 1752},
 				val:        "[1-9]",
 				ranges:     []rune{'1', '9'},
 				ignoreCase: false,
@@ -633,9 +645,9 @@ var g = &grammar{
 		},
 		{
 			name: "Digit",
-			pos:  position{line: 74, col: 1, offset: 1729},
+			pos:  position{line: 74, col: 1, offset: 1758},
 			expr: &charClassMatcher{
-				pos:        position{line: 74, col: 9, offset: 1737},
+				pos:        position{line: 74, col: 9, offset: 1766},
 				val:        "[0-9]",
 				ranges:     []rune{'0', '9'},
 				ignoreCase: false,
@@ -644,48 +656,48 @@ var g = &grammar{
 		},
 		{
 			name: "TimeUnit",
-			pos:  position{line: 75, col: 1, offset: 1743},
+			pos:  position{line: 75, col: 1, offset: 1772},
 			expr: &choiceExpr{
-				pos: position{line: 75, col: 13, offset: 1755},
+				pos: position{line: 75, col: 13, offset: 1784},
 				alternatives: []interface{}{
 					&litMatcher{
-						pos:        position{line: 75, col: 13, offset: 1755},
+						pos:        position{line: 75, col: 13, offset: 1784},
 						val:        "ns",
 						ignoreCase: false,
 						want:       "\"ns\"",
 					},
 					&litMatcher{
-						pos:        position{line: 75, col: 20, offset: 1762},
+						pos:        position{line: 75, col: 20, offset: 1791},
 						val:        "us",
 						ignoreCase: false,
 						want:       "\"us\"",
 					},
 					&litMatcher{
-						pos:        position{line: 75, col: 27, offset: 1769},
+						pos:        position{line: 75, col: 27, offset: 1798},
 						val:        "µs",
 						ignoreCase: false,
 						want:       "\"µs\"",
 					},
 					&litMatcher{
-						pos:        position{line: 75, col: 34, offset: 1777},
+						pos:        position{line: 75, col: 34, offset: 1806},
 						val:        "ms",
 						ignoreCase: false,
 						want:       "\"ms\"",
 					},
 					&litMatcher{
-						pos:        position{line: 75, col: 41, offset: 1784},
+						pos:        position{line: 75, col: 41, offset: 1813},
 						val:        "s",
 						ignoreCase: false,
 						want:       "\"s\"",
 					},
 					&litMatcher{
-						pos:        position{line: 75, col: 47, offset: 1790},
+						pos:        position{line: 75, col: 47, offset: 1819},
 						val:        "m",
 						ignoreCase: false,
 						want:       "\"m\"",
 					},
 					&litMatcher{
-						pos:        position{line: 75, col: 53, offset: 1796},
+						pos:        position{line: 75, col: 53, offset: 1825},
 						val:        "h",
 						ignoreCase: false,
 						want:       "\"h\"",
@@ -696,11 +708,11 @@ var g = &grammar{
 		{
 			name:        "_",
 			displayName: "\"whitespace\"",
-			pos:         position{line: 77, col: 1, offset: 1802},
+			pos:         position{line: 77, col: 1, offset: 1831},
 			expr: &zeroOrMoreExpr{
-				pos: position{line: 77, col: 19, offset: 1820},
+				pos: position{line: 77, col: 19, offset: 1849},
 				expr: &charClassMatcher{
-					pos:        position{line: 77, col: 19, offset: 1820},
+					pos:        position{line: 77, col: 19, offset: 1849},
 					val:        "[ \\n\\t\\r]",
 					chars:      []rune{' ', '\n', '\t', '\r'},
 					ignoreCase: false,
@@ -710,11 +722,11 @@ var g = &grammar{
 		},
 		{
 			name: "EOF",
-			pos:  position{line: 79, col: 1, offset: 1832},
+			pos:  position{line: 79, col: 1, offset: 1861},
 			expr: &notExpr{
-				pos: position{line: 79, col: 8, offset: 1839},
+				pos: position{line: 79, col: 8, offset: 1868},
 				expr: &anyMatcher{
-					line: 79, col: 9, offset: 1840,
+					line: 79, col: 9, offset: 1869,
 				},
 			},
 		},
