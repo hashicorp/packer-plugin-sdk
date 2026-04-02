@@ -66,8 +66,8 @@ ExprStart = "<"
 SpecialKey = "bs"i / "del"i / "enter"i / "esc"i / "f10"i / "f11"i / "f12"i
         / "f1"i / "f2"i / "f3"i / "f4"i / "f5"i / "f6"i / "f7"i / "f8"i / "f9"i
         /  "return"i / "tab"i / "up"i / "down"i / "spacebar"i / "insert"i / "home"i
-        / "end"i / "pageUp"i / "pageDown"i / "leftAlt"i / "leftCtrl"i / "leftShift"i
-        / "rightAlt"i / "rightCtrl"i / "rightShift"i / "leftSuper"i / "rightSuper"i
+        / "end"i / "pageUp"i / "pageDown"i / "leftAlt"i / "leftCtrl"i / "leftMeta"i / "leftShift"i
+        / "rightAlt"i / "rightCtrl"i / "rightMeta"i / "rightShift"i / "leftSuper"i / "rightSuper"i
         / "left"i / "right"i / "menu"i
 
 NonZeroDigit = [1-9]
