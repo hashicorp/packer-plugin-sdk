@@ -66,9 +66,11 @@ func NewUSBDriver(send SendUsbScanCodes, interval time.Duration) *usbDriver {
 		"down":       key.CodeDownArrow,
 		"leftalt":    key.CodeLeftAlt,
 		"leftctrl":   key.CodeLeftControl,
+		"leftmeta":   key.CodeLeftGUI,  // USB HID uses GUI for Meta
 		"leftshift":  key.CodeLeftShift,
 		"rightalt":   key.CodeRightAlt,
 		"rightctrl":  key.CodeRightControl,
+		"rightmeta":  key.CodeRightGUI, // USB HID uses GUI for Meta
 		"rightshift": key.CodeRightShift,
 		"leftsuper":  key.CodeLeftGUI,
 		"rightsuper": key.CodeRightGUI,

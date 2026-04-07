@@ -62,6 +62,8 @@ const PackerKeyDefault = 100 * time.Millisecond
 //
 // -   `<leftCtrl> <rightCtrl>` - Simulates pressing the ctrl key.
 //
+// -   `<leftMeta> <rightMeta>` - Simulates pressing the Meta modifier key.
+//
 // -   `<leftShift> <rightShift>` - Simulates pressing the shift key.
 //
 // -   `<leftSuper> <rightSuper>` - Simulates pressing the ⌘ or Windows key.
