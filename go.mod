@@ -61,7 +61,7 @@ require (
 	github.com/ryanuber/go-glob v1.0.0
 	github.com/stretchr/testify v1.10.0
 	github.com/ugorji/go/codec v1.2.6
-	github.com/ulikunitz/xz v0.5.10 // indirect
+	github.com/ulikunitz/xz v0.5.14 // indirect
 	golang.org/x/crypto v0.46.0
 	golang.org/x/mobile v0.0.0-20210901025245-1fde1d6c3ca1
 	golang.org/x/mod v0.30.0
