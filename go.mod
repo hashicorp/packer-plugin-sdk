@@ -5,7 +5,7 @@ require github.com/zclconf/go-cty v1.16.3 // go-cty v1.11.0 removed gob encoding
 require (
 	cloud.google.com/go v0.110.8 // indirect
 	cloud.google.com/go/storage v1.35.1 // indirect
-	github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358 // indirect
+	github.com/Azure/go-ntlmssp v0.1.1 // indirect
 	github.com/ChrisTrenkamp/goxpath v0.0.0-20210404020558-97928f7e12b6 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/agext/levenshtein v1.2.3
