@@ -1,6 +1,13 @@
  # Latest Release
  Please refer to [releases](https://github.com/hashicorp/packer-plugin-sdk/releases) for latest CHANGELOG information.
 
+## 0.6.8 (May 18, 2026)
+
+* sdk: Update module dependencies to address authorization bypass vulnerability
+    [GH-322](https://github.com/hashicorp/packer-plugin-sdk/pull/322)
+* sdk: Add and update copyright headers for compliance
+    [GH-327](https://github.com/hashicorp/packer-plugin-sdk/pull/327)
+
 ## 0.3.1 (July 28, 2022)
 
 ## 0.3.0 (June 09, 2022)
