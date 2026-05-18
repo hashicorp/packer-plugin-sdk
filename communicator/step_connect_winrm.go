@@ -149,7 +149,7 @@ func (s *StepConnectWinRM) waitForWinRM(state multistep.StateBag, ctx context.Co
 			if err := setNoProxy(host, port); err != nil {
 				return nil, fmt.Errorf("Error setting no_proxy: %s", err)
 			}
-			if s.Config.WinRMUseNTLM {
+			if s.Config.WinRMUseNTLM.True() {
 				s.Config.WinRMTransportDecorator = ProxyTransportDecoratorWithNTLM
 			} else {
 				s.Config.WinRMTransportDecorator = ProxyTransportDecorator

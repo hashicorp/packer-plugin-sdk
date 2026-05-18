@@ -261,7 +261,7 @@ type WinRM struct {
 	// requirement for basic authentication to be enabled within the target
 	// guest. Further reading for remote connection authentication can be found
 	// [here](https://msdn.microsoft.com/en-us/library/aa384295(v=vs.85).aspx).
-	WinRMUseNTLM            bool `mapstructure:"winrm_use_ntlm"`
+	WinRMUseNTLM            config.Trilean `mapstructure:"winrm_use_ntlm"`
 	WinRMTransportDecorator func() winrm.Transporter
 }
 
@@ -635,7 +635,7 @@ func (c *Config) prepareWinRM(ctx *interpolate.Context) (errs []error) {
 		c.WinRMTimeout = 30 * time.Minute
 	}
 
-	if c.WinRMUseNTLM {
+	if c.WinRMUseNTLM.True() {
 		c.WinRMTransportDecorator = func() winrm.Transporter { return &winrm.ClientNTLM{} }
 	}
 

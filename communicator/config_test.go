@@ -16,6 +16,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
+	"github.com/hashicorp/packer-plugin-sdk/template/config"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	"github.com/masterzen/winrm"
 	"golang.org/x/crypto/ssh"
@@ -131,7 +132,7 @@ func TestConfig_winrm_use_ntlm(t *testing.T) {
 		Type: "winrm",
 		WinRM: WinRM{
 			WinRMUser:    "admin",
-			WinRMUseNTLM: true,
+			WinRMUseNTLM: config.TriTrue,
 		},
 	}
 	if err := c.Prepare(testContext(t)); len(err) > 0 {
