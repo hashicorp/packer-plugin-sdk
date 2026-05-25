@@ -1,8 +1,17 @@
  # Latest Release
  Please refer to [releases](https://github.com/hashicorp/packer-plugin-sdk/releases) for latest CHANGELOG information.
 
+## 0.6.9 (May 25, 2026)
+
+* bootcommand: Add mappings for left/right command and option keys
+    [GH-293](https://github.com/hashicorp/packer-plugin-sdk/pull/293)
+* sdk: Add and update copyright headers for compliance
+    [GH-332](https://github.com/hashicorp/packer-plugin-sdk/pull/332)
+
 ## 0.6.8 (May 18, 2026)
 
+* communicator: Change `WinRMUseNTLM` from `bool` to `config.Trilean`
+    [GH-329](https://github.com/hashicorp/packer-plugin-sdk/pull/329)
 * sdk: Update module dependencies to address authorization bypass vulnerability
     [GH-322](https://github.com/hashicorp/packer-plugin-sdk/pull/322)
 * sdk: Add and update copyright headers for compliance
