@@ -48,6 +48,26 @@ func TestUSBDriver(t *testing.T) {
 			false,
 		},
 		{
+			"<leftCommand>",
+			key.CodeLeftGUI,
+			false,
+		},
+		{
+			"<RIGHTCOMMAND>",
+			key.CodeRightGUI,
+			false,
+		},
+		{
+			"<leftoption>",
+			key.CodeLeftAlt,
+			false,
+		},
+		{
+			"<rightOption>",
+			key.CodeRightAlt,
+			false,
+		},
+		{
 			"<spacebar>",
 			key.CodeSpacebar,
 			false,

@@ -44,6 +44,27 @@ func Test_vncSpecialLookup(t *testing.T) {
 	assert.Equal(t, expected, s.e)
 }
 
+func Test_vncCommandOptionKeys(t *testing.T) {
+	in := "<leftCommand><RIGHTCOMMAND><leftoption><rightOption>"
+	expected := []event{
+		{0xFFE9, true},
+		{0xFFE9, false},
+		{0xFFEA, true},
+		{0xFFEA, false},
+		{0xFFE7, true},
+		{0xFFE7, false},
+		{0xFFE8, true},
+		{0xFFE8, false},
+	}
+	s := &sender{}
+	d := NewVNCDriver(s, time.Duration(0))
+	seq, err := GenerateExpressionSequence(in)
+	assert.NoError(t, err)
+	err = seq.Do(context.Background(), d)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, s.e)
+}
+
 func Test_vncShiftSequence(t *testing.T) {
 	in := "AbC"
 	expected := []event{
