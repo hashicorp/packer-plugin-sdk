@@ -103,7 +103,7 @@ func (s *StepConnectWinRM) waitForWinRM(state multistep.StateBag, ctx context.Co
 			case <-ctx.Done():
 				log.Println("[INFO] WinRM wait cancelled. Exiting loop.")
 				return nil, errors.New("WinRM wait cancelled")
-			case <-time.After(5 * time.Second):
+			case <-time.After(s.Config.WinRMRetryInterval):
 			}
 		}
 		first = false
@@ -163,6 +163,7 @@ func (s *StepConnectWinRM) waitForWinRM(state multistep.StateBag, ctx context.Co
 			Username:           user,
 			Password:           password,
 			Timeout:            s.Config.WinRMTimeout,
+			ConnectTimeout:     s.Config.WinRMConnectTimeout,
 			Https:              s.Config.WinRMUseSSL,
 			Insecure:           s.Config.WinRMInsecure,
 			TransportDecorator: s.Config.WinRMTransportDecorator,
@@ -176,7 +177,7 @@ func (s *StepConnectWinRM) waitForWinRM(state multistep.StateBag, ctx context.Co
 	}
 	// run an "echo" command to make sure winrm is actually connected before moving on.
 	var connectCheckCommand = winrmcmd.Powershell(`if (Test-Path variable:global:ProgressPreference){$ProgressPreference='SilentlyContinue'}; echo "WinRM connected."`)
-	var retryableSleep = 5 * time.Second
+	var retryableSleep = s.Config.WinRMRetryInterval
 	// run an "echo" command to make sure that the winrm is connected
 	for {
 		cmd := &packersdk.RemoteCmd{Command: connectCheckCommand}
