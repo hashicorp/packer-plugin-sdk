@@ -9,7 +9,7 @@ require (
 	github.com/ChrisTrenkamp/goxpath v0.0.0-20210404020558-97928f7e12b6 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/agext/levenshtein v1.2.3
-	github.com/antchfx/xpath v1.1.11 // indirect
+	github.com/antchfx/xpath v1.3.6 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.37.2
 	github.com/aws/aws-sdk-go-v2/config v1.30.3
@@ -61,17 +61,17 @@ require (
 	github.com/ryanuber/go-glob v1.0.0
 	github.com/stretchr/testify v1.11.1
 	github.com/ugorji/go/codec v1.2.6
-	github.com/ulikunitz/xz v0.5.10 // indirect
-	golang.org/x/crypto v0.46.0
+	github.com/ulikunitz/xz v0.5.15 // indirect
+	golang.org/x/crypto v0.53.0
 	golang.org/x/mobile v0.0.0-20210901025245-1fde1d6c3ca1
-	golang.org/x/mod v0.30.0
-	golang.org/x/net v0.48.0
-	golang.org/x/sync v0.19.0
-	golang.org/x/sys v0.39.0 // indirect
-	golang.org/x/term v0.38.0
-	golang.org/x/text v0.32.0 // indirect
+	golang.org/x/mod v0.36.0
+	golang.org/x/net v0.56.0
+	golang.org/x/sync v0.21.0
+	golang.org/x/sys v0.46.0 // indirect
+	golang.org/x/term v0.44.0
+	golang.org/x/text v0.38.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
-	golang.org/x/tools v0.39.0
+	golang.org/x/tools v0.45.0
 	google.golang.org/api v0.230.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
@@ -159,6 +159,6 @@ require (
 	google.golang.org/grpc v1.79.3 // indirect
 )
 
-go 1.25.10
+go 1.25.11
 
 retract v0.5.0 // v0.5.0 of the SDK was broken because of the replace statement for go-cty
