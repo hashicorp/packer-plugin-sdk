@@ -117,7 +117,9 @@ func (state *scpDownloadState) FileProtocol(path string, info os.FileInfo, in *b
 	}
 	defer f.Close()
 
-	io.CopyN(out, f, size)
+	if _, err := io.CopyN(out, f, size); err != nil {
+		return err
+	}
 	fmt.Fprint(out, scpOK)
 
 	return scpResponse(in)
