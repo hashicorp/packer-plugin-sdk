@@ -126,12 +126,18 @@ func (r *RemoteCmd) RunWithUi(ctx context.Context, c Communicator, ui Ui) error 
 	// Create the channels we'll use for data
 	stdoutCh := iochan.DelimReader(stdout_r, '\n')
 	stderrCh := iochan.DelimReader(stderr_r, '\n')
+	cleanupCh := make(chan struct{})
+	defer close(cleanupCh)
 
 	// Start the goroutine to watch for the exit
 	go func() {
-		defer stdout_w.Close()
-		defer stderr_w.Close()
-		r.Wait()
+		select {
+		case <-r.exitCh:
+		case <-cleanupCh:
+		}
+
+		stdout_w.Close()
+		stderr_w.Close()
 	}()
 
 	// Loop and get all our output
@@ -141,32 +147,31 @@ func (r *RemoteCmd) RunWithUi(ctx context.Context, c Communicator, ui Ui) error 
 
 	go func() {
 		defer wg.Done()
-		exiting := false
 
-		for !exiting {
+		for stdoutCh != nil || stderrCh != nil {
 			select {
 			case output, ok := <-stderrCh:
-				if ok && output != "" {
+				if !ok {
+					stderrCh = nil
+					continue
+				}
+
+				if output != "" {
 					ui.Error(r.cleanOutputLine(output))
 				}
 			case output, ok := <-stdoutCh:
-				if ok && output != "" {
+				if !ok {
+					stdoutCh = nil
+					continue
+				}
+
+				if output != "" {
 					ui.Say(r.cleanOutputLine(output))
 				}
-			case <-r.exitCh:
-				exiting = true
 			case <-ctx.Done():
 				ctxErr = ctx.Err()
 				return
 			}
-		}
-
-		// Drain remaining messages from stdout and stderr if channels are still open.
-		for output := range stdoutCh {
-			ui.Say(r.cleanOutputLine(output))
-		}
-		for output := range stderrCh {
-			ui.Error(r.cleanOutputLine(output))
 		}
 	}()
 
