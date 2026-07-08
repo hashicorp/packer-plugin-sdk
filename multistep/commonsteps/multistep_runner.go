@@ -6,14 +6,12 @@ package commonsteps
 import (
 	"context"
 	"fmt"
-	"log"
-	"reflect"
-	"strings"
-	"time"
-
 	"github.com/hashicorp/packer-plugin-sdk/common"
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
+	"log"
+	"reflect"
+	"strings"
 )
 
 func newRunner(steps []multistep.Step, config common.PackerConfig, ui packersdk.Ui) (multistep.Runner, multistep.DebugPauseFn) {
@@ -121,7 +119,9 @@ func (s askStep) Run(ctx context.Context, state multistep.StateBag) (action mult
 			s.ui.Error(fmt.Sprintf("%s", err))
 		}
 
-		switch ask(s.ui, typeName(s.step), state) {
+		s.ui.Say(fmt.Sprintf("Step %q failed", typeName(s.step)))
+
+		switch askPrompt(s.ui) {
 		case askCleanup:
 			return
 		case askAbort:
@@ -150,26 +150,6 @@ const (
 	askAbort
 	askRetry
 )
-
-func ask(ui packersdk.Ui, name string, state multistep.StateBag) askResponse {
-	ui.Say(fmt.Sprintf("Step %q failed", name))
-
-	result := make(chan askResponse)
-	go func() {
-		result <- askPrompt(ui)
-	}()
-
-	for {
-		select {
-		case response := <-result:
-			return response
-		case <-time.After(100 * time.Millisecond):
-			if _, ok := state.GetOk(multistep.StateCancelled); ok {
-				return askCleanup
-			}
-		}
-	}
-}
 
 func askPrompt(ui packersdk.Ui) askResponse {
 	for {
