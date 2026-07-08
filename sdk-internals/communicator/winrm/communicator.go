@@ -36,6 +36,7 @@ func New(config *Config) (*Communicator, error) {
 		Port:     config.Port,
 		HTTPS:    config.Https,
 		Insecure: config.Insecure,
+		Timeout:  config.ConnectTimeout,
 
 		/*
 			TODO
