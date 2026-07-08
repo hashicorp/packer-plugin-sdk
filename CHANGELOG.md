@@ -1,6 +1,15 @@
  # Latest Release
  Please refer to [releases](https://github.com/hashicorp/packer-plugin-sdk/releases) for latest CHANGELOG information.
 
+## 0.6.10 (July 08, 2026)
+
+* communicator: Fix goroutine leaks in the Windows communicator
+    [GH-338](https://github.com/hashicorp/packer-plugin-sdk/pull/338)
+* sdk: Update Go module dependencies
+    [GH-336](https://github.com/hashicorp/packer-plugin-sdk/pull/336)
+* sdk: Add and update copyright headers for compliance
+    [GH-337](https://github.com/hashicorp/packer-plugin-sdk/pull/337)
+
 ## 0.6.9 (May 25, 2026)
 
 * bootcommand: Add mappings for left/right command and option keys
