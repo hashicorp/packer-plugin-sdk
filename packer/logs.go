@@ -6,6 +6,7 @@ package packer
 import (
 	"bytes"
 	"io"
+	"sort"
 	"strings"
 	"sync"
 )
@@ -31,10 +32,8 @@ func (l *secretFilter) SetOutput(output io.Writer) {
 }
 
 func (l *secretFilter) Write(p []byte) (n int, err error) {
-	for s := range l.s {
-		if s != "" {
-			p = bytes.Replace(p, []byte(s), []byte("<sensitive>"), -1)
-		}
+	for _, s := range l.secrets() {
+		p = bytes.ReplaceAll(p, []byte(s), []byte("<sensitive>"))
 	}
 	return l.w.Write(p)
 }
@@ -42,12 +41,32 @@ func (l *secretFilter) Write(p []byte) (n int, err error) {
 // FilterString will overwrite any senstitive variables in a string, returning
 // the filtered string.
 func (l *secretFilter) FilterString(message string) string {
-	for s := range l.s {
-		if s != "" {
-			message = strings.Replace(message, s, "<sensitive>", -1)
-		}
+	for _, s := range l.secrets() {
+		message = strings.ReplaceAll(message, s, "<sensitive>")
 	}
 	return message
+}
+
+// secrets returns the non-empty registered secrets ordered longest first.
+// Ranging over the map directly is randomly ordered, so when one secret is a
+// substring of another (e.g. "ubuntu" and "ubuntu-22.04") the shorter one could
+// be replaced first, leaving the remainder of the longer secret in the output.
+// Redacting the longest match first keeps that from happening and makes the
+// result deterministic.
+func (l *secretFilter) secrets() []string {
+	secrets := make([]string, 0, len(l.s))
+	for s := range l.s {
+		if s != "" {
+			secrets = append(secrets, s)
+		}
+	}
+	sort.Slice(secrets, func(i, j int) bool {
+		if len(secrets[i]) != len(secrets[j]) {
+			return len(secrets[i]) > len(secrets[j])
+		}
+		return secrets[i] < secrets[j]
+	})
+	return secrets
 }
 
 var LogSecretFilter secretFilter
