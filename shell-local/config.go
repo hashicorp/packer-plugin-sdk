@@ -73,29 +73,12 @@ func Validate(config *Config) error {
 	var errs *packersdk.MultiError
 
 	if runtime.GOOS == "windows" {
-		if len(config.ExecuteCommand) == 0 {
-			config.ExecuteCommand = []string{
-				"cmd",
-				"/V",
-				"/C",
-				"{{.Vars}}",
-				"call",
-				"{{.Script}}",
-			}
-		}
 		if len(config.TempfileExtension) == 0 {
 			config.TempfileExtension = ".cmd"
 		}
 	} else {
 		if config.InlineShebang == "" {
 			config.InlineShebang = "/bin/sh -e"
-		}
-		if len(config.ExecuteCommand) == 0 {
-			config.ExecuteCommand = []string{
-				"/bin/sh",
-				"-c",
-				"{{.Vars}} {{.Script}}",
-			}
 		}
 	}
 
@@ -124,6 +107,32 @@ func Validate(config *Config) error {
 			errs = packersdk.MultiErrorAppend(errs, tooManyOptionsErr)
 		} else {
 			config.Scripts = []string{config.Script}
+		}
+	}
+
+	if len(config.ExecuteCommand) == 0 {
+		if runtime.GOOS == "windows" {
+			config.ExecuteCommand = []string{
+				"cmd",
+				"/V",
+				"/C",
+				"{{.Vars}}",
+				"call",
+				"{{.Script}}",
+			}
+		} else if len(config.Inline) > 0 {
+			config.ExecuteCommand = []string{
+				"/bin/sh",
+				"-c",
+				fmt.Sprintf("{{.Vars}} %s \"$0\"", config.InlineShebang),
+				"{{.Script}}",
+			}
+		} else {
+			config.ExecuteCommand = []string{
+				"/bin/sh",
+				"-c",
+				"{{.Vars}} {{.Script}}",
+			}
 		}
 	}
 
