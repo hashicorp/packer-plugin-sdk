@@ -34,7 +34,7 @@ func TestProvisionerRPC(t *testing.T) {
 	if !p.PrepCalled {
 		t.Fatal("should be called")
 	}
-	expected := []interface{}{int64(42)}
+	expected := []any{int64(42)}
 	if !reflect.DeepEqual(p.PrepConfigs, expected) {
 		t.Fatalf("bad: %#v", p.PrepConfigs)
 	}
@@ -42,7 +42,7 @@ func TestProvisionerRPC(t *testing.T) {
 	// Test Provision
 	ui := &testUi{}
 	comm := &packersdk.MockCommunicator{}
-	if err := pClient.Provision(topCtx, ui, comm, make(map[string]interface{})); err == nil {
+	if err := pClient.Provision(topCtx, ui, comm, make(map[string]any)); err == nil {
 		t.Fatalf("Provison should have err")
 	}
 	if !p.ProvCalled {

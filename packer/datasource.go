@@ -14,7 +14,7 @@ type Datasource interface {
 	HCL2Speccer
 
 	// Configure takes values from HCL2 and applies them to the struct
-	Configure(...interface{}) error
+	Configure(...any) error
 
 	// OutputSpec is the HCL2 layout of the variable output, it will allow
 	// Packer to validate whether someone is using the output of the data

@@ -21,13 +21,13 @@ func TestDecode(t *testing.T) {
 	}
 
 	cases := map[string]struct {
-		Input  []interface{}
+		Input  []any
 		Output *Target
 		Opts   *DecodeOpts
 	}{
 		"basic": {
-			[]interface{}{
-				map[string]interface{}{
+			[]any{
+				map[string]any{
 					"name":    "bar",
 					"time":    "5s",
 					"trilean": "true",
@@ -42,8 +42,8 @@ func TestDecode(t *testing.T) {
 		},
 
 		"empty-string-trilean": {
-			[]interface{}{
-				map[string]interface{}{
+			[]any{
+				map[string]any{
 					"trilean": "",
 				},
 			},
@@ -54,11 +54,11 @@ func TestDecode(t *testing.T) {
 		},
 
 		"variables": {
-			[]interface{}{
-				map[string]interface{}{
+			[]any{
+				map[string]any{
 					"name": "{{user `name`}}",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"packer_user_variables": map[string]string{
 						"name": "bar",
 					},
@@ -71,12 +71,12 @@ func TestDecode(t *testing.T) {
 		},
 
 		"filter": {
-			[]interface{}{
-				map[string]interface{}{
+			[]any{
+				map[string]any{
 					"name":    "{{user `name`}}",
 					"address": "{{user `name`}}",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"packer_user_variables": map[string]string{
 						"name": "bar",
 					},
@@ -95,11 +95,11 @@ func TestDecode(t *testing.T) {
 		},
 
 		"build name": {
-			[]interface{}{
-				map[string]interface{}{
+			[]any{
+				map[string]any{
 					"name": "{{build_name}}",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"packer_build_name": "foo",
 				},
 			},
@@ -110,11 +110,11 @@ func TestDecode(t *testing.T) {
 		},
 
 		"build type": {
-			[]interface{}{
-				map[string]interface{}{
+			[]any{
+				map[string]any{
 					"name": "{{build_type}}",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"packer_builder_type": "foo",
 				},
 			},
@@ -145,14 +145,14 @@ func TestDecode_fixerRecommendations(t *testing.T) {
 
 	cases := []struct {
 		Reason   string
-		Input    []interface{}
+		Input    []any
 		Opts     *DecodeOpts
 		Expected string
 	}{
 		{
 			Reason: "If no plugin type is provided, don't try to match fixer options",
-			Input: []interface{}{
-				map[string]interface{}{
+			Input: []any{
+				map[string]any{
 					"name":    "bar",
 					"iso_md5": "13123412341234",
 				},
@@ -162,8 +162,8 @@ func TestDecode_fixerRecommendations(t *testing.T) {
 		},
 		{
 			Reason: "iso_md5 should always recommend packer fix regardless of plugin type",
-			Input: []interface{}{
-				map[string]interface{}{
+			Input: []any{
+				map[string]any{
 					"name":    "bar",
 					"iso_md5": "13123412341234",
 				},
@@ -173,8 +173,8 @@ func TestDecode_fixerRecommendations(t *testing.T) {
 		},
 		{
 			Reason: "filename option should generate a fixer recommendation for the manifest postprocessor",
-			Input: []interface{}{
-				map[string]interface{}{
+			Input: []any{
+				map[string]any{
 					"name":     "bar",
 					"filename": "fakefilename",
 				},
@@ -184,8 +184,8 @@ func TestDecode_fixerRecommendations(t *testing.T) {
 		},
 		{
 			Reason: "filename option should generate an unknown key error for other plugins",
-			Input: []interface{}{
-				map[string]interface{}{
+			Input: []any{
+				map[string]any{
 					"name":     "bar",
 					"filename": "fakefilename",
 				},

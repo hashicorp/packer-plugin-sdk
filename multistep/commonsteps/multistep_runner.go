@@ -68,7 +68,7 @@ func NewRunnerWithPauseFn(steps []multistep.Step, config common.PackerConfig, ui
 	return runner
 }
 
-func typeName(i interface{}) string {
+func typeName(i any) string {
 	return reflect.Indirect(reflect.ValueOf(i)).Type().Name()
 }
 

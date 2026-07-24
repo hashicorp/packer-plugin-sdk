@@ -14,7 +14,7 @@ import (
 
 type testDatasource struct {
 	configCalled bool
-	configVal    []interface{}
+	configVal    []any
 
 	outputSpecCalled bool
 	outputSpec       hcldec.ObjectSpec
@@ -25,7 +25,7 @@ type testDatasource struct {
 
 func (*testDatasource) ConfigSpec() hcldec.ObjectSpec { return nil }
 
-func (d *testDatasource) Configure(configs ...interface{}) error {
+func (d *testDatasource) Configure(configs ...any) error {
 	d.configCalled = true
 	d.configVal = configs
 	return nil
@@ -57,7 +57,7 @@ func TestDatasource(t *testing.T) {
 	if !d.configCalled {
 		t.Fatal("config should be called")
 	}
-	expected := []interface{}{int64(42)}
+	expected := []any{int64(42)}
 	if !reflect.DeepEqual(d.configVal, expected) {
 		t.Fatalf("unknown config value: %#v", d.configVal)
 	}
@@ -89,7 +89,7 @@ func TestDatasource(t *testing.T) {
 }
 
 func TestDatasource_Implements(t *testing.T) {
-	var raw interface{} = new(datasource)
+	var raw any = new(datasource)
 	if _, ok := raw.(packer.Datasource); !ok {
 		t.Fatal("not a datasource")
 	}

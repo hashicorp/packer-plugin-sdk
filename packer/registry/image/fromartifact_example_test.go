@@ -29,7 +29,7 @@ func (a *simpleArtifact) String() string {
 	return fmt.Sprintf("Imported image URL: %s", a.Id())
 }
 
-func (a *simpleArtifact) State(name string) interface{} {
+func (a *simpleArtifact) State(name string) any {
 	return nil
 }
 
@@ -78,7 +78,7 @@ func ExampleSetLabels() {
 		image_id: "service-id-123",
 	}
 
-	hcimage, _ := image.FromArtifact(a, image.SetLabels(map[string]interface{}{"kernel": "4.0", "python": "3.5"}))
+	hcimage, _ := image.FromArtifact(a, image.SetLabels(map[string]any{"kernel": "4.0", "python": "3.5"}))
 	fmt.Printf("%v", hcimage.Labels)
 	// Unordered output:
 	// map[kernel:4.0 python:3.5]

@@ -42,7 +42,7 @@ type ProgressTrackingClient struct {
 // Read will send len(b) over the wire instead of it's content
 func (u *ProgressTrackingClient) Read(b []byte) (read int, err error) {
 	defer func() {
-		if err := u.client.Call("Ui"+u.id+".Add", read, new(interface{})); err != nil {
+		if err := u.client.Call("Ui"+u.id+".Add", read, new(any)); err != nil {
 			log.Printf("Error in ProgressTrackingClient.Read RPC call: %s", err)
 		}
 	}()
@@ -51,7 +51,7 @@ func (u *ProgressTrackingClient) Read(b []byte) (read int, err error) {
 
 func (u *ProgressTrackingClient) Close() error {
 	log.Printf("closing")
-	if err := u.client.Call("Ui"+u.id+".Close", nil, new(interface{})); err != nil {
+	if err := u.client.Call("Ui"+u.id+".Close", nil, new(any)); err != nil {
 		log.Printf("Error in ProgressTrackingClient.Close RPC call: %s", err)
 	}
 	return u.stream.Close()
@@ -84,13 +84,13 @@ type ProgressTrackingServer struct {
 	stream io.ReadCloser
 }
 
-func (t *ProgressTrackingServer) Add(size int, _ *interface{}) error {
+func (t *ProgressTrackingServer) Add(size int, _ *any) error {
 	stubBytes := make([]byte, size)
 	t.stream.Read(stubBytes)
 	return nil
 }
 
-func (t *ProgressTrackingServer) Close(_, _ *interface{}) error {
+func (t *ProgressTrackingServer) Close(_, _ *any) error {
 	t.stream.Close()
 	return nil
 }

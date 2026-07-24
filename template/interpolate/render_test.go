@@ -14,14 +14,14 @@ func TestRenderInterface(t *testing.T) {
 	}
 
 	cases := map[string]struct {
-		Input  interface{}
-		Output interface{}
+		Input  any
+		Output any
 	}{
 		"basic": {
-			map[string]interface{}{
+			map[string]any{
 				"foo": "{{upper `bar`}}",
 			},
-			map[string]interface{}{
+			map[string]any{
 				"foo": "BAR",
 			},
 		},
@@ -51,37 +51,37 @@ func TestRenderInterface(t *testing.T) {
 
 func TestRenderMap(t *testing.T) {
 	cases := map[string]struct {
-		Input  interface{}
-		Output interface{}
+		Input  any
+		Output any
 		Filter *RenderFilter
 	}{
 		"basic": {
-			map[string]interface{}{
+			map[string]any{
 				"foo": "{{upper `bar`}}",
 			},
-			map[string]interface{}{
+			map[string]any{
 				"foo": "BAR",
 			},
 			nil,
 		},
 
 		"map keys shouldn't be interpolated": {
-			map[string]interface{}{
+			map[string]any{
 				"{{foo}}": "{{upper `bar`}}",
 			},
-			map[string]interface{}{
+			map[string]any{
 				"{{foo}}": "BAR",
 			},
 			nil,
 		},
 
 		"nested values": {
-			map[string]interface{}{
+			map[string]any{
 				"foo": map[string]string{
 					"bar": "{{upper `baz`}}",
 				},
 			},
-			map[string]interface{}{
+			map[string]any{
 				"foo": map[string]string{
 					"bar": "BAZ",
 				},
@@ -94,12 +94,12 @@ func TestRenderMap(t *testing.T) {
 		// https://github.com/mitchellh/reflectwalk/pull/22/commits/51d4c99fad9e9aa269e874bc3ad60313a574799f
 		// TODO: open a PR to fix it.
 		"nested value keys": {
-			map[string]interface{}{
+			map[string]any{
 				"foo": map[string]string{
 					"{{upper `bar`}}": "{{upper `baz`}}",
 				},
 			},
-			map[string]interface{}{
+			map[string]any{
 				"foo": map[string]string{
 					"BAR": "BAZ",
 				},
@@ -108,13 +108,13 @@ func TestRenderMap(t *testing.T) {
 		},
 
 		"filter": {
-			map[string]interface{}{
+			map[string]any{
 				"bar": "{{upper `baz`}}",
 				"foo": map[string]string{
 					"{{upper `bar`}}": "{{upper `baz`}}",
 				},
 			},
-			map[string]interface{}{
+			map[string]any{
 				"bar": "BAZ",
 				"foo": map[string]string{
 					"{{upper `bar`}}": "{{upper `baz`}}",
@@ -126,13 +126,13 @@ func TestRenderMap(t *testing.T) {
 		},
 
 		"filter case-insensitive": {
-			map[string]interface{}{
+			map[string]any{
 				"bar": "{{upper `baz`}}",
 				"foo": map[string]string{
 					"{{upper `bar`}}": "{{upper `baz`}}",
 				},
 			},
-			map[string]interface{}{
+			map[string]any{
 				"bar": "BAZ",
 				"foo": map[string]string{
 					"{{upper `bar`}}": "{{upper `baz`}}",

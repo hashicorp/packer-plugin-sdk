@@ -30,7 +30,7 @@ func testUI() (packersdk.Ui, func() string) {
 }
 
 func TestCopyFilesCleanupFunc_ImplementsCleanupFunc(t *testing.T) {
-	var raw interface{} = new(StepCopyFiles)
+	var raw any = new(StepCopyFiles)
 	if _, ok := raw.(Cleanup); !ok {
 		t.Fatalf("cleanup func should be a CleanupFunc")
 	}
