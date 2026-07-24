@@ -20,7 +20,7 @@ func TestStepHTTPServer_Run(t *testing.T) {
 	tests := []struct {
 		cfg         *HTTPConfig
 		want        multistep.StepAction
-		wantPort    interface{}
+		wantPort    any
 		wantContent map[string]string
 	}{
 		{

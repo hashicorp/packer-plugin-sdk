@@ -9,7 +9,7 @@ import (
 )
 
 func TestMultiError_Impl(t *testing.T) {
-	var raw interface{} = &MultiError{}
+	var raw any = &MultiError{}
 	if _, ok := raw.(error); !ok {
 		t.Fatal("MultiError must implement error")
 	}

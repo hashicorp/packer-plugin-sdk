@@ -10,7 +10,7 @@ import (
 )
 
 func TestCommIsCommunicator(t *testing.T) {
-	var raw interface{} = &comm{}
+	var raw any = &comm{}
 	if _, ok := raw.(packersdk.Communicator); !ok {
 		t.Fatalf("comm must be a communicator")
 	}

@@ -10,12 +10,12 @@ import (
 // FlatMockProvisioner is an auto-generated flat version of MockProvisioner.
 // Where the contents of a field with a `mapstructure:,squash` tag are bubbled up.
 type FlatMockProvisioner struct {
-	PrepCalled       *bool         `cty:"prep_called" hcl:"prep_called"`
-	PrepConfigs      []interface{} `cty:"prep_configs" hcl:"prep_configs"`
-	ProvCalled       *bool         `cty:"prov_called" hcl:"prov_called"`
-	ProvRetried      *bool         `cty:"prov_retried" hcl:"prov_retried"`
-	ProvCommunicator Communicator  `cty:"prov_communicator" hcl:"prov_communicator"`
-	ProvUi           Ui            `cty:"prov_ui" hcl:"prov_ui"`
+	PrepCalled       *bool        `cty:"prep_called" hcl:"prep_called"`
+	PrepConfigs      []any        `cty:"prep_configs" hcl:"prep_configs"`
+	ProvCalled       *bool        `cty:"prov_called" hcl:"prov_called"`
+	ProvRetried      *bool        `cty:"prov_retried" hcl:"prov_retried"`
+	ProvCommunicator Communicator `cty:"prov_communicator" hcl:"prov_communicator"`
+	ProvUi           Ui           `cty:"prov_ui" hcl:"prov_ui"`
 }
 
 // FlatMapstructure returns a new FlatMockProvisioner.
