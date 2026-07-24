@@ -47,29 +47,23 @@ func (c *MockCommunicator) Start(ctx context.Context, rc *RemoteCmd) error {
 	go func() {
 		var wg sync.WaitGroup
 		if rc.Stdout != nil && c.StartStdout != "" {
-			wg.Add(1)
-			go func() {
+			wg.Go(func() {
 				io.Copy(rc.Stdout, strings.NewReader(c.StartStdout))
-				wg.Done()
-			}()
+			})
 		}
 
 		if rc.Stderr != nil && c.StartStderr != "" {
-			wg.Add(1)
-			go func() {
+			wg.Go(func() {
 				io.Copy(rc.Stderr, strings.NewReader(c.StartStderr))
-				wg.Done()
-			}()
+			})
 		}
 
 		if rc.Stdin != nil {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
+			wg.Go(func() {
 				var data bytes.Buffer
 				io.Copy(&data, rc.Stdin)
 				c.StartStdin = data.String()
-			}()
+			})
 		}
 
 		wg.Wait()
