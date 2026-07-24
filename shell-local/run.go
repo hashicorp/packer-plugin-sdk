@@ -175,7 +175,7 @@ func createInterpolatedCommands(config *Config, script string, flattenedEnvVars 
 }
 
 func createFlattenedEnvVars(config *Config) (string, error) {
-	flattened := ""
+	var flattened strings.Builder
 	envVars := make(map[string]string)
 
 	// Always available Packer provided env vars
@@ -223,7 +223,7 @@ func createFlattenedEnvVars(config *Config) (string, error) {
 	sort.Strings(keys)
 
 	for _, key := range keys {
-		flattened += fmt.Sprintf(config.EnvVarFormat, key, envVars[key])
+		flattened.WriteString(fmt.Sprintf(config.EnvVarFormat, key, envVars[key]))
 	}
-	return flattened, nil
+	return flattened.String(), nil
 }
