@@ -175,9 +175,9 @@ func passthroughOrInterpolate(data map[interface{}]interface{}, s string) (strin
 			// TODO match against an actual string constant
 			if strings.Contains(hp, packerbuilderdata.PlaceholderMsg) {
 				return fmt.Sprintf("{{.%s}}", s), nil
-			} else {
-				return hp, nil
 			}
+
+			return hp, nil
 		}
 	}
 	return "", fmt.Errorf("loaded data, but couldnt find %s in it.", s)
