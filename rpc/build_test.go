@@ -137,7 +137,7 @@ func TestBuild_cancel(t *testing.T) {
 
 	b := new(testBuild)
 
-	done := make(chan interface{})
+	done := make(chan any)
 	b.runFn = func(ctx context.Context) {
 		cancelTopCtx()
 		<-ctx.Done()

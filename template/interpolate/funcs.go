@@ -29,7 +29,7 @@ func init() {
 }
 
 // Funcs are the interpolation funcs that are available within interpolations.
-var FuncGens = map[string]interface{}{
+var FuncGens = map[string]any{
 	"build_name":             funcGenBuildName,
 	"build_type":             funcGenBuildType,
 	"env":                    funcGenEnv,
@@ -60,15 +60,15 @@ var ErrVariableNotSetString = "Error: variable not set:"
 
 // FuncGenerator is a function that given a context generates a template
 // function for the template.
-type FuncGenerator func(*Context) interface{}
+type FuncGenerator func(*Context) any
 
 // Funcs returns the functions that can be used for interpolation given
 // a context.
 func Funcs(ctx *Context) template.FuncMap {
-	result := make(map[string]interface{})
+	result := make(map[string]any)
 	for k, v := range FuncGens {
 		switch v := v.(type) {
-		case func(*Context) interface{}:
+		case func(*Context) any:
 			result[k] = v(ctx)
 		default:
 			result[k] = v
@@ -83,7 +83,7 @@ func Funcs(ctx *Context) template.FuncMap {
 	return template.FuncMap(result)
 }
 
-func funcGenSplitter(ctx *Context) interface{} {
+func funcGenSplitter(ctx *Context) any {
 	return func(k string, s string, i int) (string, error) {
 		// return func(s string) (string, error) {
 		split := strings.Split(k, s)
@@ -94,7 +94,7 @@ func funcGenSplitter(ctx *Context) interface{} {
 	}
 }
 
-func funcGenBuildName(ctx *Context) interface{} {
+func funcGenBuildName(ctx *Context) any {
 	return func() (string, error) {
 		if ctx == nil || ctx.BuildName == "" {
 			return "", errors.New("build_name not available")
@@ -104,7 +104,7 @@ func funcGenBuildName(ctx *Context) interface{} {
 	}
 }
 
-func funcGenBuildType(ctx *Context) interface{} {
+func funcGenBuildType(ctx *Context) any {
 	return func() (string, error) {
 		if ctx == nil || ctx.BuildType == "" {
 			return "", errors.New("build_type not available")
@@ -114,7 +114,7 @@ func funcGenBuildType(ctx *Context) interface{} {
 	}
 }
 
-func funcGenEnv(ctx *Context) interface{} {
+func funcGenEnv(ctx *Context) any {
 	return func(k string) (string, error) {
 		if !ctx.EnableEnv {
 			// The error message doesn't have to be that detailed since
@@ -126,7 +126,7 @@ func funcGenEnv(ctx *Context) interface{} {
 	}
 }
 
-func funcGenIsotime(ctx *Context) interface{} {
+func funcGenIsotime(ctx *Context) any {
 	return func(format ...string) (string, error) {
 		if len(format) == 0 {
 			return InitTime.Format(time.RFC3339), nil
@@ -140,19 +140,19 @@ func funcGenIsotime(ctx *Context) interface{} {
 	}
 }
 
-func funcGenStrftime(ctx *Context) interface{} {
+func funcGenStrftime(ctx *Context) any {
 	return func(format string) string {
 		return strftime.Format(format, InitTime)
 	}
 }
 
-func funcGenPwd(ctx *Context) interface{} {
+func funcGenPwd(ctx *Context) any {
 	return func() (string, error) {
 		return os.Getwd()
 	}
 }
 
-func funcGenTemplateDir(ctx *Context) interface{} {
+func funcGenTemplateDir(ctx *Context) any {
 	return func() (string, error) {
 		if ctx == nil || ctx.TemplatePath == "" {
 			return "", errors.New("template path not available")
@@ -167,7 +167,7 @@ func funcGenTemplateDir(ctx *Context) interface{} {
 	}
 }
 
-func passthroughOrInterpolate(data map[interface{}]interface{}, s string) (string, error) {
+func passthroughOrInterpolate(data map[any]any, s string) (string, error) {
 	if heldPlace, ok := data[s]; ok {
 		if hp, ok := heldPlace.(string); ok {
 			// If we're in the first interpolation pass, the goal is to
@@ -183,18 +183,18 @@ func passthroughOrInterpolate(data map[interface{}]interface{}, s string) (strin
 	return "", fmt.Errorf("loaded data, but couldnt find %s in it.", s)
 
 }
-func funcGenBuild(ctx *Context) interface{} {
+func funcGenBuild(ctx *Context) any {
 	// Depending on where the context data is coming from, it could take a few
 	// different map types. The following switch standardizes the map types
 	// so we can act on them correctly.
 	return func(s string) (string, error) {
 		switch data := ctx.Data.(type) {
-		case map[interface{}]interface{}:
+		case map[any]any:
 			return passthroughOrInterpolate(data, s)
-		case map[string]interface{}:
+		case map[string]any:
 			// convert to a map[interface{}]interface{} so we can use same
 			// parsing on it
-			passed := make(map[interface{}]interface{}, len(data))
+			passed := make(map[any]any, len(data))
 			for k, v := range data {
 				passed[k] = v
 			}
@@ -202,7 +202,7 @@ func funcGenBuild(ctx *Context) interface{} {
 		case map[string]string:
 			// convert to a map[interface{}]interface{} so we can use same
 			// parsing on it
-			passed := make(map[interface{}]interface{}, len(data))
+			passed := make(map[any]any, len(data))
 			for k, v := range data {
 				passed[k] = v
 			}
@@ -214,13 +214,13 @@ func funcGenBuild(ctx *Context) interface{} {
 	}
 }
 
-func funcGenTimestamp(ctx *Context) interface{} {
+func funcGenTimestamp(ctx *Context) any {
 	return func() string {
 		return strconv.FormatInt(InitTime.Unix(), 10)
 	}
 }
 
-func funcGenUser(ctx *Context) interface{} {
+func funcGenUser(ctx *Context) any {
 	return func(k string) (string, error) {
 		if ctx == nil || ctx.UserVariables == nil {
 			return "", errors.New("test")
@@ -238,13 +238,13 @@ func funcGenUser(ctx *Context) interface{} {
 	}
 }
 
-func funcGenUuid(ctx *Context) interface{} {
+func funcGenUuid(ctx *Context) any {
 	return func() string {
 		return uuid.TimeOrderedUUID()
 	}
 }
 
-func funcGenPackerVersion(ctx *Context) interface{} {
+func funcGenPackerVersion(ctx *Context) any {
 	return func() (string, error) {
 		if ctx == nil || ctx.CorePackerVersionString == "" {
 			return "", errors.New("packer_version not available")
@@ -254,7 +254,7 @@ func funcGenPackerVersion(ctx *Context) interface{} {
 	}
 }
 
-func funcGenConsul(ctx *Context) interface{} {
+func funcGenConsul(ctx *Context) any {
 	return func(key string) (string, error) {
 		if !ctx.EnableEnv {
 			// The error message doesn't have to be that detailed since
@@ -266,7 +266,7 @@ func funcGenConsul(ctx *Context) interface{} {
 	}
 }
 
-func funcGenVault(ctx *Context) interface{} {
+func funcGenVault(ctx *Context) any {
 	return func(path string, key string) (string, error) {
 		// Only allow interpolation from Vault when env vars are being read.
 		if !ctx.EnableEnv {
@@ -279,7 +279,7 @@ func funcGenVault(ctx *Context) interface{} {
 	}
 }
 
-func funcGenAwsSecrets(ctx *Context) interface{} {
+func funcGenAwsSecrets(ctx *Context) any {
 	return func(secret ...string) (string, error) {
 		if !ctx.EnableEnv {
 			// The error message doesn't have to be that detailed since
@@ -306,7 +306,7 @@ func funcGenAwsSecrets(ctx *Context) interface{} {
 // That is, if the secret is a plaintext, both functions behave the same,
 // however, if the secret is an object, this will return the raw JSON object
 // from secrets manager, while the alternative errors without a key being specified.
-func funcGenAwsRawSecrets(ctx *Context) interface{} {
+func funcGenAwsRawSecrets(ctx *Context) any {
 	return func(secretName string) (string, error) {
 		if !ctx.EnableEnv {
 			return "", errors.New("AWS Secrets Manager is only allowed in the variables section")
@@ -315,7 +315,7 @@ func funcGenAwsRawSecrets(ctx *Context) interface{} {
 	}
 }
 
-func funcGenSed(ctx *Context) interface{} {
+func funcGenSed(ctx *Context) any {
 	return func(expression string, inputString string) (string, error) {
 		return "", errors.New("template function `sed` is deprecated " +
 			"use `replace` or `replace_all` instead." +

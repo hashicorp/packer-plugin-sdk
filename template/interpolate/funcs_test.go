@@ -323,7 +323,7 @@ func TestFuncUser(t *testing.T) {
 
 func TestFuncPackerBuild(t *testing.T) {
 	type cases struct {
-		DataMap     interface{}
+		DataMap     any
 		ErrExpected bool
 		Template    string
 		OutVal      string
@@ -360,35 +360,35 @@ func TestFuncPackerBuild(t *testing.T) {
 		},
 		// Data map is a map[interface{}]interface{} and contains value
 		{
-			DataMap:     map[interface{}]interface{}{"PartyVar": "PartyVal"},
+			DataMap:     map[any]any{"PartyVar": "PartyVal"},
 			ErrExpected: false,
 			Template:    "{{ build `PartyVar` }}",
 			OutVal:      "PartyVal",
 		},
 		// Data map is a map[interface{}]interface{} and contains value
 		{
-			DataMap:     map[interface{}]interface{}{"PartyVar": "PartyVal"},
+			DataMap:     map[any]any{"PartyVar": "PartyVal"},
 			ErrExpected: false,
 			Template:    "{{ build `PartyVar` }}",
 			OutVal:      "PartyVal",
 		},
 		// Data map is a map[interface{}]interface{} and contains value with placeholder.
 		{
-			DataMap:     map[interface{}]interface{}{"PartyVar": "PartyVal" + packerbuilderdata.PlaceholderMsg},
+			DataMap:     map[any]any{"PartyVar": "PartyVal" + packerbuilderdata.PlaceholderMsg},
 			ErrExpected: false,
 			Template:    "{{ build `PartyVar` }}",
 			OutVal:      "{{.PartyVar}}",
 		},
 		// Data map is a map[interface{}]interface{} and doesn't have value.
 		{
-			DataMap:     map[interface{}]interface{}{"BadVar": "PartyVal" + packerbuilderdata.PlaceholderMsg},
+			DataMap:     map[any]any{"BadVar": "PartyVal" + packerbuilderdata.PlaceholderMsg},
 			ErrExpected: true,
 			Template:    "{{ build `MissingVar` }}",
 			OutVal:      "",
 		},
 		// Data map is a map[string]interface and contains value
 		{
-			DataMap:     map[string]interface{}{"PartyVar": "PartyVal"},
+			DataMap:     map[string]any{"PartyVar": "PartyVal"},
 			ErrExpected: false,
 			Template:    "{{ build `PartyVar` }}",
 			OutVal:      "PartyVal",

@@ -22,14 +22,14 @@ type datasource struct {
 }
 
 type DatasourceConfigureArgs struct {
-	Configs []interface{}
+	Configs []any
 }
 
 type DatasourceConfigureResponse struct {
 	Error *BasicError
 }
 
-func (d *datasource) Configure(configs ...interface{}) error {
+func (d *datasource) Configure(configs ...any) error {
 	configs, err := encodeCTYValues(configs)
 	if err != nil {
 		return err
@@ -50,7 +50,7 @@ type OutputSpecResponse struct {
 
 func (d *datasource) OutputSpec() hcldec.ObjectSpec {
 	resp := new(OutputSpecResponse)
-	if err := d.client.Call(d.endpoint+".OutputSpec", new(interface{}), resp); err != nil {
+	if err := d.client.Call(d.endpoint+".OutputSpec", new(any), resp); err != nil {
 		err := fmt.Errorf("Datasource.OutputSpec failed: %v", err)
 		panic(err.Error())
 	}
@@ -80,7 +80,7 @@ type ExecuteResponse struct {
 
 func (d *datasource) Execute() (cty.Value, error) {
 	resp := new(ExecuteResponse)
-	if err := d.client.Call(d.endpoint+".Execute", new(interface{}), resp); err != nil {
+	if err := d.client.Call(d.endpoint+".Execute", new(any), resp); err != nil {
 		err := fmt.Errorf("Datasource.Execute failed: %v", err)
 		return cty.NilVal, err
 	}
@@ -150,7 +150,7 @@ func (d *DatasourceServer) OutputSpec(args *DatasourceConfigureArgs, reply *Outp
 	return err
 }
 
-func (d *DatasourceServer) Execute(args *interface{}, reply *ExecuteResponse) error {
+func (d *DatasourceServer) Execute(args *any, reply *ExecuteResponse) error {
 	spec, err := d.d.Execute()
 	reply.Error = NewBasicError(err)
 
@@ -174,7 +174,7 @@ func (d *DatasourceServer) Execute(args *interface{}, reply *ExecuteResponse) er
 	return err
 }
 
-func (d *DatasourceServer) Cancel(args *interface{}, reply *interface{}) error {
+func (d *DatasourceServer) Cancel(args *any, reply *any) error {
 	if d.contextCancel != nil {
 		d.contextCancel()
 	}

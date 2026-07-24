@@ -89,7 +89,7 @@ func (c *Client) GetSecret(spec *SecretSpec, raw bool) (string, error) {
 }
 
 func getSecretValue(s *SecretString, spec *SecretSpec, raw bool) (string, error) {
-	var secretValue map[string]interface{}
+	var secretValue map[string]any
 	blob := []byte(s.SecretString)
 
 	//For those plaintext secrets just return the value or if raw is requested
@@ -120,7 +120,7 @@ func getSecretValue(s *SecretString, spec *SecretSpec, raw bool) (string, error)
 	return "", fmt.Errorf("No secret found for key %q", spec.Key)
 }
 
-func getStringSecretValue(v interface{}) (string, error) {
+func getStringSecretValue(v any) (string, error) {
 	switch valueType := v.(type) {
 	case string:
 		return valueType, nil

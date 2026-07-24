@@ -130,7 +130,7 @@ func (c *communicator) Start(ctx context.Context, cmd *packersdk.RemoteCmd) (err
 		cmd.SetExited(finished.ExitStatus)
 	}()
 
-	err = c.client.Call(c.endpoint+".Start", &args, new(interface{}))
+	err = c.client.Call(c.endpoint+".Start", &args, new(any))
 	return
 }
 
@@ -148,7 +148,7 @@ func (c *communicator) Upload(path string, r io.Reader, fi *os.FileInfo) (err er
 		args.FileInfo = NewFileInfo(*fi)
 	}
 
-	err = c.client.Call(c.endpoint+".Upload", &args, new(interface{}))
+	err = c.client.Call(c.endpoint+".Upload", &args, new(any))
 	return
 }
 
@@ -200,7 +200,7 @@ func (c *communicator) Download(path string, w io.Writer) (err error) {
 	}
 
 	// Start sending data to the RPC server
-	err = c.client.Call(c.endpoint+".Download", &args, new(interface{}))
+	err = c.client.Call(c.endpoint+".Download", &args, new(any))
 
 	// Wait for the RPC server to finish receiving the data before we return
 	<-waitServer
@@ -208,7 +208,7 @@ func (c *communicator) Download(path string, w io.Writer) (err error) {
 	return
 }
 
-func (c *CommunicatorServer) Start(args *CommunicatorStartArgs, reply *interface{}) error {
+func (c *CommunicatorServer) Start(args *CommunicatorStartArgs, reply *any) error {
 	ctx := context.TODO()
 
 	// Build the RemoteCmd on this side so that it all pipes over
@@ -289,7 +289,7 @@ func (c *CommunicatorServer) Start(args *CommunicatorStartArgs, reply *interface
 	return nil
 }
 
-func (c *CommunicatorServer) Upload(args *CommunicatorUploadArgs, reply *interface{}) (err error) {
+func (c *CommunicatorServer) Upload(args *CommunicatorUploadArgs, reply *any) (err error) {
 	readerC, err := c.mux.Dial(args.ReaderStreamId)
 	if err != nil {
 		return
@@ -313,7 +313,7 @@ func (c *CommunicatorServer) DownloadDir(args *CommunicatorUploadDirArgs, reply 
 	return c.c.DownloadDir(args.Src, args.Dst, args.Exclude)
 }
 
-func (c *CommunicatorServer) Download(args *CommunicatorDownloadArgs, reply *interface{}) (err error) {
+func (c *CommunicatorServer) Download(args *CommunicatorDownloadArgs, reply *any) (err error) {
 	writerC, err := c.mux.Dial(args.WriterStreamId)
 	if err != nil {
 		return

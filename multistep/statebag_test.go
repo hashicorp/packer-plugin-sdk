@@ -8,7 +8,7 @@ import (
 )
 
 func TestBasicStateBag_ImplRunner(t *testing.T) {
-	var raw interface{} = &BasicStateBag{}
+	var raw any = &BasicStateBag{}
 	if _, ok := raw.(StateBag); !ok {
 		t.Fatalf("must be a StateBag")
 	}

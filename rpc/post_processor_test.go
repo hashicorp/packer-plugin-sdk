@@ -16,7 +16,7 @@ var testPostProcessorArtifact = new(packersdk.MockArtifact)
 
 type TestPostProcessor struct {
 	configCalled bool
-	configVal    []interface{}
+	configVal    []any
 	ppCalled     bool
 	ppArtifact   packersdk.Artifact
 	ppArtifactId string
@@ -27,7 +27,7 @@ type TestPostProcessor struct {
 
 func (*TestPostProcessor) ConfigSpec() hcldec.ObjectSpec { return nil }
 
-func (pp *TestPostProcessor) Configure(v ...interface{}) error {
+func (pp *TestPostProcessor) Configure(v ...any) error {
 	pp.configCalled = true
 	pp.configVal = v
 	return nil
@@ -67,7 +67,7 @@ func TestPostProcessorRPC(t *testing.T) {
 		t.Fatal("config should be called")
 	}
 
-	expected := []interface{}{int64(42)}
+	expected := []any{int64(42)}
 	if !reflect.DeepEqual(p.configVal, expected) {
 		t.Fatalf("unknown config value: %#v", p.configVal)
 	}
@@ -134,7 +134,7 @@ func TestPostProcessorRPC_cancel(t *testing.T) {
 }
 
 func TestPostProcessor_Implements(t *testing.T) {
-	var raw interface{} = new(postProcessor)
+	var raw any = new(postProcessor)
 	if _, ok := raw.(packersdk.PostProcessor); !ok {
 		t.Fatal("not a postprocessor")
 	}

@@ -48,10 +48,10 @@ type Config struct {
 	// GeneratedData
 
 	ctx           interpolate.Context
-	generatedData map[string]interface{}
+	generatedData map[string]any
 }
 
-func Decode(config *Config, raws ...interface{}) error {
+func Decode(config *Config, raws ...any) error {
 	err := configHelper.Decode(config, &configHelper.DecodeOpts{
 		Interpolate:        true,
 		InterpolateContext: &config.ctx,

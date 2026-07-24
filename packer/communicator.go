@@ -43,7 +43,7 @@ type RemoteCmd struct {
 	m sync.Mutex
 
 	exitChInit sync.Once
-	exitCh     chan interface{}
+	exitCh     chan any
 }
 
 // A Communicator is the interface used to communicate with the machine
@@ -85,7 +85,7 @@ type Communicator interface {
 
 type ConfigurableCommunicator interface {
 	HCL2Speccer
-	Configure(...interface{}) ([]string, error)
+	Configure(...any) ([]string, error)
 }
 
 // RunWithUi runs the remote command and streams the output to any configured
@@ -217,7 +217,7 @@ func (r *RemoteCmd) ExitStatus() int {
 func (r *RemoteCmd) initchan() {
 	r.exitChInit.Do(func() {
 		if r.exitCh == nil {
-			r.exitCh = make(chan interface{})
+			r.exitCh = make(chan any)
 		}
 	})
 }

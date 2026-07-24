@@ -20,13 +20,13 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/tmp"
 )
 
-func Run(ctx context.Context, ui packersdk.Ui, config *Config, generatedData map[string]interface{}) (bool, error) {
+func Run(ctx context.Context, ui packersdk.Ui, config *Config, generatedData map[string]any) (bool, error) {
 	if generatedData != nil {
 		config.generatedData = generatedData
 	} else {
 		// No fear; probably just in the post-processor, not provisioner.
 		// Make sure it's not a nil map so we can assign to it later.
-		config.generatedData = make(map[string]interface{})
+		config.generatedData = make(map[string]any)
 	}
 	config.ctx.Data = generatedData
 	// Check if shell-local can even execute against this runtime OS
