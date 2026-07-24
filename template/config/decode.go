@@ -310,10 +310,10 @@ func stringToTrilean(f reflect.Type, t reflect.Type, v interface{}) (interface{}
 	// *bool values in order to intelligently default, even when the values are
 	// being set by a template variable.
 
-	testTril, _ := TrileanFromString("")
-	if t == reflect.TypeOf(testTril) {
+	_, _ = TrileanFromString("")
+	if t == reflect.TypeFor[Trilean]() {
 		// From value is string
-		if f == reflect.TypeOf("") {
+		if f == reflect.TypeFor[string]() {
 			tril, err := TrileanFromString(v.(string))
 			if err != nil {
 				return v, fmt.Errorf("Error parsing bool from given var: %s", err)
@@ -321,7 +321,7 @@ func stringToTrilean(f reflect.Type, t reflect.Type, v interface{}) (interface{}
 			return tril, nil
 		} else {
 			// From value is boolean
-			if f == reflect.TypeOf(true) {
+			if f == reflect.TypeFor[bool]() {
 				tril := TrileanFromBool(v.(bool))
 				return tril, nil
 			}
