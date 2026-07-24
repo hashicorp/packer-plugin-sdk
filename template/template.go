@@ -7,8 +7,8 @@ package template
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
+	"slices"
 	"time"
 
 	multierror "github.com/hashicorp/go-multierror"
@@ -260,23 +260,11 @@ func (t *Template) Validate() error {
 // Skip says whether or not to skip the build with the given name.
 func (o *OnlyExcept) Skip(n string) bool {
 	if len(o.Only) > 0 {
-		for _, v := range o.Only {
-			if v == n {
-				return false
-			}
-		}
-
-		return true
+		return !slices.Contains(o.Only, n)
 	}
 
 	if len(o.Except) > 0 {
-		for _, v := range o.Except {
-			if v == n {
-				return true
-			}
-		}
-
-		return false
+		return slices.Contains(o.Except, n)
 	}
 
 	return false

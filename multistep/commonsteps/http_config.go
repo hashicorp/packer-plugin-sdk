@@ -8,6 +8,7 @@ package commonsteps
 import (
 	"errors"
 	"fmt"
+	"slices"
 
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 )
@@ -117,11 +118,8 @@ func (c *HTTPConfig) Prepare(ctx *interpolate.Context) []error {
 		NetworkProcotlUnixPacket,
 	}
 
-	for _, protocol := range validProtocols {
-		if c.HTTPNetworkProtocol == protocol {
-			validProtocol = true
-			break
-		}
+	if slices.Contains(validProtocols, c.HTTPNetworkProtocol) {
+		validProtocol = true
 	}
 
 	if !validProtocol {
