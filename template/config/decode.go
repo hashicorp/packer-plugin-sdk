@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"slices"
 	"sort"
 	"strings"
 
@@ -182,11 +183,8 @@ func Decode(target interface{}, config *DecodeOpts, raws ...interface{}) error {
 					// example "amazon*" for all amazon builders, or * for
 					// all builders
 					if glob.Glob(k, config.PluginType) {
-						for _, deprecatedOption := range deprecatedOptions {
-							if unused == deprecatedOption {
-								fixable = true
-								break
-							}
+						if slices.Contains(deprecatedOptions, unused) {
+							fixable = true
 						}
 					}
 					if fixable {

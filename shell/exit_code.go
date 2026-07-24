@@ -3,6 +3,8 @@
 
 package shell
 
+import "slices"
+
 import "fmt"
 
 func (p *Provisioner) ValidExitCode(code int) error {
@@ -11,13 +13,7 @@ func (p *Provisioner) ValidExitCode(code int) error {
 	if len(validCodes) == 0 {
 		validCodes = []int{0}
 	}
-	validExitCode := false
-	for _, v := range validCodes {
-		if code == v {
-			validExitCode = true
-			break
-		}
-	}
+	validExitCode := slices.Contains(validCodes, code)
 	if !validExitCode {
 		return &ErrorInvalidExitCode{
 			Code:    code,
