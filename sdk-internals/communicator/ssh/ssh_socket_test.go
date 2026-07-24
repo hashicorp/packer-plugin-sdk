@@ -6,10 +6,11 @@
 package ssh
 
 import (
-	"github.com/stretchr/testify/assert"
 	"net"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetSSHAgentConnection_NoEnvVar(t *testing.T) {
