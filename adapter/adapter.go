@@ -218,11 +218,11 @@ func (c *Adapter) scpExec(args string, in io.Reader, out io.Writer) error {
 	}
 	rest = strings.Join(shargs, "")
 
-	if i := bytes.IndexByte(opts, 't'); i >= 0 {
+	if found := bytes.Contains(opts, []byte{'t'}); found {
 		return scpUploadSession(opts, rest, in, out, c.comm)
 	}
 
-	if i := bytes.IndexByte(opts, 'f'); i >= 0 {
+	if found := bytes.Contains(opts, []byte{'f'}); found {
 		return scpDownloadSession(opts, rest, in, out, c.comm)
 	}
 	return errors.New("no scp mode specified")
