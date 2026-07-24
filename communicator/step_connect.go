@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"maps"
 	"time"
 
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
@@ -77,9 +78,7 @@ func (s *StepConnect) Run(ctx context.Context, state multistep.StateBag) multist
 			WinRMPort:   s.WinRMPort,
 		},
 	}
-	for k, v := range s.CustomConnect {
-		typeMap[k] = v
-	}
+	maps.Copy(typeMap, s.CustomConnect)
 
 	step, ok := typeMap[s.Config.Type]
 	if !ok {
