@@ -551,7 +551,7 @@ func highlightPosition(f *os.File, pos int64) (line, col int, highlight string) 
 	lastLine := ""
 	thisLine := new(bytes.Buffer)
 	// Loop through template to find line, column
-	for n := int64(0); n < pos; n++ {
+	for range pos {
 		// read byte from io.Reader
 		b, err := br.ReadByte()
 		if err != nil {

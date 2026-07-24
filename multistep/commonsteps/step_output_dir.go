@@ -76,7 +76,7 @@ func (s *StepOutputDir) Cleanup(state multistep.StateBag) {
 		ui := state.Get("ui").(packersdk.Ui)
 
 		ui.Say("Deleting output directory...")
-		for i := 0; i < 5; i++ {
+		for range 5 {
 			err := os.RemoveAll(s.Path)
 			if err == nil {
 				break
