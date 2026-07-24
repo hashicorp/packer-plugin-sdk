@@ -11,7 +11,7 @@ import (
 )
 
 func TestPasswordKeyboardInteractive_Impl(t *testing.T) {
-	var raw interface{} = PasswordKeyboardInteractive("foo")
+	var raw any = PasswordKeyboardInteractive("foo")
 	if _, ok := raw.(ssh.KeyboardInteractiveChallenge); !ok {
 		t.Fatal("PasswordKeyboardInteractive must implement KeyboardInteractiveChallenge")
 	}

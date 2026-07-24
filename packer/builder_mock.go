@@ -22,7 +22,7 @@ type MockBuilder struct {
 	RunNilResult    bool
 
 	PrepareCalled bool
-	PrepareConfig []interface{}
+	PrepareConfig []any
 	RunCalled     bool
 	RunHook       Hook
 	RunUi         Ui
@@ -34,9 +34,9 @@ type MockBuilder struct {
 
 func (tb *MockBuilder) ConfigSpec() hcldec.ObjectSpec { return tb.FlatMapstructure().HCL2Spec() }
 
-func (tb *MockBuilder) FlatConfig() interface{} { return tb.FlatMapstructure() }
+func (tb *MockBuilder) FlatConfig() any { return tb.FlatMapstructure() }
 
-func (tb *MockBuilder) Prepare(config ...interface{}) ([]string, []string, error) {
+func (tb *MockBuilder) Prepare(config ...any) ([]string, []string, error) {
 	tb.PrepareCalled = true
 	tb.PrepareConfig = config
 	return tb.GeneratedVars, tb.PrepareWarnings, nil

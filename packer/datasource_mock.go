@@ -13,10 +13,10 @@ import (
 type MockDatasource struct {
 	Foo string
 
-	OutputSpecCalled bool          `mapstructure-to-hcl2:",skip"`
-	ConfigureCalled  bool          `mapstructure-to-hcl2:",skip"`
-	ConfigureConfigs []interface{} `mapstructure-to-hcl2:",skip"`
-	ExecuteCalled    bool          `mapstructure-to-hcl2:",skip"`
+	OutputSpecCalled bool  `mapstructure-to-hcl2:",skip"`
+	ConfigureCalled  bool  `mapstructure-to-hcl2:",skip"`
+	ConfigureConfigs []any `mapstructure-to-hcl2:",skip"`
+	ExecuteCalled    bool  `mapstructure-to-hcl2:",skip"`
 }
 
 type MockDatasourceResponse struct {
@@ -32,7 +32,7 @@ func (d *MockDatasource) OutputSpec() hcldec.ObjectSpec {
 	return (&MockDatasourceResponse{}).FlatMapstructure().HCL2Spec()
 }
 
-func (d *MockDatasource) Configure(configs ...interface{}) error {
+func (d *MockDatasource) Configure(configs ...any) error {
 	configHelper.Decode(d, nil, configs...)
 	d.ConfigureCalled = true
 	d.ConfigureConfigs = configs

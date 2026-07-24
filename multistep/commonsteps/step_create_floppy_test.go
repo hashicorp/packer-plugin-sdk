@@ -21,7 +21,7 @@ import (
 const TestFixtures = "test-fixtures"
 
 func TestStepCreateFloppy_Impl(t *testing.T) {
-	var raw interface{} = new(StepCreateFloppy)
+	var raw any = new(StepCreateFloppy)
 	if _, ok := raw.(multistep.Step); !ok {
 		t.Fatalf("StepCreateFloppy should be a step")
 	}

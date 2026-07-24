@@ -10,17 +10,17 @@ import (
 // FlatMockBuilder is an auto-generated flat version of MockBuilder.
 // Where the contents of a field with a `mapstructure:,squash` tag are bubbled up.
 type FlatMockBuilder struct {
-	ArtifactId      *string       `cty:"artifact_id" hcl:"artifact_id"`
-	PrepareWarnings []string      `cty:"prepare_warnings" hcl:"prepare_warnings"`
-	RunErrResult    *bool         `cty:"run_err_result" hcl:"run_err_result"`
-	RunNilResult    *bool         `cty:"run_nil_result" hcl:"run_nil_result"`
-	PrepareCalled   *bool         `cty:"prepare_called" hcl:"prepare_called"`
-	PrepareConfig   []interface{} `cty:"prepare_config" hcl:"prepare_config"`
-	RunCalled       *bool         `cty:"run_called" hcl:"run_called"`
-	RunHook         Hook          `cty:"run_hook" hcl:"run_hook"`
-	RunUi           Ui            `cty:"run_ui" hcl:"run_ui"`
-	CancelCalled    *bool         `cty:"cancel_called" hcl:"cancel_called"`
-	GeneratedVars   []string      `cty:"generated_vars" hcl:"generated_vars"`
+	ArtifactId      *string  `cty:"artifact_id" hcl:"artifact_id"`
+	PrepareWarnings []string `cty:"prepare_warnings" hcl:"prepare_warnings"`
+	RunErrResult    *bool    `cty:"run_err_result" hcl:"run_err_result"`
+	RunNilResult    *bool    `cty:"run_nil_result" hcl:"run_nil_result"`
+	PrepareCalled   *bool    `cty:"prepare_called" hcl:"prepare_called"`
+	PrepareConfig   []any    `cty:"prepare_config" hcl:"prepare_config"`
+	RunCalled       *bool    `cty:"run_called" hcl:"run_called"`
+	RunHook         Hook     `cty:"run_hook" hcl:"run_hook"`
+	RunUi           Ui       `cty:"run_ui" hcl:"run_ui"`
+	CancelCalled    *bool    `cty:"cancel_called" hcl:"cancel_called"`
+	GeneratedVars   []string `cty:"generated_vars" hcl:"generated_vars"`
 }
 
 // FlatMapstructure returns a new FlatMockBuilder.

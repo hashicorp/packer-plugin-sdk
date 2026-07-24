@@ -30,24 +30,24 @@ type HookServer struct {
 
 type HookRunArgs struct {
 	Name     string
-	Data     interface{}
+	Data     any
 	StreamId uint32
 }
 
-func (h *hook) Run(ctx context.Context, name string, ui packersdk.Ui, comm packersdk.Communicator, data interface{}) error {
+func (h *hook) Run(ctx context.Context, name string, ui packersdk.Ui, comm packersdk.Communicator, data any) error {
 	nextId := h.mux.NextId()
 	server := newServerWithMux(h.mux, nextId)
 	server.RegisterCommunicator(comm)
 	server.RegisterUi(ui)
 	go server.Serve()
 
-	done := make(chan interface{})
+	done := make(chan any)
 	defer close(done)
 	go func() {
 		select {
 		case <-ctx.Done():
 			log.Printf("Cancelling hook after context cancellation %v", ctx.Err())
-			if err := h.client.Call(h.endpoint+".Cancel", new(interface{}), new(interface{})); err != nil {
+			if err := h.client.Call(h.endpoint+".Cancel", new(any), new(any)); err != nil {
 				log.Printf("Error cancelling builder: %s", err)
 			}
 		case <-done:
@@ -60,10 +60,10 @@ func (h *hook) Run(ctx context.Context, name string, ui packersdk.Ui, comm packe
 		StreamId: nextId,
 	}
 
-	return h.client.Call(h.endpoint+".Run", &args, new(interface{}))
+	return h.client.Call(h.endpoint+".Run", &args, new(any))
 }
 
-func (h *HookServer) Run(args *HookRunArgs, reply *interface{}) error {
+func (h *HookServer) Run(args *HookRunArgs, reply *any) error {
 	client, err := newClientWithMux(h.mux, args.StreamId)
 	if err != nil {
 		return NewBasicError(err)
@@ -83,7 +83,7 @@ func (h *HookServer) Run(args *HookRunArgs, reply *interface{}) error {
 	return nil
 }
 
-func (h *HookServer) Cancel(args *interface{}, reply *interface{}) error {
+func (h *HookServer) Cancel(args *any, reply *any) error {
 	h.lock.Lock()
 	if h.contextCancel != nil {
 		h.contextCancel()

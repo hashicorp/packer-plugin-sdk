@@ -27,38 +27,38 @@ type ProvisionerServer struct {
 }
 
 type ProvisionerPrepareArgs struct {
-	Configs []interface{}
+	Configs []any
 }
 
-func (p *provisioner) Prepare(configs ...interface{}) error {
+func (p *provisioner) Prepare(configs ...any) error {
 	configs, err := encodeCTYValues(configs)
 	if err != nil {
 		return err
 	}
 	args := &ProvisionerPrepareArgs{configs}
-	return p.client.Call(p.endpoint+".Prepare", args, new(interface{}))
+	return p.client.Call(p.endpoint+".Prepare", args, new(any))
 }
 
 type ProvisionerProvisionArgs struct {
-	GeneratedData map[string]interface{}
+	GeneratedData map[string]any
 	StreamID      uint32
 }
 
-func (p *provisioner) Provision(ctx context.Context, ui packersdk.Ui, comm packersdk.Communicator, generatedData map[string]interface{}) error {
+func (p *provisioner) Provision(ctx context.Context, ui packersdk.Ui, comm packersdk.Communicator, generatedData map[string]any) error {
 	nextId := p.mux.NextId()
 	server := newServerWithMux(p.mux, nextId)
 	server.RegisterCommunicator(comm)
 	server.RegisterUi(ui)
 	go server.Serve()
 
-	done := make(chan interface{})
+	done := make(chan any)
 	defer close(done)
 
 	go func() {
 		select {
 		case <-ctx.Done():
 			log.Printf("Cancelling provisioner after context cancellation %v", ctx.Err())
-			if err := p.client.Call(p.endpoint+".Cancel", new(interface{}), new(interface{})); err != nil {
+			if err := p.client.Call(p.endpoint+".Cancel", new(any), new(any)); err != nil {
 				log.Printf("Error cancelling provisioner: %s", err)
 			}
 		case <-done:
@@ -66,10 +66,10 @@ func (p *provisioner) Provision(ctx context.Context, ui packersdk.Ui, comm packe
 	}()
 
 	args := &ProvisionerProvisionArgs{generatedData, nextId}
-	return p.client.Call(p.endpoint+".Provision", args, new(interface{}))
+	return p.client.Call(p.endpoint+".Provision", args, new(any))
 }
 
-func (p *ProvisionerServer) Prepare(args *ProvisionerPrepareArgs, reply *interface{}) error {
+func (p *ProvisionerServer) Prepare(args *ProvisionerPrepareArgs, reply *any) error {
 	config, err := decodeCTYValues(args.Configs)
 	if err != nil {
 		return err
@@ -77,7 +77,7 @@ func (p *ProvisionerServer) Prepare(args *ProvisionerPrepareArgs, reply *interfa
 	return p.p.Prepare(config...)
 }
 
-func (p *ProvisionerServer) Provision(args *ProvisionerProvisionArgs, reply *interface{}) error {
+func (p *ProvisionerServer) Provision(args *ProvisionerProvisionArgs, reply *any) error {
 	streamId := args.StreamID
 	client, err := newClientWithMux(p.mux, streamId)
 	if err != nil {
@@ -95,7 +95,7 @@ func (p *ProvisionerServer) Provision(args *ProvisionerProvisionArgs, reply *int
 	return nil
 }
 
-func (p *ProvisionerServer) Cancel(args *interface{}, reply *interface{}) error {
+func (p *ProvisionerServer) Cancel(args *any, reply *any) error {
 	p.contextCancel()
 	return nil
 }
