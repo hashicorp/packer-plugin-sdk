@@ -272,13 +272,13 @@ func (c *SSH) ConfigSpec() hcldec.ObjectSpec { return c.FlatMapstructure().HCL2S
 func (c *WinRM) ConfigSpec() hcldec.ObjectSpec { return c.FlatMapstructure().HCL2Spec() }
 
 // Configure parses the json template into the Config structs
-func (c *SSH) Configure(raws ...interface{}) ([]string, error) {
+func (c *SSH) Configure(raws ...any) ([]string, error) {
 	err := config.Decode(c, nil, raws...)
 	return nil, err
 }
 
 // Configure parses the json template into the Config structs
-func (c *WinRM) Configure(raws ...interface{}) ([]string, error) {
+func (c *WinRM) Configure(raws ...any) ([]string, error) {
 	err := config.Decode(c, nil, raws...)
 	return nil, err
 }

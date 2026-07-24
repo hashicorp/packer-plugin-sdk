@@ -65,7 +65,7 @@ func (t *Template) Raw() (*rawTemplate, error) {
 
 	for k, v := range t.Variables {
 		if out.Variables == nil {
-			out.Variables = make(map[string]interface{})
+			out.Variables = make(map[string]any)
 		}
 
 		out.Variables[k] = v
@@ -76,9 +76,9 @@ func (t *Template) Raw() (*rawTemplate, error) {
 
 // Builder represents a builder configured in the template
 type Builder struct {
-	Name   string                 `json:"name,omitempty"`
-	Type   string                 `json:"type"`
-	Config map[string]interface{} `json:"config,omitempty"`
+	Name   string         `json:"name,omitempty"`
+	Type   string         `json:"type"`
+	Config map[string]any `json:"config,omitempty"`
 }
 
 // MarshalJSON conducts the necessary flattening of the Builder struct
@@ -105,10 +105,10 @@ func (b *Builder) MarshalJSON() ([]byte, error) {
 type PostProcessor struct {
 	OnlyExcept `mapstructure:",squash" json:",omitempty"`
 
-	Name              string                 `json:"name,omitempty"`
-	Type              string                 `json:"type"`
-	KeepInputArtifact *bool                  `mapstructure:"keep_input_artifact" json:"keep_input_artifact,omitempty"`
-	Config            map[string]interface{} `json:"config,omitempty"`
+	Name              string         `json:"name,omitempty"`
+	Type              string         `json:"type"`
+	KeepInputArtifact *bool          `mapstructure:"keep_input_artifact" json:"keep_input_artifact,omitempty"`
+	Config            map[string]any `json:"config,omitempty"`
 }
 
 // MarshalJSON conducts the necessary flattening of the PostProcessor struct
@@ -140,12 +140,12 @@ func (p *PostProcessor) MarshalJSON() ([]byte, error) {
 type Provisioner struct {
 	OnlyExcept `mapstructure:",squash" json:",omitempty"`
 
-	Type        string                 `json:"type"`
-	Config      map[string]interface{} `json:"config,omitempty"`
-	Override    map[string]interface{} `json:"override,omitempty"`
-	PauseBefore time.Duration          `mapstructure:"pause_before" json:"pause_before,omitempty"`
-	MaxRetries  string                 `mapstructure:"max_retries" json:"max_retries,omitempty"`
-	Timeout     time.Duration          `mapstructure:"timeout" json:"timeout,omitempty"`
+	Type        string         `json:"type"`
+	Config      map[string]any `json:"config,omitempty"`
+	Override    map[string]any `json:"override,omitempty"`
+	PauseBefore time.Duration  `mapstructure:"pause_before" json:"pause_before,omitempty"`
+	MaxRetries  string         `mapstructure:"max_retries" json:"max_retries,omitempty"`
+	Timeout     time.Duration  `mapstructure:"timeout" json:"timeout,omitempty"`
 }
 
 // MarshalJSON conducts the necessary flattening of the Provisioner struct

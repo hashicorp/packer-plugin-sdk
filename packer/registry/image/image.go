@@ -68,7 +68,7 @@ func (i *Image) String() string {
 // FromMappedData will make its best attempt to convert the input map into map[interface{}]interface{} before
 // calling f(k,v). The func f is responsible for type asserting the expected type for the key and value before
 // trying to create an Image from it.
-func FromMappedData(mappedData interface{}, f func(key, value interface{}) (*Image, error)) ([]*Image, error) {
+func FromMappedData(mappedData any, f func(key, value any) (*Image, error)) ([]*Image, error) {
 	mapValue := reflect.ValueOf(mappedData)
 	if mapValue.Kind() != reflect.Map {
 		return nil, errors.New("error the incoming mappedData does not appear to be a map; found type to be" + mapValue.Kind().String())
@@ -153,7 +153,7 @@ func WithRegion(region string) func(*Image) error {
 // will be filtered only for keys whose values are of type string.
 // If you wish to override this behavior you may create your own  ArtifactOverrideFunc
 // for manipulating and setting Image metadata.
-func SetLabels(md map[string]interface{}) func(*Image) error {
+func SetLabels(md map[string]any) func(*Image) error {
 	return func(img *Image) error {
 		if img.Labels == nil {
 			img.Labels = make(map[string]string)

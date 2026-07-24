@@ -26,14 +26,14 @@ type rawTemplate struct {
 	MinVersion  string `mapstructure:"min_packer_version" json:"min_packer_version,omitempty"`
 	Description string `json:"description,omitempty"`
 
-	Builders           []interface{}          `mapstructure:"builders" json:"builders,omitempty"`
-	Comments           []map[string]string    `json:"comments,omitempty"`
-	Push               map[string]interface{} `json:"push,omitempty"`
-	PostProcessors     []interface{}          `mapstructure:"post-processors" json:"post-processors,omitempty"`
-	Provisioners       []interface{}          `json:"provisioners,omitempty"`
-	CleanupProvisioner interface{}            `mapstructure:"error-cleanup-provisioner" json:"error-cleanup-provisioner,omitempty"`
-	Variables          map[string]interface{} `json:"variables,omitempty"`
-	SensitiveVariables []string               `mapstructure:"sensitive-variables" json:"sensitive-variables,omitempty"`
+	Builders           []any               `mapstructure:"builders" json:"builders,omitempty"`
+	Comments           []map[string]string `json:"comments,omitempty"`
+	Push               map[string]any      `json:"push,omitempty"`
+	PostProcessors     []any               `mapstructure:"post-processors" json:"post-processors,omitempty"`
+	Provisioners       []any               `json:"provisioners,omitempty"`
+	CleanupProvisioner any                 `mapstructure:"error-cleanup-provisioner" json:"error-cleanup-provisioner,omitempty"`
+	Variables          map[string]any      `json:"variables,omitempty"`
+	SensitiveVariables []string            `mapstructure:"sensitive-variables" json:"sensitive-variables,omitempty"`
 
 	RawContents []byte `json:"-"`
 }
@@ -60,7 +60,7 @@ func (r *rawTemplate) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
-func (r *rawTemplate) decodeProvisioner(raw interface{}) (Provisioner, error) {
+func (r *rawTemplate) decodeProvisioner(raw any) (Provisioner, error) {
 	var p Provisioner
 	if err := r.weakDecoder(&p, nil).Decode(raw); err != nil {
 		return p, fmt.Errorf("Error decoding provisioner: %s", err)
@@ -73,7 +73,7 @@ func (r *rawTemplate) decodeProvisioner(raw interface{}) (Provisioner, error) {
 	}
 
 	// Set the raw configuration and delete any special keys
-	p.Config = raw.(map[string]interface{})
+	p.Config = raw.(map[string]any)
 
 	delete(p.Config, "except")
 	delete(p.Config, "only")
@@ -152,7 +152,7 @@ func (r *rawTemplate) Template() (*Template, error) {
 		}
 
 		// Set the raw configuration and delete any special keys
-		b.Config = rawB.(map[string]interface{})
+		b.Config = rawB.(map[string]any)
 
 		delete(b.Config, "name")
 		delete(b.Config, "type")
@@ -274,7 +274,7 @@ func (r *rawTemplate) Template() (*Template, error) {
 }
 
 func (r *rawTemplate) decoder(
-	result interface{},
+	result any,
 	md *mapstructure.Metadata) *mapstructure.Decoder {
 	d, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		DecodeHook: mapstructure.StringToTimeDurationHookFunc(),
@@ -291,7 +291,7 @@ func (r *rawTemplate) decoder(
 }
 
 func (r *rawTemplate) weakDecoder(
-	result interface{},
+	result any,
 	md *mapstructure.Metadata) *mapstructure.Decoder {
 	d, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		WeaklyTypedInput: true,
@@ -309,24 +309,24 @@ func (r *rawTemplate) weakDecoder(
 }
 
 func (r *rawTemplate) parsePostProcessor(
-	i int, raw interface{}) ([]map[string]interface{}, error) {
+	i int, raw any) ([]map[string]any, error) {
 	switch v := raw.(type) {
 	case string:
-		return []map[string]interface{}{
+		return []map[string]any{
 			{"type": v},
 		}, nil
-	case map[string]interface{}:
-		return []map[string]interface{}{v}, nil
-	case []interface{}:
+	case map[string]any:
+		return []map[string]any{v}, nil
+	case []any:
 		var err error
-		result := make([]map[string]interface{}, len(v))
+		result := make([]map[string]any, len(v))
 		for j, innerRaw := range v {
 			switch innerV := innerRaw.(type) {
 			case string:
-				result[j] = map[string]interface{}{"type": innerV}
-			case map[string]interface{}:
+				result[j] = map[string]any{"type": innerV}
+			case map[string]any:
 				result[j] = innerV
-			case []interface{}:
+			case []any:
 				err = multierror.Append(err, fmt.Errorf(
 					"post-processor %d.%d: sequence not allowed to be nested in a sequence",
 					i+1, j+1))
@@ -352,7 +352,7 @@ func Parse(r io.Reader) (*Template, error) {
 	// First, decode the object into an interface{} and search for duplicate fields.
 	// We do this instead of the rawTemplate directly because we'd rather use mapstructure to
 	// decode since it has richer errors.
-	var raw interface{}
+	var raw any
 	buf, err := jsonUnmarshal(r, &raw)
 	if err != nil {
 		return nil, err
@@ -379,7 +379,7 @@ func Parse(r io.Reader) (*Template, error) {
 	if len(md.Unused) > 0 {
 		sort.Strings(md.Unused)
 
-		unusedMap, ok := raw.(map[string]interface{})
+		unusedMap, ok := raw.(map[string]any)
 		if !ok {
 			return nil, fmt.Errorf("Failed to convert unused root level keys to map")
 		}
@@ -411,7 +411,7 @@ func Parse(r io.Reader) (*Template, error) {
 	return rawTpl.Template()
 }
 
-func jsonUnmarshal(r io.Reader, raw *interface{}) (bytes.Buffer, error) {
+func jsonUnmarshal(r io.Reader, raw *any) (bytes.Buffer, error) {
 	// Create a buffer to copy what we read
 	var buf bytes.Buffer
 	if _, err := buf.ReadFrom(r); err != nil {

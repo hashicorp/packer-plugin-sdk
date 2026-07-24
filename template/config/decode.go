@@ -51,7 +51,7 @@ var DefaultDecodeHookFuncs = []mapstructure.DecodeHookFunc{
 
 // Decode decodes the configuration into the target and optionally
 // automatically interpolates all the configuration as it goes.
-func Decode(target interface{}, config *DecodeOpts, raws ...interface{}) error {
+func Decode(target any, config *DecodeOpts, raws ...any) error {
 	// loop over raws once to get cty values from hcl, if that's a thing.
 	for i, raw := range raws {
 		// check for cty values and transform them to json then to a
@@ -77,7 +77,7 @@ func Decode(target interface{}, config *DecodeOpts, raws ...interface{}) error {
 		if err != nil {
 			return err
 		}
-		var raw map[string]interface{}
+		var raw map[string]any
 		if err := json.Unmarshal(b, &raw); err != nil {
 			return err
 		}
@@ -222,7 +222,7 @@ func Decode(target interface{}, config *DecodeOpts, raws ...interface{}) error {
 	return nil
 }
 
-func DetectContextData(raws ...interface{}) (map[interface{}]interface{}, []interface{}) {
+func DetectContextData(raws ...any) (map[any]any, []any) {
 	// In provisioners, the last value pulled from raws is the placeholder data
 	// for build-specific variables. Pull these out to add to interpolation
 	// context.
@@ -235,7 +235,7 @@ func DetectContextData(raws ...interface{}) (map[interface{}]interface{}, []inte
 	if pd, ok := placeholderData.(map[string]string); ok {
 		if uuid, ok := pd["PackerRunUUID"]; ok {
 			if strings.Contains(uuid, "Build_PackerRunUUID.") {
-				cast := make(map[interface{}]interface{})
+				cast := make(map[any]any)
 				for k, v := range pd {
 					cast[k] = v
 				}
@@ -247,7 +247,7 @@ func DetectContextData(raws ...interface{}) (map[interface{}]interface{}, []inte
 
 	// but with normal interface conversion across the rpc, it'll look like a
 	// map[interface]interface, not a map[string]string
-	if pd, ok := placeholderData.(map[interface{}]interface{}); ok {
+	if pd, ok := placeholderData.(map[any]any); ok {
 		if uuid, ok := pd["PackerRunUUID"]; ok {
 			if strings.Contains(uuid.(string), "Build_PackerRunUUID.") {
 				raws = raws[:len(raws)-1]
@@ -261,7 +261,7 @@ func DetectContextData(raws ...interface{}) (map[interface{}]interface{}, []inte
 
 // DetectContext builds a base interpolate.Context, automatically
 // detecting things like user variables from the raw configuration params.
-func DetectContext(raws ...interface{}) (*interpolate.Context, error) {
+func DetectContext(raws ...any) (*interpolate.Context, error) {
 	var s struct {
 		BuildName               string            `mapstructure:"packer_build_name"`
 		BuildType               string            `mapstructure:"packer_builder_type"`
@@ -288,7 +288,7 @@ func DetectContext(raws ...interface{}) (*interpolate.Context, error) {
 	}, nil
 }
 
-func uint8ToStringHook(f reflect.Kind, t reflect.Kind, v interface{}) (interface{}, error) {
+func uint8ToStringHook(f reflect.Kind, t reflect.Kind, v any) (any, error) {
 	// We need to convert []uint8 to string. We have to do this
 	// because internally Packer uses MsgPack for RPC and the MsgPack
 	// codec turns strings into []uint8
@@ -304,7 +304,7 @@ func uint8ToStringHook(f reflect.Kind, t reflect.Kind, v interface{}) (interface
 	return v, nil
 }
 
-func stringToTrilean(f reflect.Type, t reflect.Type, v interface{}) (interface{}, error) {
+func stringToTrilean(f reflect.Type, t reflect.Type, v any) (any, error) {
 	// We have a custom data type, config, which we read from a string and
 	// then cast to a *bool. Why? So that we can appropriately read "unset"
 	// *bool values in order to intelligently default, even when the values are

@@ -86,7 +86,7 @@ func GenerateExpressionSequence(command string) (expressionSequence, error) {
 	if err != nil {
 		return nil, err
 	}
-	for _, exp := range got.([]interface{}) {
+	for _, exp := range got.([]any) {
 		seq = append(seq, exp.(expression))
 	}
 	return seq, nil

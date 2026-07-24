@@ -57,7 +57,7 @@ func (p *commonClient) ConfigSpec() hcldec.ObjectSpec {
 	// decide later. The correct approach would probably be to return an error
 	// in ConfigSpec but that will break a lot of things.
 	resp := &ConfigSpecResponse{}
-	cerr := p.client.Call(p.endpoint+".ConfigSpec", new(interface{}), resp)
+	cerr := p.client.Call(p.endpoint+".ConfigSpec", new(any), resp)
 	if cerr != nil {
 		err := fmt.Errorf("ConfigSpec failed: %v", cerr)
 		panic(err.Error())
@@ -90,7 +90,7 @@ func (p *commonClient) ConfigSpec() hcldec.ObjectSpec {
 	return spec
 }
 
-func (s *commonServer) ConfigSpec(_ interface{}, reply *ConfigSpecResponse) error {
+func (s *commonServer) ConfigSpec(_ any, reply *ConfigSpecResponse) error {
 	spec := s.selfConfigurable.ConfigSpec()
 
 	if !s.useProto {

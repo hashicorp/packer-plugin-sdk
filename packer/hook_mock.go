@@ -13,12 +13,12 @@ type MockHook struct {
 
 	RunCalled bool
 	RunComm   Communicator
-	RunData   interface{}
+	RunData   any
 	RunName   string
 	RunUi     Ui
 }
 
-func (t *MockHook) Run(ctx context.Context, name string, ui Ui, comm Communicator, data interface{}) error {
+func (t *MockHook) Run(ctx context.Context, name string, ui Ui, comm Communicator, data any) error {
 
 	t.RunCalled = true
 	t.RunComm = comm
