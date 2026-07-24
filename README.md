@@ -12,9 +12,8 @@ Packer v1.7.0 or later is needed for this SDK. Versions of Packer prior to that 
 
 ## Go Compatibility
 
-The Packer Plugin SDK is built in Go, and uses the [support policy](https://golang.org/doc/devel/release.html#policy) of Go as its support policy. The two latest major releases of Go are supported by the SDK.
-
-Currently, that means Go **1.14** or later must be used when building a provider with the SDK.
+The Packer Plugin SDK follows Go’s official [support policy](https://go.dev/doc/devel/release#policy).
+Refer to [`go.mod`](go.mod) for the minimum required Go version.
 
 ## Getting Started
 
@@ -26,10 +25,11 @@ See the [Extending Packer](https://www.packer.io/docs/plugins/creation#extending
 
 ## Testing
 
-The SDK embeds tests to ensure we don't introduce a regression in the future. Up to version 0.5.0 of the SDK, tests would be runnable with `make test` on their own but since we removed the `replace` statement for `go-cty` tests won't work out-of-the-box. Users will need to  invoke `packer-sdc fix .` in order to fix the `go.mod` and `go.sum` files before running tests.
+The SDK embeds tests to ensure we don't introduce a regression in the future. Up to version 0.5.0 of the SDK, tests would be runnable with `make test` on their own but since we removed the `replace` statement for `go-cty` tests won't work out-of-the-box. Contributors will need to invoke `packer-sdc fix .` in order to fix the `go.mod` and `go.sum` files before running tests.
+
 Please do not commit these changes, as adding this `replace` section to the `go.mod` file will make it impossible for dependents to run `go install` for `packer-sdc` afterwards.
 
-## Packer Scope (Plugins VS Core)
+## Packer Scope (Plugins vs. Core)
 
 ### Packer Core
 
