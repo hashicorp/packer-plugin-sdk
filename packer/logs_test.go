@@ -5,47 +5,78 @@ package packer
 
 import (
 	"bytes"
+	"io"
+	"reflect"
+	"sync"
 	"testing"
 )
 
-// When one registered secret is a substring of another, the shorter value must
-// not be replaced first. Ranging over the map is randomly ordered, so without
-// longest-first ordering the short secret ("ubuntu") can be redacted before the
-// long one ("ubuntu-22.04"), leaving the tail "-22.04" (part of a real secret)
-// in the output. The loop makes the random map order show up reliably.
-func TestSecretFilterFilterStringOverlapping(t *testing.T) {
-	const in = "connecting to ubuntu-22.04 now"
-	const want = "connecting to <sensitive> now"
+func newSecretFilter(secrets ...string) *secretFilter {
+	l := &secretFilter{s: map[string]struct{}{}}
+	l.Set(secrets...)
+	return l
+}
 
-	for i := 0; i < 100; i++ {
-		l := &secretFilter{s: map[string]struct{}{
-			"ubuntu-22.04": {},
-			"ubuntu":       {},
-		}}
-		if got := l.FilterString(in); got != want {
-			t.Fatalf("secret partially leaked: got %q, want %q", got, want)
-		}
+// Set must record secrets longest first (lexicographically for equal lengths)
+// and drop empty values, so redaction is deterministic regardless of the map's
+// iteration order.
+func TestSecretFilterSetSortsLongestFirst(t *testing.T) {
+	l := newSecretFilter("ubuntu", "", "ubuntu-22.04", "bb", "aa")
+	want := []string{"ubuntu-22.04", "ubuntu", "aa", "bb"}
+	if !reflect.DeepEqual(l.sorted, want) {
+		t.Fatalf("sorted secrets: got %q, want %q", l.sorted, want)
+	}
+}
+
+// When one secret is a substring of another, the longest match must be redacted
+// so the tail of the longer secret ("-22.04") can't leak.
+func TestSecretFilterFilterStringOverlapping(t *testing.T) {
+	l := newSecretFilter("ubuntu-22.04", "ubuntu")
+	const want = "connecting to <sensitive> now"
+	if got := l.FilterString("connecting to ubuntu-22.04 now"); got != want {
+		t.Fatalf("secret partially leaked: got %q, want %q", got, want)
+	}
+}
+
+// Redaction runs against the original input, so a secret that happens to appear
+// inside the "<sensitive>" marker ("sitive") must not match text the marker
+// introduced and turn "my_token" into "<sen<sensitive>>".
+func TestSecretFilterFilterStringDoesNotRefilterMarker(t *testing.T) {
+	l := newSecretFilter("my_token", "sitive")
+	if got := l.FilterString("my_token"); got != "<sensitive>" {
+		t.Fatalf("marker was re-filtered: got %q, want %q", got, "<sensitive>")
 	}
 }
 
 func TestSecretFilterWriteOverlapping(t *testing.T) {
-	const in = "connecting to ubuntu-22.04 now"
-	const want = "connecting to <sensitive> now"
+	var buf bytes.Buffer
+	l := newSecretFilter("ubuntu-22.04", "ubuntu")
+	l.SetOutput(&buf)
 
-	for i := 0; i < 100; i++ {
-		var buf bytes.Buffer
-		l := &secretFilter{
-			s: map[string]struct{}{
-				"ubuntu-22.04": {},
-				"ubuntu":       {},
-			},
-			w: &buf,
-		}
-		if _, err := l.Write([]byte(in)); err != nil {
-			t.Fatal(err)
-		}
-		if got := buf.String(); got != want {
-			t.Fatalf("secret partially leaked: got %q, want %q", got, want)
-		}
+	if _, err := l.Write([]byte("connecting to ubuntu-22.04 now")); err != nil {
+		t.Fatal(err)
 	}
+	const want = "connecting to <sensitive> now"
+	if got := buf.String(); got != want {
+		t.Fatalf("secret partially leaked: got %q, want %q", got, want)
+	}
+}
+
+// Registering secrets while a redaction reads them must not race. Run under
+// `go test -race`: reading the map without the mutex trips the detector.
+func TestSecretFilterConcurrentSetAndRead(t *testing.T) {
+	l := newSecretFilter()
+	l.SetOutput(io.Discard)
+
+	var wg sync.WaitGroup
+	for i := 0; i < 100; i++ {
+		wg.Add(3)
+		go func() { defer wg.Done(); l.Set("secret") }()
+		go func() { defer wg.Done(); l.FilterString("a secret in a message") }()
+		go func() {
+			defer wg.Done()
+			_, _ = l.Write([]byte("a secret in a message"))
+		}()
+	}
+	wg.Wait()
 }
