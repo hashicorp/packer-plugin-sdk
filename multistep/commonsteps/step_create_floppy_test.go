@@ -53,7 +53,7 @@ func TestStepCreateFloppy(t *testing.T) {
 	prefix := "exists"
 	ext := ".tmp"
 
-	for i := 0; i < expected; i++ {
+	for i := range expected {
 		files[i] = path.Join(dir, prefix+strconv.Itoa(i)+ext)
 
 		_, err := os.Create(files[i])
@@ -115,7 +115,7 @@ func TestStepCreateFloppy_missing(t *testing.T) {
 
 	prefix := "missing"
 
-	for i := 0; i < count; i++ {
+	for i := range count {
 		files[i] = path.Join(dir, prefix+strconv.Itoa(i))
 	}
 
@@ -160,7 +160,7 @@ func TestStepCreateFloppy_notfound(t *testing.T) {
 
 	prefix := "notfound"
 
-	for i := 0; i < count; i++ {
+	for i := range count {
 		files[i] = path.Join(dir, prefix+strconv.Itoa(i))
 	}
 
@@ -233,7 +233,7 @@ func TestStepCreateFloppyDirectories(t *testing.T) {
 	}
 
 	// create the hierarchy for each file
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		dir := filepath.Join(basePath, fmt.Sprintf("test-%d", i))
 
 		for _, test := range directories[i] {
