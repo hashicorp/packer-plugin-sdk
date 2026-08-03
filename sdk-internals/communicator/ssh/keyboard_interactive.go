@@ -4,9 +4,10 @@
 package ssh
 
 import (
-	"golang.org/x/term"
 	"io"
 	"log"
+
+	"golang.org/x/term"
 
 	"golang.org/x/crypto/ssh"
 )
