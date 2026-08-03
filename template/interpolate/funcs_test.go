@@ -321,6 +321,19 @@ func TestFuncUser(t *testing.T) {
 	}
 }
 
+func TestFuncUser_nilUserVariables(t *testing.T) {
+	i := &I{Value: `{{user "foo"}}`}
+	_, err := i.Render(&Context{})
+	if err == nil {
+		t.Fatal("expected an error when UserVariables is nil")
+	}
+
+	expected := "no user variables are set in the interpolation context"
+	if !strings.Contains(err.Error(), expected) {
+		t.Fatalf("err: %s\n\nexpected it to contain: %s", err, expected)
+	}
+}
+
 func TestFuncPackerBuild(t *testing.T) {
 	type cases struct {
 		DataMap     interface{}
