@@ -252,6 +252,13 @@ type WinRM struct {
 	// The amount of time to wait for WinRM to become available. This defaults
 	// to `30m` since setting up a Windows machine generally takes a long time.
 	WinRMTimeout time.Duration `mapstructure:"winrm_timeout"`
+	// The amount of time to wait between retries when attempting to connect to
+	// WinRM. This defaults to `5s`.
+	WinRMRetryInterval time.Duration `mapstructure:"winrm_retry_interval"`
+	// The timeout for each individual WinRM connection attempt. This defaults
+	// to `0` (no per-attempt timeout; each attempt waits until the server
+	// responds or resets the connection).
+	WinRMConnectTimeout time.Duration `mapstructure:"winrm_connect_timeout"`
 	// If `true`, use HTTPS for WinRM.
 	WinRMUseSSL bool `mapstructure:"winrm_use_ssl"`
 	// If `true`, do not check server certificate chain and host name.
@@ -633,6 +640,10 @@ func (c *Config) prepareWinRM(ctx *interpolate.Context) (errs []error) {
 
 	if c.WinRMTimeout == 0 {
 		c.WinRMTimeout = 30 * time.Minute
+	}
+
+	if c.WinRMRetryInterval == 0 {
+		c.WinRMRetryInterval = 5 * time.Second
 	}
 
 	if c.WinRMUseNTLM.True() {

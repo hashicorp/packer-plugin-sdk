@@ -16,6 +16,7 @@ type Config struct {
 	Username           string
 	Password           string
 	Timeout            time.Duration
+	ConnectTimeout     time.Duration
 	Https              bool
 	Insecure           bool
 	TransportDecorator func() winrm.Transporter
