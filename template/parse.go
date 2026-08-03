@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"path/filepath"
 	"sort"
@@ -105,9 +106,7 @@ func (r *rawTemplate) Template() (*Template, error) {
 		result.Comments = make(map[string]string, len(r.Comments))
 
 		for _, c := range r.Comments {
-			for k, v := range c {
-				result.Comments[k] = v
-			}
+			maps.Copy(result.Comments, c)
 		}
 	}
 

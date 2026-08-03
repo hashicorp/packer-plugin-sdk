@@ -6,6 +6,7 @@ package interpolate
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -75,9 +76,7 @@ func Funcs(ctx *Context) template.FuncMap {
 		}
 	}
 	if ctx != nil {
-		for k, v := range ctx.Funcs {
-			result[k] = v
-		}
+		maps.Copy(result, ctx.Funcs)
 	}
 
 	return template.FuncMap(result)
