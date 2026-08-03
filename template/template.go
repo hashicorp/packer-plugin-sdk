@@ -104,7 +104,7 @@ func (b *Builder) MarshalJSON() ([]byte, error) {
 
 // PostProcessor represents a post-processor within the template.
 type PostProcessor struct {
-	OnlyExcept `mapstructure:",squash" json:",omitempty"`
+	OnlyExcept `mapstructure:",squash"`
 
 	Name              string                 `json:"name,omitempty"`
 	Type              string                 `json:"type"`
@@ -139,7 +139,7 @@ func (p *PostProcessor) MarshalJSON() ([]byte, error) {
 
 // Provisioner represents a provisioner within the template.
 type Provisioner struct {
-	OnlyExcept `mapstructure:",squash" json:",omitempty"`
+	OnlyExcept `mapstructure:",squash"`
 
 	Type        string                 `json:"type"`
 	Config      map[string]interface{} `json:"config,omitempty"`
