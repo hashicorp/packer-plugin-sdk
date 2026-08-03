@@ -11,8 +11,7 @@ import (
 )
 
 func TestListenRangeConfig_Listen(t *testing.T) {
-	topCtx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	topCtx := t.Context()
 
 	var err error
 	var lockedListener *Listener
