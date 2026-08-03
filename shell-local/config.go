@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strings"
 
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
@@ -143,13 +144,7 @@ func Validate(config *Config) error {
 	supportedSyslist := []string{"darwin", "freebsd", "linux", "openbsd", "solaris", "windows"}
 	if len(config.OnlyOn) > 0 {
 		for _, provided_os := range config.OnlyOn {
-			supported_os := false
-			for _, go_os := range supportedSyslist {
-				if provided_os == go_os {
-					supported_os = true
-					break
-				}
-			}
+			supported_os := slices.Contains(supportedSyslist, provided_os)
 			if !supported_os {
 				return fmt.Errorf("Invalid OS specified in only_on: '%s'\n"+
 					"Supported OS names: %s", provided_os, strings.Join(supportedSyslist, ", "))
