@@ -143,10 +143,8 @@ func (r *RemoteCmd) RunWithUi(ctx context.Context, c Communicator, ui Ui) error 
 	// Loop and get all our output
 	var wg sync.WaitGroup
 	var ctxErr error
-	wg.Add(1)
 
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 
 		for stdoutCh != nil || stderrCh != nil {
 			select {
@@ -173,7 +171,7 @@ func (r *RemoteCmd) RunWithUi(ctx context.Context, c Communicator, ui Ui) error 
 				return
 			}
 		}
-	}()
+	})
 
 	// Start the command
 	if err := c.Start(ctx, r); err != nil {
