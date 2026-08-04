@@ -38,7 +38,7 @@ func TestDispatchHook_Run(t *testing.T) {
 }
 
 // A helper Hook implementation for testing cancels.
-// Run will wait indetinitelly until ctx is cancelled.
+// Run will wait indetinitelly until ctx is canceled.
 type CancelHook struct {
 	cancel func()
 }

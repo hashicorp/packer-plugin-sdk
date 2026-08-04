@@ -11,7 +11,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-// ToProto converts a hcldec.Spec to a protobuf-serialisable equivalent.
+// ToProto converts a hcldec.Spec to a protobuf-serializable equivalent.
 //
 // This can then be used for gRPC communication over-the-wire for Packer plugins.
 func ToProto(spec hcldec.Spec) (*Spec, error) {

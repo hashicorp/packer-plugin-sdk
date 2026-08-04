@@ -22,7 +22,7 @@ type Client struct {
 	client   *rpc.Client
 	closeMux bool
 	// UseProto makes it so that clients started from this will use
-	// protobuf/msgpack for serialisation instead of gob
+	// protobuf/msgpack for serialization instead of gob
 	UseProto bool
 }
 

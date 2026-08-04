@@ -134,11 +134,11 @@ func TestBuilderCancel(t *testing.T) {
 	// var runCtx context.Context
 
 	b := new(packersdk.MockBuilder)
-	cancelled := false
+	canceled := false
 	b.RunFn = func(ctx context.Context) {
 		topCtxCancel()
 		<-ctx.Done()
-		cancelled = true
+		canceled = true
 	}
 	client, server := testClientServer(t)
 	defer client.Close()
@@ -151,8 +151,8 @@ func TestBuilderCancel(t *testing.T) {
 		t.Fatalf("mock shouldnt retun run error for cancellation")
 	}
 
-	if !cancelled {
-		t.Fatal("context should have been cancelled")
+	if !canceled {
+		t.Fatal("context should have been canceled")
 	}
 }
 

@@ -43,7 +43,7 @@ func (err *RetryExhaustedError) Error() string {
 
 // Run will repeatedly retry the proivided fn within the constraints set in the
 // retry Config. It will retry until one of the following conditions is met:
-//   - The provided context is cancelled.
+//   - The provided context is canceled.
 //   - The Config.StartTimeout time has passed.
 //   - The function returns without an error.
 //   - The maximum number of tries, Config.Tries is exceeded.
