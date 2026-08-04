@@ -222,7 +222,7 @@ func funcGenTimestamp(ctx *Context) interface{} {
 func funcGenUser(ctx *Context) interface{} {
 	return func(k string) (string, error) {
 		if ctx == nil || ctx.UserVariables == nil {
-			return "", errors.New("test")
+			return "", errors.New("no user variables are set in the interpolation context")
 		}
 
 		val, ok := ctx.UserVariables[k]
