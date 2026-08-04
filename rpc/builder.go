@@ -66,9 +66,9 @@ func (b *builder) Run(ctx context.Context, ui packersdk.Ui, hook packersdk.Hook)
 	go func() {
 		select {
 		case <-ctx.Done():
-			log.Printf("Cancelling builder after context cancellation %v", ctx.Err())
+			log.Printf("Canceling builder after context cancellation %v", ctx.Err())
 			if err := b.client.Call(b.endpoint+".Cancel", new(interface{}), new(interface{})); err != nil {
-				log.Printf("Error cancelling builder: %s", err)
+				log.Printf("Error canceling builder: %s", err)
 			}
 		case <-done:
 		}

@@ -67,7 +67,7 @@ type ListenRangeConfig struct {
 }
 
 // Listen tries to Listen to a random open TCP port in the [min, max) range
-// until ctx is cancelled.
+// until ctx is canceled.
 // Listen uses net.ListenConfig.Listen internally.
 func (lc ListenRangeConfig) Listen(ctx context.Context) (*Listener, error) {
 	if lc.Network == "" {

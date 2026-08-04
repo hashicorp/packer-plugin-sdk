@@ -87,7 +87,7 @@ func TestStepOutputDir_exists(t *testing.T) {
 	}
 }
 
-func TestStepOutputDir_cancelled(t *testing.T) {
+func TestStepOutputDir_canceled(t *testing.T) {
 	state := testState(t)
 	step := testStepOutputDir(t)
 

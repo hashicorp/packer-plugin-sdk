@@ -59,9 +59,9 @@ func (p *postProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, a pack
 	go func() {
 		select {
 		case <-ctx.Done():
-			log.Printf("Cancelling post-processor after context cancellation %v", ctx.Err())
+			log.Printf("Canceling post-processor after context cancellation %v", ctx.Err())
 			if err := p.client.Call(p.endpoint+".Cancel", new(interface{}), new(interface{})); err != nil {
-				log.Printf("Error cancelling post-processor: %s", err)
+				log.Printf("Error canceling post-processor: %s", err)
 			}
 		case <-done:
 		}

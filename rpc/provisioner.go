@@ -57,9 +57,9 @@ func (p *provisioner) Provision(ctx context.Context, ui packersdk.Ui, comm packe
 	go func() {
 		select {
 		case <-ctx.Done():
-			log.Printf("Cancelling provisioner after context cancellation %v", ctx.Err())
+			log.Printf("Canceling provisioner after context cancellation %v", ctx.Err())
 			if err := p.client.Call(p.endpoint+".Cancel", new(interface{}), new(interface{})); err != nil {
-				log.Printf("Error cancelling provisioner: %s", err)
+				log.Printf("Error canceling provisioner: %s", err)
 			}
 		case <-done:
 		}

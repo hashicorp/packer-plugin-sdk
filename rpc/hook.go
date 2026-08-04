@@ -46,9 +46,9 @@ func (h *hook) Run(ctx context.Context, name string, ui packersdk.Ui, comm packe
 	go func() {
 		select {
 		case <-ctx.Done():
-			log.Printf("Cancelling hook after context cancellation %v", ctx.Err())
+			log.Printf("Canceling hook after context cancellation %v", ctx.Err())
 			if err := h.client.Call(h.endpoint+".Cancel", new(interface{}), new(interface{})); err != nil {
-				log.Printf("Error cancelling builder: %s", err)
+				log.Printf("Error canceling builder: %s", err)
 			}
 		case <-done:
 		}
