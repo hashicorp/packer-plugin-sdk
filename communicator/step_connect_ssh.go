@@ -78,7 +78,7 @@ func (s *StepConnectSSH) Run(ctx context.Context, state multistep.StateBag) mult
 			cancel()
 			return multistep.ActionHalt
 		case <-ctx.Done():
-			// The step sequence was cancelled, so cancel waiting for SSH
+			// The step sequence was canceled, so cancel waiting for SSH
 			// and just start the halting process.
 			cancel()
 			log.Println("[WARN] Interrupt detected, quitting waiting for SSH.")
@@ -130,8 +130,8 @@ func (s *StepConnectSSH) waitForSSH(state multistep.StateBag, ctx context.Contex
 		if !first {
 			select {
 			case <-ctx.Done():
-				log.Println("[DEBUG] SSH wait cancelled. Exiting loop.")
-				return nil, errors.New("SSH wait cancelled")
+				log.Println("[DEBUG] SSH wait canceled. Exiting loop.")
+				return nil, errors.New("SSH wait canceled")
 			case <-time.After(5 * time.Second):
 			}
 		}

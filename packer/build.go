@@ -20,7 +20,7 @@ type Build interface {
 
 	// Run runs the actual builder, returning an artifact implementation
 	// of what is built. If anything goes wrong, an error is returned.
-	// Run can be context cancelled.
+	// Run can be context canceled.
 	Run(context.Context, Ui) ([]Artifact, error)
 
 	// SetDebug will enable/disable debug mode. Debug mode is always

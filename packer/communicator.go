@@ -90,7 +90,7 @@ type ConfigurableCommunicator interface {
 
 // RunWithUi runs the remote command and streams the output to any configured
 // Writers for stdout/stderr, while also writing each line as it comes to a Ui.
-// RunWithUi will not return until the command finishes or is cancelled.
+// RunWithUi will not return until the command finishes or is canceled.
 func (r *RemoteCmd) RunWithUi(ctx context.Context, c Communicator, ui Ui) error {
 	r.initchan()
 

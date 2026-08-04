@@ -26,6 +26,6 @@ type PostProcessor interface {
 	// given a value to keep_input_artifact. If forceOverride is true, then any
 	// user input for keep_input_artifact is ignored and the artifact is either
 	// kept or discarded according to the value set in `keep`.
-	// PostProcess is cancellable using context
+	// PostProcess is cancelable using context
 	PostProcess(context.Context, Ui, Artifact) (a Artifact, keep bool, forceOverride bool, err error)
 }

@@ -14,7 +14,7 @@ type runState int32
 const (
 	stateIdle runState = iota
 	stateRunning
-	stateCancelling
+	stateCanceling
 )
 
 // BasicRunner is a Runner that just runs the given slice of steps.
@@ -65,7 +65,7 @@ func (b *BasicRunner) Run(ctx context.Context, state StateBag) {
 		}
 		// We also check for cancellation here since we can't be sure
 		// the goroutine that is running to set it actually ran.
-		if runState(atomic.LoadInt32((*int32)(&b.state))) == stateCancelling {
+		if runState(atomic.LoadInt32((*int32)(&b.state))) == stateCanceling {
 			state.Put(StateCancelled, true)
 			break
 		}
