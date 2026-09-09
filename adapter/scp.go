@@ -135,11 +135,11 @@ type scpUploadState struct {
 	targetIsDir bool
 }
 
-func (scp scpUploadState) DestPath() string {
+func (scp *scpUploadState) DestPath() string {
 	return filepath.Join(scp.target, scp.dir)
 }
 
-func (scp scpUploadState) SrcPath() string {
+func (scp *scpUploadState) SrcPath() string {
 	return filepath.Join(scp.srcRoot, scp.dir)
 }
 
