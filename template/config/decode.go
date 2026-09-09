@@ -5,6 +5,7 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"reflect"
@@ -68,9 +69,9 @@ func Decode(target interface{}, config *DecodeOpts, raws ...interface{}) error {
 		flatCfg := ctarget.FlatMapstructure()
 		err := gocty.FromCtyValue(cval, flatCfg)
 		if err != nil {
-			switch err := err.(type) {
-			case cty.PathError:
-				return fmt.Errorf("%v: %v", err, err.Path)
+			var pathErr cty.PathError
+			if errors.As(err, &pathErr) {
+				return fmt.Errorf("%v: %v", pathErr, pathErr.Path)
 			}
 			return err
 		}
