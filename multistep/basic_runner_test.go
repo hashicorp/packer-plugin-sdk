@@ -38,9 +38,9 @@ func TestBasicRunner_Run(t *testing.T) {
 		t.Errorf("unexpected result: %#v", results)
 	}
 
-	// Test no halted or cancelled
+	// Test no halted or canceled
 	if _, ok := data.GetOk(StateCancelled); ok {
-		t.Errorf("cancelled should not be in state bag")
+		t.Errorf("canceled should not be in state bag")
 	}
 
 	if _, ok := data.GetOk(StateHalted); ok {
@@ -103,10 +103,10 @@ func TestBasicRunner_Cancel(t *testing.T) {
 
 	topCtx, topCtxCancel := context.WithCancel(context.Background())
 
-	checkCancelled := func(data StateBag) {
-		cancelled := data.Get(StateCancelled).(bool)
-		if !cancelled {
-			t.Fatal("state should be cancelled")
+	checkCanceled := func(data StateBag) {
+		canceled := data.Get(StateCancelled).(bool)
+		if !canceled {
+			t.Fatal("state should be canceled")
 		}
 	}
 
@@ -119,7 +119,7 @@ func TestBasicRunner_Cancel(t *testing.T) {
 			run: func(ctx context.Context, sb StateBag) StepAction {
 				return ActionContinue
 			},
-			cleanup: checkCancelled,
+			cleanup: checkCanceled,
 		},
 		TestStepFn{
 			run: func(ctx context.Context, sb StateBag) StepAction {
@@ -127,7 +127,7 @@ func TestBasicRunner_Cancel(t *testing.T) {
 				<-ctx.Done()
 				return ActionContinue
 			},
-			cleanup: checkCancelled,
+			cleanup: checkCanceled,
 		},
 		TestStepFn{
 			run: func(context.Context, StateBag) StepAction {
@@ -156,8 +156,8 @@ func TestBasicRunner_Cancel(t *testing.T) {
 		t.Errorf("unexpected result: %#v", results)
 	}
 
-	// Test that it says it is cancelled
-	checkCancelled(data)
+	// Test that it says it is canceled
+	checkCanceled(data)
 
 }
 
@@ -170,8 +170,8 @@ func TestBasicRunner_Cancel_Special(t *testing.T) {
 	state.Put("runner", r)
 	r.Run(context.Background(), state)
 
-	// test that state contains cancelled
+	// test that state contains canceled
 	if _, ok := state.GetOk(StateCancelled); !ok {
-		t.Errorf("cancelled should be in state bag")
+		t.Errorf("canceled should be in state bag")
 	}
 }

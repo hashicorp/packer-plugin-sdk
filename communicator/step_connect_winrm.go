@@ -80,7 +80,7 @@ func (s *StepConnectWinRM) Run(ctx context.Context, state multistep.StateBag) mu
 			cancel()
 			return multistep.ActionHalt
 		case <-ctx.Done():
-			// The step sequence was cancelled, so cancel waiting for WinRM
+			// The step sequence was canceled, so cancel waiting for WinRM
 			// and just start the halting process.
 			cancel()
 			log.Println("Interrupt detected, quitting waiting for WinRM.")
@@ -101,8 +101,8 @@ func (s *StepConnectWinRM) waitForWinRM(state multistep.StateBag, ctx context.Co
 		if !first {
 			select {
 			case <-ctx.Done():
-				log.Println("[INFO] WinRM wait cancelled. Exiting loop.")
-				return nil, errors.New("WinRM wait cancelled")
+				log.Println("[INFO] WinRM wait canceled. Exiting loop.")
+				return nil, errors.New("WinRM wait canceled")
 			case <-time.After(s.Config.WinRMRetryInterval):
 			}
 		}

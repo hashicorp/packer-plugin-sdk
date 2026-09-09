@@ -69,10 +69,10 @@ func (s *StepOutputDir) Cleanup(state multistep.StateBag) {
 		return
 	}
 
-	_, cancelled := state.GetOk(multistep.StateCancelled)
+	_, canceled := state.GetOk(multistep.StateCancelled)
 	_, halted := state.GetOk(multistep.StateHalted)
 
-	if cancelled || halted {
+	if canceled || halted {
 		ui := state.Get("ui").(packersdk.Ui)
 
 		ui.Say("Deleting output directory...")

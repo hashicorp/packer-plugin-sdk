@@ -96,7 +96,7 @@ type waitExpression struct {
 	d time.Duration
 }
 
-// Do waits the amount of time described by the expression. It is cancellable
+// Do waits the amount of time described by the expression. It is cancelable
 // through the context.
 func (w *waitExpression) Do(ctx context.Context, driver BCDriver) error {
 	driver.Flush()

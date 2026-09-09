@@ -34,7 +34,7 @@ func (ran *failOnce) Run(context.Context) error {
 }
 
 func TestConfig_Run(t *testing.T) {
-	cancelledCtx, cancel := context.WithCancel(context.Background())
+	canceledCtx, cancel := context.WithCancel(context.Background())
 	cancel()
 	type fields struct {
 		StartTimeout time.Duration
@@ -55,13 +55,13 @@ func TestConfig_Run(t *testing.T) {
 			fields{StartTimeout: time.Second},
 			args{context.Background(), success},
 			nil},
-		{"context cancelled",
+		{"context canceled",
 			fields{StartTimeout: time.Second},
-			args{cancelledCtx, wait},
+			args{canceledCtx, wait},
 			context.Canceled},
 		{"timeout",
 			fields{StartTimeout: 20 * time.Millisecond, RetryDelay: func() time.Duration { return 10 * time.Millisecond }},
-			args{cancelledCtx, fail},
+			args{canceledCtx, fail},
 			failErr},
 		{"success after one failure",
 			fields{Tries: 2, RetryDelay: func() time.Duration { return 0 }},

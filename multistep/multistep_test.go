@@ -25,7 +25,7 @@ type TestStepSync struct {
 type TestStepWaitForever struct {
 }
 
-// A step that manually flips state to cancelling in run
+// A step that manually flips state to canceling in run
 type TestStepInjectCancel struct {
 }
 
@@ -71,7 +71,7 @@ func (s TestStepWaitForever) Cleanup(StateBag) {}
 
 func (s TestStepInjectCancel) Run(ctx context.Context, state StateBag) StepAction {
 	r := state.Get("runner").(*BasicRunner)
-	r.state = stateCancelling
+	r.state = stateCanceling
 	return ActionContinue
 }
 
