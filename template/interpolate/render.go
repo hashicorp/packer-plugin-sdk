@@ -194,6 +194,8 @@ func (w *renderWalker) Exit(loc reflectwalk.Location) error {
 		w.cs = w.cs[:len(w.cs)-1]
 	case reflectwalk.SliceElem:
 		w.csKey = w.csKey[:len(w.csKey)-1]
+	default:
+		// This walker only stacks maps and slices.
 	}
 
 	return nil

@@ -47,5 +47,7 @@ func structTypes(v reflect.Value, m map[reflect.Type]struct{}) {
 		for i := 0; i < v.NumField(); i++ {
 			structTypes(v.Field(i), m)
 		}
+	default:
+		// Scalars and other kinds have no nested structs.
 	}
 }
