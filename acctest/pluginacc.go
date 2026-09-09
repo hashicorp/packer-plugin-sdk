@@ -116,9 +116,9 @@ func TestPlugin(t *testing.T, testCase *PluginTestCase) {
 					"acceptance test template can be found at %s",
 					err.Error(), filepath.Join(cwd, initLogfile),
 					filepath.Join(cwd, templatePath))
-			} else {
-				os.Remove(initLogfile)
 			}
+
+			os.Remove(initLogfile)
 		}
 	}
 
@@ -156,8 +156,8 @@ func TestPlugin(t *testing.T, testCase *PluginTestCase) {
 			"acceptance test template can be found at %s",
 			checkErr.Error(), filepath.Join(cwd, logfile),
 			filepath.Join(cwd, templatePath))
-	} else {
-		os.Remove(templatePath)
-		os.Remove(logfile)
 	}
+
+	os.Remove(templatePath)
+	os.Remove(logfile)
 }
