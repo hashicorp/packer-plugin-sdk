@@ -132,7 +132,7 @@ func (c *Communicator) Download(src string, dst io.Writer) error {
 	base64DecodePipe := &Base64Pipe{w: dst}
 
 	cmd := winrm.Powershell(fmt.Sprintf(encodeScript, src))
-	_, err = client.Run(cmd, base64DecodePipe, io.Discard)
+	_, err = client.RunWithContext(context.Background(), cmd, base64DecodePipe, io.Discard)
 
 	return err
 }
