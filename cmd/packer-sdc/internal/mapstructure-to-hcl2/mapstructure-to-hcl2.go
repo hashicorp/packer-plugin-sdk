@@ -472,8 +472,8 @@ func uniqueTags(tagName string, fields []*types.Var, tags []string) ([]*types.Va
 	uniqueTags := map[string]bool{}
 	for i := range fields {
 		field, tag := fields[i], tags[i]
-		structtag, _ := structtag.Parse(tag)
-		h, err := structtag.Get(tagName)
+		st, _ := structtag.Parse(tag)
+		h, err := st.Get(tagName)
 		if err == nil {
 			if uniqueTags[h.Name] {
 				return nil, nil, fmt.Errorf("field %q: duplicate tag %q", field.Name(), tagName)
@@ -498,14 +498,14 @@ func getMapstructureSquashedStruct(topPkg *types.Package, utStruct *types.Struct
 		if _, ok := field.Type().(*types.Signature); ok {
 			continue // ignore funcs
 		}
-		structtag, err := structtag.Parse(tag)
+		st, err := structtag.Parse(tag)
 		if err != nil {
 			log.Printf("could not parse field tag %s of : %v", tag, err)
 			continue
 		}
 
 		// Contains mapstructure-to-hcl2 tag
-		if ms, err := structtag.Get("mapstructure-to-hcl2"); err == nil {
+		if ms, err := st.Get("mapstructure-to-hcl2"); err == nil {
 			// Stop if is telling to skip it
 			if ms.HasOption("skip") {
 				continue
@@ -513,7 +513,7 @@ func getMapstructureSquashedStruct(topPkg *types.Package, utStruct *types.Struct
 		}
 
 		// Contains mapstructure tag
-		if ms, err := structtag.Get("mapstructure"); err == nil {
+		if ms, err := st.Get("mapstructure"); err == nil {
 			// Squash structs
 			if ms.HasOption("squash") {
 				ot := field.Type()
