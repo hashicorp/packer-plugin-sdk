@@ -53,7 +53,10 @@ func (b *build) Run(ctx context.Context, ui packersdk.Ui) ([]packersdk.Artifact,
 	nextId := b.mux.NextId()
 	server := newServerWithMux(b.mux, nextId)
 	server.RegisterUi(ui)
-	go server.Serve()
+	go func() {
+		defer server.Close()
+		server.Serve()
+	}()
 
 	done := make(chan interface{})
 	defer close(done)
@@ -74,12 +77,16 @@ func (b *build) Run(ctx context.Context, ui packersdk.Ui) ([]packersdk.Artifact,
 	}
 
 	artifacts := make([]packersdk.Artifact, len(result))
+	clients := make([]*Client, 0, len(result))
 	for i, streamId := range result {
 		client, err := newClientWithMux(b.mux, streamId)
 		if err != nil {
+			for _, c := range clients {
+				c.Close()
+			}
 			return nil, err
 		}
-
+		clients = append(clients, client)
 		artifacts[i] = client.Artifact()
 	}
 
@@ -145,7 +152,10 @@ func (b *BuildServer) Run(streamId uint32, reply *[]uint32) error {
 		streamId := b.mux.NextId()
 		server := newServerWithMux(b.mux, streamId)
 		server.RegisterArtifact(artifact)
-		go server.Serve()
+		go func() {
+			defer server.Close()
+			server.Serve()
+		}()
 
 		(*reply)[i] = streamId
 	}
