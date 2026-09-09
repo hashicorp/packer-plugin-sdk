@@ -1,6 +1,37 @@
  # Latest Release
  Please refer to [releases](https://github.com/hashicorp/packer-plugin-sdk/releases) for latest CHANGELOG information.
 
+## 0.6.11 (September 09, 2026)
+
+* communicator/winrm: Add WinRM connect timeout and retry parameters
+    [GH-354](https://github.com/hashicorp/packer-plugin-sdk/pull/354)
+* communicator: Use `WaitGroup.Go` for communicator tasks
+    [GH-351](https://github.com/hashicorp/packer-plugin-sdk/pull/351)
+* communicator: Simplify SCP mode detection
+    [GH-350](https://github.com/hashicorp/packer-plugin-sdk/pull/350)
+* docs: Clarify Go compatibility policy
+    [GH-342](https://github.com/hashicorp/packer-plugin-sdk/pull/342)
+* interpolate: Replace placeholder "test" error in `funcGenUser`
+    [GH-355](https://github.com/hashicorp/packer-plugin-sdk/pull/355)
+* shell-local: Avoid ETXTBSY errors for inline scripts
+    [GH-341](https://github.com/hashicorp/packer-plugin-sdk/pull/341)
+* sdk: Upgrade Go to 1.26.8 and update module dependencies
+    [GH-359](https://github.com/hashicorp/packer-plugin-sdk/pull/359)
+* sdk: Use `reflect.TypeFor` for type comparisons
+    [GH-346](https://github.com/hashicorp/packer-plugin-sdk/pull/346)
+* sdk: Simplify membership checks
+    [GH-345](https://github.com/hashicorp/packer-plugin-sdk/pull/345)
+* sdk: Sort package imports
+    [GH-347](https://github.com/hashicorp/packer-plugin-sdk/pull/347)
+* sdk: Use integer ranges for counted loops
+    [GH-348](https://github.com/hashicorp/packer-plugin-sdk/pull/348)
+* sdk: Use `maps.Copy` for map merging
+    [GH-349](https://github.com/hashicorp/packer-plugin-sdk/pull/349)
+* sdk: Use testing context for port configuration
+    [GH-352](https://github.com/hashicorp/packer-plugin-sdk/pull/352)
+* sdk: Build environment variables with `strings.Builder`
+    [GH-353](https://github.com/hashicorp/packer-plugin-sdk/pull/353)
+
 ## 0.6.10 (July 08, 2026)
 
 * communicator: Fix goroutine leaks in the Windows communicator
@@ -214,5 +245,3 @@ In release [v0.0.12](#0012-february-11-2021) a backwards incompatible change was
 ## 0.0.6 (January 7, 2021)
 
 * sdk: Initial release
-
-
