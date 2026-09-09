@@ -14,7 +14,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"math/rand"
 	"net"
 	"os"
 	"os/signal"
@@ -22,7 +21,6 @@ import (
 	"strconv"
 	"sync/atomic"
 	"syscall"
-	"time"
 
 	packrpc "github.com/hashicorp/packer-plugin-sdk/rpc"
 	"github.com/hashicorp/packer-plugin-sdk/tmp"
@@ -162,9 +160,4 @@ func serverListener_unix() (net.Listener, error) {
 	}
 
 	return net.Listen("unix", path)
-}
-
-func init() {
-	// Seed the random number generator
-	rand.Seed(time.Now().UTC().UnixNano())
 }
