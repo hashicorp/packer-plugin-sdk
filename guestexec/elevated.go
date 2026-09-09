@@ -178,8 +178,8 @@ func GenerateElevatedRunner(command string, p ElevatedProvisioner) (uploadedPath
 			elevatedPassword, escapedElevatedPassword)
 	}
 
-	uuid := uuid.TimeOrderedUUID()
-	path := fmt.Sprintf(`C:/Windows/Temp/packer-elevated-shell-%s.ps1`, uuid)
+	shellID := uuid.TimeOrderedUUID()
+	path := fmt.Sprintf(`C:/Windows/Temp/packer-elevated-shell-%s.ps1`, shellID)
 
 	// Generate command
 	err = elevatedTemplate.Execute(&buffer, elevatedOptions{
