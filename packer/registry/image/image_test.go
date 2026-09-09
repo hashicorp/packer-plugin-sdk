@@ -12,7 +12,7 @@ import (
 )
 
 func TestFromMappedData_badInput(t *testing.T) {
-	_, err := FromMappedData([]string{"invalid"}, func(k, v interface{}) (*Image, error) { return nil, nil })
+	_, err := FromMappedData([]string{"invalid"}, func(k, v any) (*Image, error) { return nil, nil })
 	if err == nil {
 		t.Errorf("unexpected results for bad map input; expected err to be non-nil")
 	}
@@ -30,7 +30,7 @@ func TestFromMappedData(t *testing.T) {
 		"east": "happycloud-2",
 	}
 
-	f := func(key, value interface{}) (*Image, error) {
+	f := func(key, value any) (*Image, error) {
 		v, ok := value.(string)
 		if !ok {
 			return nil, errors.New("for happycloud maps value should always be string")
@@ -121,7 +121,7 @@ func TestFromArtifact_WithProvider(t *testing.T) {
 func TestFromArtifact_SetLabels(t *testing.T) {
 
 	artifact := new(packer.MockArtifact)
-	artifact.StateValues = map[string]interface{}{
+	artifact.StateValues = map[string]any{
 		"cloud":            "foo",
 		"non-string-value": 7,
 		"slice-of-strings": []string{"foo", "bar"},

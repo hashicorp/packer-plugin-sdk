@@ -27,7 +27,7 @@ type PostProcessorServer struct {
 }
 
 type PostProcessorConfigureArgs struct {
-	Configs []interface{}
+	Configs []any
 }
 
 type PostProcessorProcessResponse struct {
@@ -37,13 +37,13 @@ type PostProcessorProcessResponse struct {
 	StreamId      uint32
 }
 
-func (p *postProcessor) Configure(raw ...interface{}) error {
+func (p *postProcessor) Configure(raw ...any) error {
 	raw, err := encodeCTYValues(raw)
 	if err != nil {
 		return err
 	}
 	args := &PostProcessorConfigureArgs{Configs: raw}
-	return p.client.Call(p.endpoint+".Configure", args, new(interface{}))
+	return p.client.Call(p.endpoint+".Configure", args, new(any))
 }
 
 func (p *postProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, a packersdk.Artifact) (packersdk.Artifact, bool, bool, error) {
@@ -53,14 +53,14 @@ func (p *postProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, a pack
 	server.RegisterUi(ui)
 	go server.Serve()
 
-	done := make(chan interface{})
+	done := make(chan any)
 	defer close(done)
 
 	go func() {
 		select {
 		case <-ctx.Done():
 			log.Printf("Cancelling post-processor after context cancellation %v", ctx.Err())
-			if err := p.client.Call(p.endpoint+".Cancel", new(interface{}), new(interface{})); err != nil {
+			if err := p.client.Call(p.endpoint+".Cancel", new(any), new(any)); err != nil {
 				log.Printf("Error cancelling post-processor: %s", err)
 			}
 		case <-done:
@@ -88,7 +88,7 @@ func (p *postProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, a pack
 	return client.Artifact(), response.Keep, response.ForceOverride, nil
 }
 
-func (p *PostProcessorServer) Configure(args *PostProcessorConfigureArgs, reply *interface{}) (err error) {
+func (p *PostProcessorServer) Configure(args *PostProcessorConfigureArgs, reply *any) (err error) {
 	config, err := decodeCTYValues(args.Configs)
 	if err != nil {
 		return err
@@ -141,7 +141,7 @@ func (p *PostProcessorServer) PostProcess(streamId uint32, reply *PostProcessorP
 	return nil
 }
 
-func (b *PostProcessorServer) Cancel(args *interface{}, reply *interface{}) error {
+func (b *PostProcessorServer) Cancel(args *any, reply *any) error {
 	if b.contextCancel != nil {
 		b.contextCancel()
 	}

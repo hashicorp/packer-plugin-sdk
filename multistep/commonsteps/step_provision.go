@@ -30,13 +30,13 @@ const HttpIPNotImplemented = "ERR_HTTP_IP_NOT_IMPLEMENTED_BY_BUILDER"
 const HttpPortNotImplemented = "ERR_HTTP_PORT_NOT_IMPLEMENTED_BY_BUILDER"
 const HttpAddrNotImplemented = "ERR_HTTP_ADDR_NOT_IMPLEMENTED_BY_BUILDER"
 
-func PopulateProvisionHookData(state multistep.StateBag) map[string]interface{} {
-	hookData := make(map[string]interface{})
+func PopulateProvisionHookData(state multistep.StateBag) map[string]any {
+	hookData := make(map[string]any)
 
 	// Load Builder hook data from state, if it has been set.
 	hd, ok := state.GetOk("generated_data")
 	if ok {
-		hookData = hd.(map[string]interface{})
+		hookData = hd.(map[string]any)
 	}
 
 	// Warn user that the id isn't implemented

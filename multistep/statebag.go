@@ -10,26 +10,26 @@ import "sync"
 // StateBag holds the state that is used by the Runner and Steps. The
 // StateBag implementation must be safe for concurrent access.
 type StateBag interface {
-	Get(string) interface{}
-	GetOk(string) (interface{}, bool)
-	Put(string, interface{})
+	Get(string) any
+	GetOk(string) (any, bool)
+	Put(string, any)
 	Remove(string)
 }
 
 // BasicStateBag implements StateBag by using a normal map underneath
 // protected by a RWMutex.
 type BasicStateBag struct {
-	data map[string]interface{}
+	data map[string]any
 	l    sync.RWMutex
 	once sync.Once
 }
 
-func (b *BasicStateBag) Get(k string) interface{} {
+func (b *BasicStateBag) Get(k string) any {
 	result, _ := b.GetOk(k)
 	return result
 }
 
-func (b *BasicStateBag) GetOk(k string) (interface{}, bool) {
+func (b *BasicStateBag) GetOk(k string) (any, bool) {
 	b.l.RLock()
 	defer b.l.RUnlock()
 
@@ -37,13 +37,13 @@ func (b *BasicStateBag) GetOk(k string) (interface{}, bool) {
 	return result, ok
 }
 
-func (b *BasicStateBag) Put(k string, v interface{}) {
+func (b *BasicStateBag) Put(k string, v any) {
 	b.l.Lock()
 	defer b.l.Unlock()
 
 	// Make sure the map is initialized one time, on write
 	b.once.Do(func() {
-		b.data = make(map[string]interface{})
+		b.data = make(map[string]any)
 	})
 
 	// Write the data

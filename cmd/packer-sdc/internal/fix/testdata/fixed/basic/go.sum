@@ -1,0 +1,3 @@
+github.com/hashicorp/hcl/v2 v2.13.0/go.mod h1:e4z5nxYlWNPdDSNYX+ph14EvWYMFm3eP0zIUqPc2jr0=
+github.com/hashicorp/packer-plugin-sdk v0.3.1/go.mod h1:+GzydiXdn0CkueigqXBsX4Poz5gfmFXZ/DkxKt4fmt4=
+github.com/nywilken/go-cty v1.13.3/go.mod h1:YKQzy/7pZ7iq2jNFzy5go57xdxdWoLLpaEp4u238AE0=

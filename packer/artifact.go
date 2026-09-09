@@ -30,7 +30,7 @@ type Artifact interface {
 
 	// State allows the caller to ask for builder specific state information
 	// relating to the artifact instance.
-	State(name string) interface{}
+	State(name string) any
 
 	// Destroy deletes the artifact. Packer calls this for various reasons,
 	// such as if a post-processor has processed this artifact and it is

@@ -11,7 +11,7 @@ import (
 
 // Unmarshal is wrapper around json.Unmarshal that returns user-friendly
 // errors when there are syntax errors.
-func Unmarshal(data []byte, i interface{}) error {
+func Unmarshal(data []byte, i any) error {
 	err := json.Unmarshal(data, i)
 	if err != nil {
 		syntaxErr, ok := err.(*json.SyntaxError)

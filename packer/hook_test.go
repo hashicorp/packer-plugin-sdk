@@ -43,7 +43,7 @@ type CancelHook struct {
 	cancel func()
 }
 
-func (h *CancelHook) Run(ctx context.Context, _ string, _ Ui, _ Communicator, _ interface{}) error {
+func (h *CancelHook) Run(ctx context.Context, _ string, _ Ui, _ Communicator, _ any) error {
 	h.cancel()
 	<-ctx.Done()
 	return ctx.Err()

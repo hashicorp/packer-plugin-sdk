@@ -9,12 +9,12 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func DeepAllowUnexported(vs ...interface{}) cmp.Option {
+func DeepAllowUnexported(vs ...any) cmp.Option {
 	m := make(map[reflect.Type]struct{})
 	for _, v := range vs {
 		structTypes(reflect.ValueOf(v), m)
 	}
-	var typs []interface{}
+	var typs []any
 	for t := range m {
 		typs = append(typs, reflect.New(t).Elem().Interface())
 	}

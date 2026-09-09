@@ -10,7 +10,7 @@ import (
 )
 
 func TestBasicRunner_ImplRunner(t *testing.T) {
-	var raw interface{} = &BasicRunner{}
+	var raw any = &BasicRunner{}
 	if _, ok := raw.(Runner); !ok {
 		t.Fatalf("BasicRunner must be a Runner")
 	}

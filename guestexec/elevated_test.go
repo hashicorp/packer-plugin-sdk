@@ -10,9 +10,9 @@ import (
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 )
 
-func testConfig() map[string]interface{} {
-	return map[string]interface{}{
-		"inline": []interface{}{"foo", "bar"},
+func testConfig() map[string]any {
+	return map[string]any{
+		"inline": []any{"foo", "bar"},
 	}
 }
 
