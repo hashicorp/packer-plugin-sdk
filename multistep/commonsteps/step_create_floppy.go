@@ -126,13 +126,13 @@ func (s *StepCreateFloppy) Run(ctx context.Context, state multistep.StateBag) mu
 	}
 
 	var crawlDirectoryFiles []string
-	crawlDirectory := func(path string, info os.FileInfo, err error) error {
+	crawlDirectory := func(pathname string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 		if !info.IsDir() {
-			crawlDirectoryFiles = append(crawlDirectoryFiles, path)
-			ui.Message(fmt.Sprintf("Adding file: %s", path))
+			crawlDirectoryFiles = append(crawlDirectoryFiles, pathname)
+			ui.Message(fmt.Sprintf("Adding file: %s", pathname))
 		}
 		return nil
 	}
@@ -218,8 +218,8 @@ func (s *StepCreateFloppy) Run(ctx context.Context, state multistep.StateBag) mu
 
 	// Collect files from floppy_content
 	ui.Message("Copying files from floppy_content")
-	for path, content := range s.Content {
-		err = s.AddContent(cache, path, content)
+	for contentPath, content := range s.Content {
+		err = s.AddContent(cache, contentPath, content)
 		if err != nil {
 			state.Put("error",
 				fmt.Errorf("Error creating file for floppy: %s", err))
@@ -318,9 +318,9 @@ func (s *StepCreateFloppy) Add(dircache directoryCache, src string) error {
 	return filepath.Walk(src, visit)
 }
 
-func (s *StepCreateFloppy) AddContent(dircache directoryCache, path, content string) error {
-	basedirectory := filepath.Join(path, "..")
-	directory, filename := filepath.Split(filepath.ToSlash(path))
+func (s *StepCreateFloppy) AddContent(dircache directoryCache, contentPath, content string) error {
+	basedirectory := filepath.Join(contentPath, "..")
+	directory, filename := filepath.Split(filepath.ToSlash(contentPath))
 
 	base, err := removeBase(basedirectory, filepath.FromSlash(directory))
 	if err != nil {
@@ -344,9 +344,9 @@ func (s *StepCreateFloppy) AddContent(dircache directoryCache, path, content str
 
 	_, err = io.WriteString(fatFile, content)
 	if err != nil {
-		return fmt.Errorf("Error writing file %s on floppy: %s", path, err)
+		return fmt.Errorf("Error writing file %s on floppy: %s", contentPath, err)
 	}
-	s.FilesAdded[path] = true
+	s.FilesAdded[contentPath] = true
 
 	return nil
 }
@@ -361,26 +361,26 @@ func (s *StepCreateFloppy) Cleanup(multistep.StateBag) {
 // removeBase will take a regular os.PathSeparator-separated path and remove the
 // prefix directory base from it. Both paths are converted to their absolute
 // formats before the stripping takes place.
-func removeBase(base string, path string) (string, error) {
+func removeBase(base string, pathname string) (string, error) {
 	var idx int
 	var err error
 
-	if res, err := filepath.Abs(path); err == nil {
-		path = res
+	if res, err := filepath.Abs(pathname); err == nil {
+		pathname = res
 	}
-	path = filepath.Clean(path)
+	pathname = filepath.Clean(pathname)
 
 	if base, err = filepath.Abs(base); err != nil {
-		return path, err
+		return pathname, err
 	}
 
-	c1, c2 := strings.Split(base, string(os.PathSeparator)), strings.Split(path, string(os.PathSeparator))
+	c1, c2 := strings.Split(base, string(os.PathSeparator)), strings.Split(pathname, string(os.PathSeparator))
 	for idx = 0; idx < len(c1); idx++ {
 		if len(c1[idx]) == 0 && len(c2[idx]) != 0 {
 			break
 		}
 		if c1[idx] != c2[idx] {
-			return "", fmt.Errorf("Path %s is not prefixed by Base %s", path, base)
+			return "", fmt.Errorf("Path %s is not prefixed by Base %s", pathname, base)
 		}
 	}
 	return strings.Join(c2[idx:], string(os.PathSeparator)), nil
@@ -418,10 +418,10 @@ func fsDirectoryCache(rootDirectory fs.Directory) directoryCache {
 			for i := range component {
 
 				// join all of our components into a key
-				path := strings.Join(component[:i], "/")
+				dirPath := strings.Join(component[:i], "/")
 
 				// check if parent directory is cached
-				res, ok = cache[path]
+				res, ok = cache[dirPath]
 				if !ok {
 					// add directory into cache
 					directory, err := entry.AddDirectory(component[i-1])
@@ -434,7 +434,7 @@ func fsDirectoryCache(rootDirectory fs.Directory) directoryCache {
 						Error <- err
 						continue
 					}
-					cache[path] = res
+					cache[dirPath] = res
 				}
 				// cool, found a directory
 				entry = res
