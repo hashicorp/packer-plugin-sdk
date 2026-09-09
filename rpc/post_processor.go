@@ -51,7 +51,10 @@ func (p *postProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, a pack
 	server := newServerWithMux(p.mux, nextId)
 	server.RegisterArtifact(a)
 	server.RegisterUi(ui)
-	go server.Serve()
+	go func() {
+		defer server.Close()
+		server.Serve()
+	}()
 
 	done := make(chan interface{})
 	defer close(done)
@@ -136,7 +139,10 @@ func (p *PostProcessorServer) PostProcess(streamId uint32, reply *PostProcessorP
 		if err := server.RegisterArtifact(artifactResult); err != nil {
 			return err
 		}
-		go server.Serve()
+		go func() {
+			defer server.Close()
+			server.Serve()
+		}()
 	}
 	return nil
 }
