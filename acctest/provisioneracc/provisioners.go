@@ -283,6 +283,7 @@ func writeJsonTemplate(out *bytes.Buffer, filePath string, t *testing.T) {
 	if err != nil {
 		t.Fatalf("bad: failed to create template file: %s", err.Error())
 	}
+	defer outputFile.Close()
 	_, err = outputFile.Write(out.Bytes())
 	if err != nil {
 		t.Fatalf("bad: failed to write template file: %s", err.Error())

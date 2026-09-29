@@ -230,6 +230,7 @@ func (cmd *Command) Run(args []string) int {
 	if err != nil {
 		log.Fatalf("os.Create: %v", err)
 	}
+	defer outputFile.Close()
 
 	_, err = outputFile.Write(goFmt(outputFile.Name(), out.Bytes()))
 	if err != nil {

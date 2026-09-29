@@ -59,7 +59,10 @@ func (b *builder) Run(ctx context.Context, ui packersdk.Ui, hook packersdk.Hook)
 	server := newServerWithMux(b.mux, nextId)
 	server.RegisterHook(hook)
 	server.RegisterUi(ui)
-	go server.Serve()
+	go func() {
+		defer server.Close()
+		server.Serve()
+	}()
 
 	done := make(chan interface{})
 	defer close(done)
@@ -130,7 +133,10 @@ func (b *BuilderServer) Run(streamId uint32, reply *uint32) error {
 		if err != nil {
 			return err
 		}
-		go artifactServer.Serve()
+		go func() {
+			defer artifactServer.Close()
+			artifactServer.Serve()
+		}()
 		*reply = streamId
 	}
 
