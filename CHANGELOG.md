@@ -1,6 +1,11 @@
  # Latest Release
  Please refer to [releases](https://github.com/hashicorp/packer-plugin-sdk/releases) for latest CHANGELOG information.
 
+## 0.6.12 (October 07, 2026)
+
+* sdk: Update AWS SDK, EventStream, and go-getter dependencies
+    [GH-371](https://github.com/hashicorp/packer-plugin-sdk/pull/371)
+
 ## 0.6.11 (September 09, 2026)
 
 * communicator/winrm: Add WinRM connect timeout and retry parameters
