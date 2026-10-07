@@ -33,13 +33,16 @@ func _AlgorithmNoOp() {
 var _AlgorithmValues = []Algorithm{RSA, DSA, ECDSA, ED25519}
 
 var _AlgorithmNameToValueMap = map[string]Algorithm{
-	_AlgorithmName[0:3]:        RSA,
+	_AlgorithmName[0:3]:   RSA,
+	_AlgorithmName[3:6]:   DSA,
+	_AlgorithmName[6:11]:  ECDSA,
+	_AlgorithmName[11:18]: ED25519,
+}
+
+var _AlgorithmLowerNameToValueMap = map[string]Algorithm{
 	_AlgorithmLowerName[0:3]:   RSA,
-	_AlgorithmName[3:6]:        DSA,
 	_AlgorithmLowerName[3:6]:   DSA,
-	_AlgorithmName[6:11]:       ECDSA,
 	_AlgorithmLowerName[6:11]:  ECDSA,
-	_AlgorithmName[11:18]:      ED25519,
 	_AlgorithmLowerName[11:18]: ED25519,
 }
 
@@ -57,7 +60,7 @@ func AlgorithmString(s string) (Algorithm, error) {
 		return val, nil
 	}
 
-	if val, ok := _AlgorithmNameToValueMap[strings.ToLower(s)]; ok {
+	if val, ok := _AlgorithmLowerNameToValueMap[strings.ToLower(s)]; ok {
 		return val, nil
 	}
 	return 0, fmt.Errorf("%s does not belong to Algorithm values", s)
