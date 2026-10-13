@@ -49,7 +49,7 @@ func TestParse(t *testing.T) {
 					"something": {
 						Name: "something",
 						Type: "something",
-						Config: map[string]interface{}{
+						Config: map[string]any{
 							"foo": "bar",
 						},
 					},
@@ -88,7 +88,7 @@ func TestParse(t *testing.T) {
 				Provisioners: []*Provisioner{
 					{
 						Type: "something",
-						Config: map[string]interface{}{
+						Config: map[string]any{
 							"inline": "echo 'foo'",
 						},
 					},
@@ -171,8 +171,8 @@ func TestParse(t *testing.T) {
 				Provisioners: []*Provisioner{
 					{
 						Type: "something",
-						Override: map[string]interface{}{
-							"foo": map[string]interface{}{},
+						Override: map[string]any{
+							"foo": map[string]any{},
 						},
 					},
 				},
@@ -220,7 +220,7 @@ func TestParse(t *testing.T) {
 						{
 							Name: "foo",
 							Type: "foo",
-							Config: map[string]interface{}{
+							Config: map[string]any{
 								"foo": "bar",
 							},
 						},
@@ -425,7 +425,7 @@ func TestParse(t *testing.T) {
 					"amazon-ebs": {
 						Name: "amazon-ebs",
 						Type: "amazon-ebs",
-						Config: map[string]interface{}{
+						Config: map[string]any{
 							"ami_name":      "AMI Name",
 							"instance_type": "t2.micro",
 							"ssh_username":  "ec2-user",
@@ -435,7 +435,7 @@ func TestParse(t *testing.T) {
 					"docker": {
 						Name: "docker",
 						Type: "docker",
-						Config: map[string]interface{}{
+						Config: map[string]any{
 							"image":       "ubuntu",
 							"export_path": "image.tar",
 						},
@@ -444,17 +444,17 @@ func TestParse(t *testing.T) {
 				Provisioners: []*Provisioner{
 					{
 						Type: "shell",
-						Config: map[string]interface{}{
+						Config: map[string]any{
 							"script": "script.sh",
 						},
 					},
 					{
 						Type: "shell",
-						Config: map[string]interface{}{
+						Config: map[string]any{
 							"script": "script.sh",
 						},
-						Override: map[string]interface{}{
-							"docker": map[string]interface{}{
+						Override: map[string]any{
+							"docker": map[string]any{
 								"execute_command": "echo 'override'",
 							},
 						},
@@ -478,8 +478,8 @@ func TestParse(t *testing.T) {
 						{
 							Name: "shell-local",
 							Type: "shell-local",
-							Config: map[string]interface{}{
-								"inline": []interface{}{"echo foo"},
+							Config: map[string]any{
+								"inline": []any{"echo foo"},
 							},
 							OnlyExcept: OnlyExcept{
 								Except: []string{"amazon-ebs"},

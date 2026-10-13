@@ -290,7 +290,7 @@ func outputHCL2SpecField(w io.Writer, accessor string, fieldType types.Type, tag
 // a cty.Type or a string. The second argument is used for recursion and is the
 // type that will be used by the parent. For example when fieldType is a []string; a
 // recursive goFieldToCtyType call will return a cty.String.
-func goFieldToCtyType(accessor string, fieldType types.Type) (interface{}, cty.Type) {
+func goFieldToCtyType(accessor string, fieldType types.Type) (any, cty.Type) {
 	switch f := fieldType.(type) {
 	case *types.Pointer:
 		return goFieldToCtyType(accessor, f.Elem())

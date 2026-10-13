@@ -32,13 +32,13 @@ type BuildPrepareResponse struct {
 }
 
 func (b *build) Name() (result string) {
-	b.client.Call("Build.Name", new(interface{}), &result)
+	b.client.Call("Build.Name", new(any), &result)
 	return
 }
 
 func (b *build) Prepare() ([]string, error) {
 	var resp BuildPrepareResponse
-	if cerr := b.client.Call("Build.Prepare", new(interface{}), &resp); cerr != nil {
+	if cerr := b.client.Call("Build.Prepare", new(any), &resp); cerr != nil {
 		return nil, cerr
 	}
 	var err error = nil
@@ -55,13 +55,13 @@ func (b *build) Run(ctx context.Context, ui packersdk.Ui) ([]packersdk.Artifact,
 	server.RegisterUi(ui)
 	go server.Serve()
 
-	done := make(chan interface{})
+	done := make(chan any)
 	defer close(done)
 	go func() {
 		select {
 		case <-ctx.Done():
 			log.Printf("Cancelling build after context cancellation %v", ctx.Err())
-			if err := b.client.Call("Build.Cancel", new(interface{}), new(interface{})); err != nil {
+			if err := b.client.Call("Build.Cancel", new(any), new(any)); err != nil {
 				log.Printf("Error cancelling builder: %s", err)
 			}
 		case <-done:
@@ -87,35 +87,35 @@ func (b *build) Run(ctx context.Context, ui packersdk.Ui) ([]packersdk.Artifact,
 }
 
 func (b *build) SetDebug(val bool) {
-	if err := b.client.Call("Build.SetDebug", val, new(interface{})); err != nil {
+	if err := b.client.Call("Build.SetDebug", val, new(any)); err != nil {
 		panic(err)
 	}
 }
 
 func (b *build) SetForce(val bool) {
-	if err := b.client.Call("Build.SetForce", val, new(interface{})); err != nil {
+	if err := b.client.Call("Build.SetForce", val, new(any)); err != nil {
 		panic(err)
 	}
 }
 
 func (b *build) SetOnError(val string) {
-	if err := b.client.Call("Build.SetOnError", val, new(interface{})); err != nil {
+	if err := b.client.Call("Build.SetOnError", val, new(any)); err != nil {
 		panic(err)
 	}
 }
 
 func (b *build) Cancel() {
-	if err := b.client.Call("Build.Cancel", new(interface{}), new(interface{})); err != nil {
+	if err := b.client.Call("Build.Cancel", new(any), new(any)); err != nil {
 		panic(err)
 	}
 }
 
-func (b *BuildServer) Name(args *interface{}, reply *string) error {
+func (b *BuildServer) Name(args *any, reply *string) error {
 	*reply = b.build.Name()
 	return nil
 }
 
-func (b *BuildServer) Prepare(args *interface{}, resp *BuildPrepareResponse) error {
+func (b *BuildServer) Prepare(args *any, resp *BuildPrepareResponse) error {
 	warnings, err := b.build.Prepare()
 	*resp = BuildPrepareResponse{
 		Warnings: warnings,
@@ -153,22 +153,22 @@ func (b *BuildServer) Run(streamId uint32, reply *[]uint32) error {
 	return nil
 }
 
-func (b *BuildServer) SetDebug(val *bool, reply *interface{}) error {
+func (b *BuildServer) SetDebug(val *bool, reply *any) error {
 	b.build.SetDebug(*val)
 	return nil
 }
 
-func (b *BuildServer) SetForce(val *bool, reply *interface{}) error {
+func (b *BuildServer) SetForce(val *bool, reply *any) error {
 	b.build.SetForce(*val)
 	return nil
 }
 
-func (b *BuildServer) SetOnError(val *string, reply *interface{}) error {
+func (b *BuildServer) SetOnError(val *string, reply *any) error {
 	b.build.SetOnError(*val)
 	return nil
 }
 
-func (b *BuildServer) Cancel(args *interface{}, reply *interface{}) error {
+func (b *BuildServer) Cancel(args *any, reply *any) error {
 	if b.contextCancel != nil {
 		b.contextCancel()
 	}

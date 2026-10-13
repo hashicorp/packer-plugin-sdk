@@ -27,7 +27,7 @@ type BuilderServer struct {
 }
 
 type BuilderPrepareArgs struct {
-	Configs []interface{}
+	Configs []any
 }
 
 type BuilderPrepareResponse struct {
@@ -36,7 +36,7 @@ type BuilderPrepareResponse struct {
 	Error         *BasicError
 }
 
-func (b *builder) Prepare(config ...interface{}) ([]string, []string, error) {
+func (b *builder) Prepare(config ...any) ([]string, []string, error) {
 	config, err := encodeCTYValues(config)
 	if err != nil {
 		return nil, nil, err
@@ -61,13 +61,13 @@ func (b *builder) Run(ctx context.Context, ui packersdk.Ui, hook packersdk.Hook)
 	server.RegisterUi(ui)
 	go server.Serve()
 
-	done := make(chan interface{})
+	done := make(chan any)
 	defer close(done)
 	go func() {
 		select {
 		case <-ctx.Done():
 			log.Printf("Cancelling builder after context cancellation %v", ctx.Err())
-			if err := b.client.Call(b.endpoint+".Cancel", new(interface{}), new(interface{})); err != nil {
+			if err := b.client.Call(b.endpoint+".Cancel", new(any), new(any)); err != nil {
 				log.Printf("Error cancelling builder: %s", err)
 			}
 		case <-done:
@@ -137,7 +137,7 @@ func (b *BuilderServer) Run(streamId uint32, reply *uint32) error {
 	return nil
 }
 
-func (b *BuilderServer) Cancel(args *interface{}, reply *interface{}) error {
+func (b *BuilderServer) Cancel(args *any, reply *any) error {
 	b.contextCancel()
 	return nil
 }

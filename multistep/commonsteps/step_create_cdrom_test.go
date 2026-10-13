@@ -16,7 +16,7 @@ import (
 )
 
 func TestStepCreateCD_Impl(t *testing.T) {
-	var raw interface{} = new(StepCreateCD)
+	var raw any = new(StepCreateCD)
 	if _, ok := raw.(multistep.Step); !ok {
 		t.Fatalf("StepCreateCD should be a step")
 	}

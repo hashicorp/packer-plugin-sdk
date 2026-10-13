@@ -22,6 +22,6 @@ var _ gob.GobEncoder = cty.Value{}
 
 func init() {
 	gob.Register(new(map[string]string))
-	gob.Register(make([]interface{}, 0))
+	gob.Register(make([]any, 0))
 	gob.Register(new(BasicError))
 }

@@ -23,7 +23,7 @@ var _ packersdk.Ui = new(Ui)
 // as part of a Golang RPC server.
 type UiServer struct {
 	ui       packersdk.Ui
-	register func(name string, rcvr interface{}) error
+	register func(name string, rcvr any) error
 }
 
 // The arguments sent to Ui.Machine
@@ -44,7 +44,7 @@ func (u *Ui) Errorf(message string, args ...any) {
 	u.Error(fmt.Sprintf(message, args...))
 }
 func (u *Ui) Error(message string) {
-	if err := u.client.Call("Ui.Error", message, new(interface{})); err != nil {
+	if err := u.client.Call("Ui.Error", message, new(any)); err != nil {
 		log.Printf("Error in Ui.Error RPC call: %s", err)
 	}
 }
@@ -55,14 +55,14 @@ func (u *Ui) Machine(t string, args ...string) {
 		Args:     args,
 	}
 
-	if err := u.client.Call("Ui.Machine", rpcArgs, new(interface{})); err != nil {
+	if err := u.client.Call("Ui.Machine", rpcArgs, new(any)); err != nil {
 		log.Printf("Error in Ui.Machine RPC call: %s", err)
 	}
 }
 
 // Deprecated: Use `Say` instead.
 func (u *Ui) Message(message string) {
-	if err := u.client.Call("Ui.Message", message, new(interface{})); err != nil {
+	if err := u.client.Call("Ui.Message", message, new(any)); err != nil {
 		log.Printf("Error in Ui.Message RPC call: %s", err)
 	}
 }
@@ -71,7 +71,7 @@ func (u *Ui) Sayf(message string, args ...any) {
 	u.Say(fmt.Sprintf(message, args...))
 }
 func (u *Ui) Say(message string) {
-	if err := u.client.Call("Ui.Say", message, new(interface{})); err != nil {
+	if err := u.client.Call("Ui.Say", message, new(any)); err != nil {
 		log.Printf("Error in Ui.Say RPC call: %s", err)
 	}
 }
@@ -81,14 +81,14 @@ func (u *UiServer) Ask(query string, reply *string) (err error) {
 	return
 }
 
-func (u *UiServer) Error(message *string, reply *interface{}) error {
+func (u *UiServer) Error(message *string, reply *any) error {
 	u.ui.Error(*message)
 
 	*reply = nil
 	return nil
 }
 
-func (u *UiServer) Machine(args *UiMachineArgs, reply *interface{}) error {
+func (u *UiServer) Machine(args *UiMachineArgs, reply *any) error {
 	u.ui.Machine(args.Category, args.Args...)
 
 	*reply = nil
@@ -96,13 +96,13 @@ func (u *UiServer) Machine(args *UiMachineArgs, reply *interface{}) error {
 }
 
 // Deprecated: Use `Say` instead.
-func (u *UiServer) Message(message *string, reply *interface{}) error {
+func (u *UiServer) Message(message *string, reply *any) error {
 	u.ui.Message(*message)
 	*reply = nil
 	return nil
 }
 
-func (u *UiServer) Say(message *string, reply *interface{}) error {
+func (u *UiServer) Say(message *string, reply *any) error {
 	u.ui.Say(*message)
 
 	*reply = nil

@@ -16,10 +16,10 @@ import (
 // things such as available variables.
 type Context struct {
 	// Data is the data for the template that is available
-	Data interface{}
+	Data any
 
 	// Funcs are extra functions available in the template
-	Funcs map[string]interface{}
+	Funcs map[string]any
 
 	// UserVariables is the mapping of user variables that the
 	// "user" function reads from.
@@ -114,7 +114,7 @@ func (i *I) Render(ictx *Context) (string, error) {
 	}
 
 	var result bytes.Buffer
-	var data interface{}
+	var data any
 	if ictx != nil {
 		data = ictx.Data
 	}

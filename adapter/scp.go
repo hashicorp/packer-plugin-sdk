@@ -350,5 +350,5 @@ func (fi fileInfo) ModTime() time.Time {
 	}
 	return fi.mtime
 }
-func (fi fileInfo) IsDir() bool      { return fi.mode.IsDir() }
-func (fi fileInfo) Sys() interface{} { return nil }
+func (fi fileInfo) IsDir() bool { return fi.mode.IsDir() }
+func (fi fileInfo) Sys() any    { return nil }

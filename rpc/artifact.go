@@ -20,65 +20,65 @@ type ArtifactServer struct {
 }
 
 func (a *artifact) BuilderId() (result string) {
-	a.client.Call(a.endpoint+".BuilderId", new(interface{}), &result)
+	a.client.Call(a.endpoint+".BuilderId", new(any), &result)
 	return
 }
 
 func (a *artifact) Files() (result []string) {
-	a.client.Call(a.endpoint+".Files", new(interface{}), &result)
+	a.client.Call(a.endpoint+".Files", new(any), &result)
 	return
 }
 
 func (a *artifact) Id() (result string) {
-	a.client.Call(a.endpoint+".Id", new(interface{}), &result)
+	a.client.Call(a.endpoint+".Id", new(any), &result)
 	return
 }
 
 func (a *artifact) String() (result string) {
-	a.client.Call(a.endpoint+".String", new(interface{}), &result)
+	a.client.Call(a.endpoint+".String", new(any), &result)
 	return
 }
 
-func (a *artifact) State(name string) (result interface{}) {
+func (a *artifact) State(name string) (result any) {
 	a.client.Call(a.endpoint+".State", name, &result)
 	return
 }
 
 func (a *artifact) Destroy() error {
 	var result error
-	if err := a.client.Call(a.endpoint+".Destroy", new(interface{}), &result); err != nil {
+	if err := a.client.Call(a.endpoint+".Destroy", new(any), &result); err != nil {
 		return err
 	}
 
 	return result
 }
 
-func (s *ArtifactServer) BuilderId(args *interface{}, reply *string) error {
+func (s *ArtifactServer) BuilderId(args *any, reply *string) error {
 	*reply = s.artifact.BuilderId()
 	return nil
 }
 
-func (s *ArtifactServer) Files(args *interface{}, reply *[]string) error {
+func (s *ArtifactServer) Files(args *any, reply *[]string) error {
 	*reply = s.artifact.Files()
 	return nil
 }
 
-func (s *ArtifactServer) Id(args *interface{}, reply *string) error {
+func (s *ArtifactServer) Id(args *any, reply *string) error {
 	*reply = s.artifact.Id()
 	return nil
 }
 
-func (s *ArtifactServer) String(args *interface{}, reply *string) error {
+func (s *ArtifactServer) String(args *any, reply *string) error {
 	*reply = s.artifact.String()
 	return nil
 }
 
-func (s *ArtifactServer) State(name string, reply *interface{}) error {
+func (s *ArtifactServer) State(name string, reply *any) error {
 	*reply = s.artifact.State(name)
 	return nil
 }
 
-func (s *ArtifactServer) Destroy(args *interface{}, reply *error) error {
+func (s *ArtifactServer) Destroy(args *any, reply *error) error {
 	err := s.artifact.Destroy()
 	if err != nil {
 		err = NewBasicError(err)

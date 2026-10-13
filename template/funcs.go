@@ -65,7 +65,7 @@ func Vault(path string, key string) (string, error) {
 			"Original warnings from Vault call: %s", strings.Join(secret.Warnings, "; "))
 	}
 
-	if val, ok := data.(map[string]interface{})[key]; ok {
+	if val, ok := data.(map[string]any)[key]; ok {
 		return val.(string), nil
 	}
 	return "", errors.New("Vault path does not contain the requested key")

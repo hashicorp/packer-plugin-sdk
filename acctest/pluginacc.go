@@ -77,7 +77,7 @@ func TestPlugin(t *testing.T, testCase *PluginTestCase) {
 	logfile := fmt.Sprintf("packer_log_%s.txt", testCase.Name)
 
 	extension := ".pkr.hcl"
-	if err := json.Unmarshal([]byte(testCase.Template), &(map[string]interface{}{})); err == nil {
+	if err := json.Unmarshal([]byte(testCase.Template), &(map[string]any{})); err == nil {
 		extension = ".json"
 	}
 	templatePath := fmt.Sprintf("./%s%s", testCase.Name, extension)

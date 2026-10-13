@@ -28,9 +28,9 @@ type RenderFilter struct {
 // interface must decode into a map[string]interface{}, but is left
 // as an interface{} type to ease backwards compatibility with the way
 // arguments are passed around in Packer.
-func RenderMap(v interface{}, ctx *Context, f *RenderFilter) (map[string]interface{}, error) {
+func RenderMap(v any, ctx *Context, f *RenderFilter) (map[string]any, error) {
 	// First decode it into the map
-	var m map[string]interface{}
+	var m map[string]any
 	if err := mapstructure.Decode(v, &m); err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func RenderMap(v interface{}, ctx *Context, f *RenderFilter) (map[string]interfa
 }
 
 // RenderInterface renders any value and returns the resulting value.
-func RenderInterface(v interface{}, ctx *Context) (interface{}, error) {
+func RenderInterface(v any, ctx *Context) (any, error) {
 	f := func(v string) (string, error) {
 		return RenderOnce(v, ctx)
 	}
@@ -79,7 +79,7 @@ func RenderInterface(v interface{}, ctx *Context) (interface{}, error) {
 }
 
 // ValidateInterface renders any value and returns the resulting value.
-func ValidateInterface(v interface{}, ctx *Context) error {
+func ValidateInterface(v any, ctx *Context) error {
 	f := func(v string) (string, error) {
 		return v, Validate(v, ctx)
 	}
@@ -148,14 +148,14 @@ type renderWalker struct {
 	// Top is the top value of the walk. This might get replaced if the
 	// top value needs to be modified. It is valid to read after any walk.
 	// If it is nil, it means the top wasn't replaced.
-	Top interface{}
+	Top any
 
 	key        []string
 	lastValue  reflect.Value
 	loc        reflectwalk.Location
 	cs         []reflect.Value
 	csKey      []reflect.Value
-	csData     interface{}
+	csData     any
 	sliceIndex int
 }
 

@@ -37,7 +37,7 @@ func (a *artifact) String() string {
 	return a.Id()
 }
 
-func (a *artifact) State(name string) interface{} {
+func (a *artifact) State(name string) any {
 	return nil
 }
 
@@ -53,7 +53,7 @@ func ExampleFromMappedData() {
 		},
 	}
 
-	f := func(key, value interface{}) (*image.Image, error) {
+	f := func(key, value any) (*image.Image, error) {
 		v, ok := value.(string)
 		if !ok {
 			return nil, errors.New("for happycloud maps value should always be string")

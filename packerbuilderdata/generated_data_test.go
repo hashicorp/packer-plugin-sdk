@@ -24,7 +24,7 @@ func TestGeneratedData_Put(t *testing.T) {
 		t.Fatalf("BAD: StateBag should contain generated_data")
 	}
 
-	generatedDataState := generatedData.State.Get("generated_data").(map[string]interface{})
+	generatedDataState := generatedData.State.Get("generated_data").(map[string]any)
 	if generatedDataState["data_key"] != expectedValue {
 		t.Fatalf("Unexpected state for data_key: expected %#v got %#v\n", expectedValue, generatedDataState["data_key"])
 	}

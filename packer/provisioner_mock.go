@@ -16,7 +16,7 @@ type MockProvisioner struct {
 	ProvFunc func(context.Context) error
 
 	PrepCalled       bool
-	PrepConfigs      []interface{}
+	PrepConfigs      []any
 	ProvCalled       bool
 	ProvRetried      bool
 	ProvCommunicator Communicator
@@ -25,15 +25,15 @@ type MockProvisioner struct {
 
 func (tp *MockProvisioner) ConfigSpec() hcldec.ObjectSpec { return tp.FlatMapstructure().HCL2Spec() }
 
-func (tp *MockProvisioner) FlatConfig() interface{} { return tp.FlatMapstructure() }
+func (tp *MockProvisioner) FlatConfig() any { return tp.FlatMapstructure() }
 
-func (t *MockProvisioner) Prepare(configs ...interface{}) error {
+func (t *MockProvisioner) Prepare(configs ...any) error {
 	t.PrepCalled = true
 	t.PrepConfigs = configs
 	return nil
 }
 
-func (t *MockProvisioner) Provision(ctx context.Context, ui Ui, comm Communicator, generatedData map[string]interface{}) error {
+func (t *MockProvisioner) Provision(ctx context.Context, ui Ui, comm Communicator, generatedData map[string]any) error {
 	if t.ProvCalled {
 		t.ProvRetried = true
 		return nil
