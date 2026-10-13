@@ -62,16 +62,16 @@ func (s *StepHTTPServer) Handler() http.Handler {
 type MapServer map[string]string
 
 func (s MapServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	path := path.Clean(r.URL.Path)
-	content, found := s[path]
+	urlPath := path.Clean(r.URL.Path)
+	content, found := s[urlPath]
 	if !found {
 		paths := make([]string, 0, len(s))
 		for k := range s {
 			paths = append(paths, k)
 		}
 		sort.Strings(paths)
-		err := fmt.Sprintf("%s not found.", path)
-		if sug := didyoumean.NameSuggestion(path, paths); sug != "" {
+		err := fmt.Sprintf("%s not found.", urlPath)
+		if sug := didyoumean.NameSuggestion(urlPath, paths); sug != "" {
 			err += fmt.Sprintf(" Did you mean %q?", sug)
 		}
 
