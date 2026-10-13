@@ -68,10 +68,11 @@ func (c *Adapter) Serve() {
 
 func (c *Adapter) Handle(conn net.Conn, ui packersdk.Ui) error {
 	log.Print("SSH proxy: accepted connection")
-	_, chans, reqs, err := ssh.NewServerConn(conn, c.config)
+	sshConn, chans, reqs, err := ssh.NewServerConn(conn, c.config)
 	if err != nil {
 		return errors.New("failed to handshake")
 	}
+	defer sshConn.Close()
 
 	// discard all global requests
 	go ssh.DiscardRequests(reqs)

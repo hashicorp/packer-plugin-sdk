@@ -157,6 +157,7 @@ func (i *Set) start(kind, name string) error {
 	if err != nil {
 		return err
 	}
+	defer server.Close()
 	server.UseProto = i.useProto
 
 	log.Printf("[TRACE] starting %s %s", kind, name)

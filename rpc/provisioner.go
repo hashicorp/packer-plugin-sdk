@@ -49,7 +49,10 @@ func (p *provisioner) Provision(ctx context.Context, ui packersdk.Ui, comm packe
 	server := newServerWithMux(p.mux, nextId)
 	server.RegisterCommunicator(comm)
 	server.RegisterUi(ui)
-	go server.Serve()
+	go func() {
+		defer server.Close()
+		server.Serve()
+	}()
 
 	done := make(chan interface{})
 	defer close(done)

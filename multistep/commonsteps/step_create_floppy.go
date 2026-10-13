@@ -76,6 +76,7 @@ func (s *StepCreateFloppy) Run(ctx context.Context, state multistep.StateBag) mu
 		state.Put("error", fmt.Errorf("Error creating floppy: %s", err))
 		return multistep.ActionHalt
 	}
+	defer device.Close()
 
 	// Format the block device so it contains a valid FAT filesystem
 	log.Println("Formatting the block device with a FAT filesystem...")
