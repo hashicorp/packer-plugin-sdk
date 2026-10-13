@@ -60,7 +60,7 @@ func (d *datasource) OutputSpec() hcldec.ObjectSpec {
 		res := hcldec.ObjectSpec{}
 		err := gob.NewDecoder(bytes.NewReader(resp.OutputSpec)).Decode(&res)
 		if err != nil {
-			panic(fmt.Sprintf("datasource: failed to deserialise HCL spec from gob: %s", err))
+			panic(fmt.Sprintf("datasource: failed to deserialize HCL spec from gob: %s", err))
 		}
 		return res
 	}
@@ -68,7 +68,7 @@ func (d *datasource) OutputSpec() hcldec.ObjectSpec {
 	log.Printf("[DEBUG] - datasource: receiving OutputSpec as gob")
 	res, err := protobufToHCL2Spec(resp.OutputSpec)
 	if err != nil {
-		panic(fmt.Sprintf("datasource: failed to deserialise HCL spec from protobuf: %s", err))
+		panic(fmt.Sprintf("datasource: failed to deserialize HCL spec from protobuf: %s", err))
 	}
 	return res
 }

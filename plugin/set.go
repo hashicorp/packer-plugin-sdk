@@ -42,7 +42,7 @@ type Set struct {
 
 // ProtocolVersion2 serves as a compatibility argument to the SetDescription
 // so plugins can report whether or not they support protobuf/msgpack for
-// serialising some of their entities (typically ObjectSpec) to protobuf.
+// serializing some of their entities (typically ObjectSpec) to protobuf.
 //
 // If absent from the SetDescription, it means only gob is supported, and both
 // Packer and the plugins should use that for communication.

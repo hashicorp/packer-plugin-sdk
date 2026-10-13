@@ -100,10 +100,10 @@ func TestDebugRunner_Cancel(t *testing.T) {
 
 	topCtx, topCtxCancel := context.WithCancel(context.Background())
 
-	checkCancelled := func(data StateBag) {
-		cancelled := data.Get(StateCancelled).(bool)
-		if !cancelled {
-			t.Fatal("state should be cancelled")
+	checkCanceled := func(data StateBag) {
+		canceled := data.Get(StateCancelled).(bool)
+		if !canceled {
+			t.Fatal("state should be canceled")
 		}
 	}
 
@@ -116,7 +116,7 @@ func TestDebugRunner_Cancel(t *testing.T) {
 			run: func(ctx context.Context, sb StateBag) StepAction {
 				return ActionContinue
 			},
-			cleanup: checkCancelled,
+			cleanup: checkCanceled,
 		},
 		TestStepFn{
 			run: func(ctx context.Context, sb StateBag) StepAction {
@@ -124,7 +124,7 @@ func TestDebugRunner_Cancel(t *testing.T) {
 				<-ctx.Done()
 				return ActionContinue
 			},
-			cleanup: checkCancelled,
+			cleanup: checkCanceled,
 		},
 		TestStepFn{
 			run: func(context.Context, StateBag) StepAction {
@@ -153,13 +153,13 @@ func TestDebugRunner_Cancel(t *testing.T) {
 		t.Errorf("unexpected result: %#v", results)
 	}
 
-	// Test that it says it is cancelled
-	cancelled, ok := data.GetOk(StateCancelled)
+	// Test that it says it is canceled
+	canceled, ok := data.GetOk(StateCancelled)
 	if !ok {
-		t.Fatal("could not get state cancelled")
+		t.Fatal("could not get state canceled")
 	}
-	if !cancelled.(bool) {
-		t.Errorf("not cancelled")
+	if !canceled.(bool) {
+		t.Errorf("not canceled")
 	}
 }
 

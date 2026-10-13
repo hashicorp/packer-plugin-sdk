@@ -31,7 +31,7 @@ func (a StepAction) String() string {
 }
 
 // This is the key set in the state bag when using the basic runner to
-// signal that the step sequence was cancelled.
+// signal that the step sequence was canceled.
 const StateCancelled = "cancelled"
 
 // This is the key set in the state bag when a step halted the sequence.
@@ -41,7 +41,7 @@ const StateHalted = "halted"
 // of other steps, responsible for performing some specific action.
 type Step interface {
 	// Run is called to perform the action. The passed through context will be
-	// cancelled when the runner is cancelled. The second parameter is a "state
+	// canceled when the runner is canceled. The second parameter is a "state
 	// bag" of untyped things. Please be very careful about type-checking the
 	// items in this bag.
 	//

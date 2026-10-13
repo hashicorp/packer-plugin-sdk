@@ -81,12 +81,12 @@ func HCL2ValueFromConfig(conf interface{}, configSpec map[string]hcldec.Spec) ct
 		// as I was working on other parts of the code at the same time.
 		//
 		// In the end, this may happen when the generated flat configs and
-		// the structures returned by the plugin are not synchronised, which
+		// the structures returned by the plugin are not synchronized, which
 		// causes the object spec to be out-of-sync with the data expected.
 		//
 		// Rather than letting the hcl library panic on a nil pointer problem,
 		// we do it here, with suggestions for users on how to potentially
-		// fix the problem, without needing to delve into the behaviour of
+		// fix the problem, without needing to delve into the behavior of
 		// the SDK and the HCL libraries.
 		if spec == nil {
 			panic(`The converted value failed to have its spec inferred from it, and will panic later down the process.

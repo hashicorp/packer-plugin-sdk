@@ -4,7 +4,7 @@
 /*
 multistep is a Go library for building up complex actions using discrete,
 individual "steps." These steps are strung together and run in sequence
-to achieve a more complex goal. The runner handles cleanup, cancelling, etc.
+to achieve a more complex goal. The runner handles cleanup, canceling, etc.
 if necessary.
 
 # Basic Example
@@ -26,7 +26,7 @@ which is passed between steps by the runner.
 
 	func (s *stepAdd) Cleanup(multistep.StateBag) {
 		// This is called after all the steps have run or if the runner is
-		// cancelled so that cleanup can be performed.
+		// canceled so that cleanup can be performed.
 	}
 
 Make a runner and call your array of Steps.

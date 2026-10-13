@@ -150,11 +150,11 @@ func (s *StepProvision) runWithHook(ctx context.Context, state multistep.StateBa
 
 			return multistep.ActionContinue
 		case <-ctx.Done():
-			log.Printf("Cancelling provisioning due to context cancellation: %s", ctx.Err())
+			log.Printf("Canceling provisioning due to context cancellation: %s", ctx.Err())
 			return multistep.ActionHalt
 		case <-time.After(1 * time.Second):
 			if _, ok := state.GetOk(multistep.StateCancelled); ok {
-				log.Println("Cancelling provisioning due to interrupt...")
+				log.Println("Canceling provisioning due to interrupt...")
 				return multistep.ActionHalt
 			}
 		}

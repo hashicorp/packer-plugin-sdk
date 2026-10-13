@@ -60,7 +60,7 @@ func homeDir() (string, error) {
 	u, err := user.Current()
 
 	// Get homedir from specified username
-	// if it is set and different than what we have
+	// if it is set and different from what we have
 	if username := os.Getenv("USER"); username != "" && err == nil && u.Username != username {
 		u, err = user.Lookup(username)
 	}

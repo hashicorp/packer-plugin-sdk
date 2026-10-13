@@ -26,7 +26,7 @@ type commonClient struct {
 	client   *rpc.Client
 	mux      *muxBroker
 
-	// useProto lets us determine whether or not we should use protobuf for serialising
+	// useProto lets us determine whether or not we should use protobuf for serializing
 	// data over RPC instead of gob.
 	//
 	// This is controlled by Packer using the `--use-proto` flag on plugin commands.
@@ -40,7 +40,7 @@ type commonServer struct {
 		ConfigSpec() hcldec.ObjectSpec
 	}
 
-	// useProto lets us determine whether or not we should use protobuf for serialising
+	// useProto lets us determine whether or not we should use protobuf for serializing
 	// data over RPC instead of gob.
 	//
 	// This is controlled by Packer using the `--use-proto` flag on plugin commands.
@@ -115,7 +115,7 @@ func (s *commonServer) ConfigSpec(_ interface{}, reply *ConfigSpecResponse) erro
 	return nil
 }
 
-// hcl2SpecToProtobuf converts a hcldec.ObjectSpec to a protobuf-serialised
+// hcl2SpecToProtobuf converts a hcldec.ObjectSpec to a protobuf-serialized
 // byte array so it can then be used to send to a Plugin/Packer.
 func hcl2SpecToProtobuf(spec hcldec.ObjectSpec) ([]byte, error) {
 	ret, err := ToProto(spec)
@@ -124,7 +124,7 @@ func hcl2SpecToProtobuf(spec hcldec.ObjectSpec) ([]byte, error) {
 	}
 	rawBytes, err := proto.Marshal(ret)
 	if err != nil {
-		return nil, fmt.Errorf("failed to serialise hclspec.Spec to protobuf: %s", err)
+		return nil, fmt.Errorf("failed to serialize hclspec.Spec to protobuf: %s", err)
 	}
 
 	return rawBytes, nil

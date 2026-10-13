@@ -134,7 +134,7 @@ func (s *StepDownload) Run(ctx context.Context, state multistep.StateBag) multis
 
 	for _, source := range s.Url {
 		if ctx.Err() != nil {
-			state.Put("error", fmt.Errorf("Download cancelled: %v", errs))
+			state.Put("error", fmt.Errorf("Download canceled: %v", errs))
 			return multistep.ActionHalt
 		}
 		ui.Say(fmt.Sprintf("Trying %s", source))

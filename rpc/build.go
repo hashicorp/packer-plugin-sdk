@@ -60,9 +60,9 @@ func (b *build) Run(ctx context.Context, ui packersdk.Ui) ([]packersdk.Artifact,
 	go func() {
 		select {
 		case <-ctx.Done():
-			log.Printf("Cancelling build after context cancellation %v", ctx.Err())
+			log.Printf("Canceling build after context cancellation %v", ctx.Err())
 			if err := b.client.Call("Build.Cancel", new(interface{}), new(interface{})); err != nil {
-				log.Printf("Error cancelling builder: %s", err)
+				log.Printf("Error canceling builder: %s", err)
 			}
 		case <-done:
 		}
