@@ -48,9 +48,9 @@ func (b *testBuild) Run(ctx context.Context, ui packersdk.Ui) ([]packersdk.Artif
 
 	if b.errRunResult {
 		return nil, errors.New("foo")
-	} else {
-		return []packersdk.Artifact{testBuildArtifact}, nil
 	}
+
+	return []packersdk.Artifact{testBuildArtifact}, nil
 }
 
 func (b *testBuild) SetDebug(bool) {

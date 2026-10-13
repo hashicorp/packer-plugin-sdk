@@ -53,9 +53,9 @@ func TrileanFromString(s string) (Trilean, error) {
 		return TriUnset, err
 	} else if b {
 		return TriTrue, nil
-	} else {
-		return TriFalse, nil
 	}
+
+	return TriFalse, nil
 }
 
 func TrileanFromBool(b bool) Trilean {

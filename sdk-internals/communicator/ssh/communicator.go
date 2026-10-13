@@ -179,18 +179,18 @@ func (c *comm) Start(ctx context.Context, cmd *packersdk.RemoteCmd) (err error) 
 func (c *comm) Upload(path string, input io.Reader, fi *os.FileInfo) error {
 	if c.config.UseSftp {
 		return c.sftpUploadSession(path, input, fi)
-	} else {
-		return c.scpUploadSession(path, input, fi)
 	}
+
+	return c.scpUploadSession(path, input, fi)
 }
 
 func (c *comm) UploadDir(dst string, src string, excl []string) error {
 	log.Printf("[DEBUG] Upload dir '%s' to '%s'", src, dst)
 	if c.config.UseSftp {
 		return c.sftpUploadDirSession(dst, src, excl)
-	} else {
-		return c.scpUploadDirSession(dst, src, excl)
 	}
+
+	return c.scpUploadDirSession(dst, src, excl)
 }
 
 func (c *comm) DownloadDir(src string, dst string, excl []string) error {
@@ -288,9 +288,9 @@ func (c *comm) newSession() (session *ssh.Session, err error) {
 
 		if c.client == nil {
 			return nil, errors.New("client not available")
-		} else {
-			return c.client.NewSession()
 		}
+
+		return c.client.NewSession()
 	}
 
 	return session, nil
@@ -695,10 +695,10 @@ func (c *comm) scpUploadDirSession(dst string, src string, excl []string) error 
 				return err
 			}
 			return scpUploadDirProtocol(srcBase, w, r, uploadEntries, fi)
-		} else {
-			// Trailing slash, so only upload the contents
-			return uploadEntries()
 		}
+
+		// Trailing slash, so only upload the contents
+		return uploadEntries()
 	}
 
 	return c.scpSession("scp -rvt "+dst, scpFunc)
