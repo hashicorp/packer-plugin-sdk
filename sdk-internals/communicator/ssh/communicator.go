@@ -60,8 +60,12 @@ type TunnelSpec struct {
 
 // Config is the structure used to configure the SSH communicator.
 type Config struct {
-	// The configuration of the Go SSH connection
+	// The configuration of the Go SSH connection (static fallback)
 	SSHConfig *ssh.ClientConfig
+
+	// SSHConfigOtp returns a new SSH config. This is called for each new connection
+	// to allow for dynamic credential generation (like one-time passwords)
+	SSHConfigOtp func() (*ssh.ClientConfig, error)
 
 	// Connection returns a new connection. The current connection
 	// in use will be closed as part of the Close method, or in the
@@ -327,6 +331,20 @@ func (c *comm) reconnect() (err error) {
 
 	log.Printf("[DEBUG] handshaking with SSH")
 
+	// Get fresh SSH config if available, otherwise use static config
+	var sshConfig *ssh.ClientConfig
+	if c.config.SSHConfigOtp != nil {
+		log.Printf("[DEBUG] Getting fresh SSH config for connection")
+		sshConfig, err = c.config.SSHConfigOtp()
+		if err != nil {
+			log.Printf("[ERROR] Failed to get fresh SSH config: %s", err)
+			return err
+		}
+	} else {
+		log.Printf("[DEBUG] Using static SSH config")
+		sshConfig = c.config.SSHConfig
+	}
+
 	// Default timeout to 1 minute if it wasn't specified (zero value). For
 	// when you need to handshake from low orbit.
 	var duration time.Duration
@@ -343,7 +361,7 @@ func (c *comm) reconnect() (err error) {
 	var req <-chan *ssh.Request
 
 	go func() {
-		sshConn, sshChan, req, err = ssh.NewClientConn(c.conn, c.address, c.config.SSHConfig)
+		sshConn, sshChan, req, err = ssh.NewClientConn(c.conn, c.address, sshConfig)
 		close(connectionEstablished)
 	}()
 
