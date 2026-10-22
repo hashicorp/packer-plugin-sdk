@@ -12,7 +12,7 @@ import (
 
 type secretFilter struct {
 	s      map[string]struct{}
-	sorted []string // non-empty secrets, longest first; rebuilt on Set
+	sorted []string // non-empty secrets, longest first
 	m      sync.Mutex
 	w      io.Writer
 }
@@ -34,33 +34,28 @@ func (l *secretFilter) SetOutput(output io.Writer) {
 
 func (l *secretFilter) Write(p []byte) (n int, err error) {
 	secrets, w := l.snapshot()
-	return w.Write([]byte(redact(string(p), secrets)))
+	_, err = w.Write([]byte(redact(string(p), secrets)))
+	if err == nil {
+		n = len(p)
+	}
+	return
 }
 
-// FilterString will overwrite any sensitive variables in a string, returning
-// the filtered string.
+// FilterString returns message with registered secrets replaced by "<sensitive>".
 func (l *secretFilter) FilterString(message string) string {
 	secrets, _ := l.snapshot()
 	return redact(message, secrets)
 }
 
-// snapshot reads the longest-first secret list and the output writer together
-// under the mutex, so a concurrent Set or SetOutput can't race with a redaction
-// in progress. Set replaces the slice wholesale rather than mutating it, so the
-// returned slice stays safe to range over after the mutex is released.
+// snapshot returns the current secrets and output writer.
 func (l *secretFilter) snapshot() ([]string, io.Writer) {
 	l.m.Lock()
 	defer l.m.Unlock()
 	return l.sorted, l.w
 }
 
-// redact replaces every occurrence of a secret with "<sensitive>". It scans the
-// original input once, so a "<sensitive>" marker it writes is never itself
-// searched for secrets. Feeding each replacement's output into the next lets a
-// secret like "sitive" match text a previous replacement introduced, turning
-// "my_token" into "<sen<sensitive>>"; scanning the original avoids that.
-// secrets must be ordered longest first so the longest match wins where secrets
-// overlap at a position.
+// redact replaces each matching secret with "<sensitive>". Secrets are
+// expected to be ordered longest first; matches are found in the original input.
 func redact(s string, secrets []string) string {
 	if len(secrets) == 0 {
 		return s
@@ -85,11 +80,8 @@ func redact(s string, secrets []string) string {
 	return b.String()
 }
 
-// sortedSecrets returns the non-empty secrets ordered longest first, and
-// lexicographically for equal lengths so the order is deterministic. Redacting
-// the longest match first keeps a shorter secret that is a substring of a
-// longer one (e.g. "ubuntu" and "ubuntu-22.04") from leaving the remainder of
-// the longer secret in the output.
+// sortedSecrets returns non-empty secrets longest first, breaking ties
+// lexicographically for deterministic ordering.
 func sortedSecrets(set map[string]struct{}) []string {
 	secrets := make([]string, 0, len(set))
 	for s := range set {
