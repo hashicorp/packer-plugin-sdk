@@ -4,16 +4,17 @@
 package packer
 
 import (
-	"bytes"
 	"io"
+	"sort"
 	"strings"
 	"sync"
 )
 
 type secretFilter struct {
-	s map[string]struct{}
-	m sync.Mutex
-	w io.Writer
+	s      map[string]struct{}
+	sorted []string // non-empty secrets, longest first
+	m      sync.Mutex
+	w      io.Writer
 }
 
 func (l *secretFilter) Set(secrets ...string) {
@@ -22,6 +23,7 @@ func (l *secretFilter) Set(secrets ...string) {
 	for _, s := range secrets {
 		l.s[s] = struct{}{}
 	}
+	l.sorted = sortedSecrets(l.s)
 }
 
 func (l *secretFilter) SetOutput(output io.Writer) {
@@ -31,23 +33,69 @@ func (l *secretFilter) SetOutput(output io.Writer) {
 }
 
 func (l *secretFilter) Write(p []byte) (n int, err error) {
-	for s := range l.s {
-		if s != "" {
-			p = bytes.Replace(p, []byte(s), []byte("<sensitive>"), -1)
-		}
+	secrets, w := l.snapshot()
+	_, err = w.Write([]byte(redact(string(p), secrets)))
+	if err == nil {
+		n = len(p)
 	}
-	return l.w.Write(p)
+	return
 }
 
-// FilterString will overwrite any senstitive variables in a string, returning
-// the filtered string.
+// FilterString returns message with registered secrets replaced by "<sensitive>".
 func (l *secretFilter) FilterString(message string) string {
-	for s := range l.s {
-		if s != "" {
-			message = strings.Replace(message, s, "<sensitive>", -1)
+	secrets, _ := l.snapshot()
+	return redact(message, secrets)
+}
+
+// snapshot returns the current secrets and output writer.
+func (l *secretFilter) snapshot() ([]string, io.Writer) {
+	l.m.Lock()
+	defer l.m.Unlock()
+	return l.sorted, l.w
+}
+
+// redact replaces each matching secret with "<sensitive>". Secrets are
+// expected to be ordered longest first; matches are found in the original input.
+func redact(s string, secrets []string) string {
+	if len(secrets) == 0 {
+		return s
+	}
+	var b strings.Builder
+	b.Grow(len(s))
+	for i := 0; i < len(s); {
+		matched := false
+		for _, secret := range secrets {
+			if strings.HasPrefix(s[i:], secret) {
+				b.WriteString("<sensitive>")
+				i += len(secret)
+				matched = true
+				break
+			}
+		}
+		if !matched {
+			b.WriteByte(s[i])
+			i++
 		}
 	}
-	return message
+	return b.String()
+}
+
+// sortedSecrets returns non-empty secrets longest first, breaking ties
+// lexicographically for deterministic ordering.
+func sortedSecrets(set map[string]struct{}) []string {
+	secrets := make([]string, 0, len(set))
+	for s := range set {
+		if s != "" {
+			secrets = append(secrets, s)
+		}
+	}
+	sort.Slice(secrets, func(i, j int) bool {
+		if len(secrets[i]) != len(secrets[j]) {
+			return len(secrets[i]) > len(secrets[j])
+		}
+		return secrets[i] < secrets[j]
+	})
+	return secrets
 }
 
 var LogSecretFilter secretFilter
