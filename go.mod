@@ -3,7 +3,7 @@ module github.com/hashicorp/packer-plugin-sdk
 require github.com/zclconf/go-cty v1.19.0 // go-cty v1.11.0 removed gob encoding support so it cannot work with the Packer SDK as-is, you need to run `packer-sdc fix .' to change that
 
 require (
-	cloud.google.com/go v0.121.6 // indirect
+	cloud.google.com/go v0.123.0 // indirect
 	cloud.google.com/go/storage v1.56.0 // indirect
 	github.com/Azure/go-ntlmssp v0.1.1 // indirect
 	github.com/ChrisTrenkamp/goxpath v0.0.0-20210404020558-97928f7e12b6 // indirect
@@ -29,9 +29,9 @@ require (
 	github.com/hashicorp/consul/api v1.25.1
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
-	github.com/hashicorp/go-getter/gcs/v2 v2.2.5
-	github.com/hashicorp/go-getter/s3/v2 v2.2.5
-	github.com/hashicorp/go-getter/v2 v2.2.5
+	github.com/hashicorp/go-getter/gcs/v2 v2.2.6
+	github.com/hashicorp/go-getter/s3/v2 v2.2.6
+	github.com/hashicorp/go-getter/v2 v2.2.6
 	github.com/hashicorp/go-hclog v1.6.3 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-multierror v1.1.1
@@ -62,16 +62,16 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/ugorji/go/codec v1.2.6
 	github.com/ulikunitz/xz v0.5.15 // indirect
-	golang.org/x/crypto v0.56.0
+	golang.org/x/crypto v0.58.0
 	golang.org/x/mobile v0.0.0-20210901025245-1fde1d6c3ca1
-	golang.org/x/mod v0.40.0
-	golang.org/x/net v0.58.0
-	golang.org/x/sync v0.22.0
-	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/term v0.45.0
-	golang.org/x/text v0.41.0 // indirect
+	golang.org/x/mod v0.41.0
+	golang.org/x/net v0.61.0
+	golang.org/x/sync v0.24.0
+	golang.org/x/sys v0.49.0 // indirect
+	golang.org/x/term v0.47.0
+	golang.org/x/text v0.43.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
-	golang.org/x/tools v0.49.0
+	golang.org/x/tools v0.51.0
 	google.golang.org/api v0.264.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
@@ -144,7 +144,7 @@ require (
 	github.com/jcmturner/goidentity/v6 v6.0.1 // indirect
 	github.com/jcmturner/gokrb5/v8 v8.4.4 // indirect
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
-	github.com/klauspost/compress v1.11.2 // indirect
+	github.com/klauspost/compress v1.18.7 // indirect
 	github.com/kr/fs v0.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
@@ -175,6 +175,6 @@ require (
 	google.golang.org/grpc v1.83.2 // indirect
 )
 
-go 1.26.8
+go 1.26.10
 
 retract v0.5.0 // v0.5.0 of the SDK was broken because of the replace statement for go-cty
