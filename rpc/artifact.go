@@ -11,6 +11,8 @@ import (
 // available over an RPC connection.
 type artifact struct {
 	commonClient
+	// Closes extra streams for this artifact after Destroy. Leaves the shared mux open.
+	shutdown func() error
 }
 
 // ArtifactServer wraps a packersdk.Artifact implementation and makes it
@@ -46,7 +48,13 @@ func (a *artifact) State(name string) (result interface{}) {
 
 func (a *artifact) Destroy() error {
 	var result error
-	if err := a.client.Call(a.endpoint+".Destroy", new(interface{}), &result); err != nil {
+	err := a.client.Call(a.endpoint+".Destroy", new(interface{}), &result)
+	// Close this stream and any extras, even if Destroy failed.
+	if a.shutdown != nil {
+		_ = a.shutdown()
+	}
+	_ = a.client.Close()
+	if err != nil {
 		return err
 	}
 

@@ -29,8 +29,20 @@ type muxBroker struct {
 }
 
 type muxBrokerPending struct {
-	ch     chan net.Conn
-	doneCh chan struct{}
+	ch       chan net.Conn
+	doneCh   chan struct{}
+	cancelCh chan struct{}
+
+	cancelOnce sync.Once
+	doneOnce   sync.Once
+}
+
+func (p *muxBrokerPending) cancel() {
+	p.cancelOnce.Do(func() { close(p.cancelCh) })
+}
+
+func (p *muxBrokerPending) markDone() {
+	p.doneOnce.Do(func() { close(p.doneCh) })
 }
 
 func newMuxBroker(s *yamux.Session) *muxBroker {
@@ -66,7 +78,19 @@ func (m *muxBroker) Accept(id uint32) (net.Conn, error) {
 	p := m.getStream(id)
 	select {
 	case c = <-p.ch:
-		close(p.doneCh)
+		p.markDone()
+	case <-p.cancelCh:
+		select {
+		case conn := <-p.ch:
+			conn.Close()
+		default:
+		}
+		m.Lock()
+		if cur, ok := m.streams[id]; ok && cur == p {
+			delete(m.streams, id)
+		}
+		m.Unlock()
+		return nil, fmt.Errorf("accept cancelled")
 	case <-time.After(5 * time.Second):
 		m.Lock()
 		defer m.Unlock()
@@ -117,6 +141,19 @@ func (m *muxBroker) Dial(id uint32) (net.Conn, error) {
 	return stream, nil
 }
 
+// CancelAccept stops a waiting Accept and closes a stream that already arrived. The shared session stays open.
+func (m *muxBroker) CancelAccept(id uint32) {
+	p := m.getStream(id)
+	p.cancel()
+	p.markDone()
+	select {
+	case conn := <-p.ch:
+		conn.Close()
+	default:
+	}
+	// Leave p in place so Accept sees the cancel instead of waiting on a new stream.
+}
+
 // NextId returns a unique ID to use next.
 func (m *muxBroker) NextId() uint32 {
 	return atomic.AddUint32(&m.nextId, 1)
@@ -161,8 +198,9 @@ func (m *muxBroker) getStream(id uint32) *muxBrokerPending {
 	}
 
 	m.streams[id] = &muxBrokerPending{
-		ch:     make(chan net.Conn, 1),
-		doneCh: make(chan struct{}),
+		ch:       make(chan net.Conn, 1),
+		doneCh:   make(chan struct{}),
+		cancelCh: make(chan struct{}),
 	}
 	return m.streams[id]
 }
@@ -177,16 +215,28 @@ func (m *muxBroker) timeoutWait(id uint32, p *muxBrokerPending) {
 		timeout = true
 	}
 
+	// If we timed out, then check if we have a channel in the buffer,
+	// and if so, close it. Non-blocking: Accept or CancelAccept may
+	// already have taken the conn.
+	if timeout {
+		select {
+		case s := <-p.ch:
+			s.Close()
+		default:
+		}
+	}
+
+	// A cancelled accept must stay registered until Accept observes it.
+	// Deleting it here would make that Accept wait on a new stream.
+	select {
+	case <-p.cancelCh:
+		return
+	default:
+	}
+
 	m.Lock()
 	defer m.Unlock()
-
-	// Delete the stream so no one else can grab it
-	delete(m.streams, id)
-
-	// If we timed out, then check if we have a channel in the buffer,
-	// and if so, close it.
-	if timeout {
-		s := <-p.ch
-		s.Close()
+	if cur, ok := m.streams[id]; ok && cur == p {
+		delete(m.streams, id)
 	}
 }

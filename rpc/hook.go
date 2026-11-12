@@ -39,10 +39,8 @@ func (h *hook) Run(ctx context.Context, name string, ui packersdk.Ui, comm packe
 	server := newServerWithMux(h.mux, nextId)
 	server.RegisterCommunicator(comm)
 	server.RegisterUi(ui)
-	go func() {
-		defer server.Close()
-		server.Serve()
-	}()
+	go server.Serve()
+	defer server.Close()
 
 	done := make(chan interface{})
 	defer close(done)

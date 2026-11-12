@@ -6,7 +6,9 @@ package rpc
 import (
 	"io"
 	"log"
+	"net"
 	"net/rpc"
+	"sync"
 
 	"github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/ugorji/go/codec"
@@ -42,6 +44,11 @@ type PluginServer struct {
 	// This field is set by the plugin `Set` type for plugins who support
 	// protocol version v2.
 	UseProto bool
+
+	mu       sync.Mutex
+	conn     net.Conn
+	closed   bool
+	finished bool
 }
 
 // NewServer returns a new Packer RPC server.
@@ -65,12 +72,31 @@ func newServerWithMux(mux *muxBroker, streamId uint32) *PluginServer {
 	}
 }
 
+// Close shuts down this server. The top-level server closes the shared mux.
+// Every other server closes only its own stream.
 func (s *PluginServer) Close() error {
 	if s.closeMux {
 		log.Printf("[WARN] Shutting down mux conn in Server")
 		return s.mux.Close()
 	}
 
+	s.mu.Lock()
+	if s.closed {
+		s.mu.Unlock()
+		return nil
+	}
+	s.closed = true
+	conn := s.conn
+	// No stream yet. Cancel the wait so Serve can return.
+	cancel := conn == nil && !s.finished
+	s.mu.Unlock()
+
+	if conn != nil {
+		return conn.Close()
+	}
+	if cancel {
+		s.mux.CancelAccept(s.streamId)
+	}
 	return nil
 }
 
@@ -168,10 +194,33 @@ func (s *PluginServer) Serve() {
 	// normal client to server connections.
 	stream, err := s.mux.Accept(s.streamId)
 	if err != nil {
-		log.Printf("[ERR] Error retrieving stream for serving: %s", err)
+		s.mu.Lock()
+		closed := s.closed
+		s.finished = true
+		s.mu.Unlock()
+		if !closed {
+			log.Printf("[ERR] Error retrieving stream for serving: %s", err)
+		}
 		return
 	}
-	defer stream.Close()
+
+	s.mu.Lock()
+	if s.closed {
+		s.finished = true
+		s.mu.Unlock()
+		stream.Close()
+		return
+	}
+	s.conn = stream
+	s.mu.Unlock()
+
+	defer func() {
+		s.mu.Lock()
+		s.conn = nil
+		s.finished = true
+		s.mu.Unlock()
+		stream.Close()
+	}()
 
 	h := &codec.MsgpackHandle{
 		WriteExt: true,

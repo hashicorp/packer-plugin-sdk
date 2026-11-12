@@ -21,6 +21,7 @@ type TestPostProcessor struct {
 	ppArtifact   packersdk.Artifact
 	ppArtifactId string
 	ppUi         packersdk.Ui
+	returnInput  bool
 
 	postProcessFn func(context.Context) error
 }
@@ -38,6 +39,9 @@ func (pp *TestPostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, a
 	pp.ppArtifact = a
 	pp.ppArtifactId = a.Id()
 	pp.ppUi = ui
+	if pp.returnInput {
+		return a, true, false, nil
+	}
 	if pp.postProcessFn != nil {
 		return testPostProcessorArtifact, false, false, pp.postProcessFn(ctx)
 	}
@@ -130,6 +134,38 @@ func TestPostProcessorRPC_cancel(t *testing.T) {
 	_, _, _, err = ppClient.PostProcess(topCtx, ui, a)
 	if err == nil {
 		t.Fatalf("should err")
+	}
+}
+
+func TestPostProcessorRPC_sameArtifact(t *testing.T) {
+	p := new(TestPostProcessor)
+	p.returnInput = true
+
+	client, server := testClientServer(t)
+	defer client.Close()
+	defer server.Close()
+	if err := server.RegisterPostProcessor(p); err != nil {
+		t.Fatal(err)
+	}
+
+	input := &packersdk.MockArtifact{IdValue: "kept"}
+	artifact, keep, _, err := client.PostProcessor().PostProcess(context.Background(), new(testUi), input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !keep {
+		t.Fatal("expected keep")
+	}
+	// The plugin returned the artifact it was given, so the callback
+	// stream must still be up after PostProcess returns.
+	if artifact.Id() != "kept" {
+		t.Fatalf("artifact invalidated after PostProcess: %q", artifact.Id())
+	}
+	if err := artifact.Destroy(); err != nil {
+		t.Fatal(err)
+	}
+	if !input.DestroyCalled {
+		t.Fatal("input artifact was not destroyed")
 	}
 }
 
