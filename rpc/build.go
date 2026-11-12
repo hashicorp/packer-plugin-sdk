@@ -53,10 +53,8 @@ func (b *build) Run(ctx context.Context, ui packersdk.Ui) ([]packersdk.Artifact,
 	nextId := b.mux.NextId()
 	server := newServerWithMux(b.mux, nextId)
 	server.RegisterUi(ui)
-	go func() {
-		defer server.Close()
-		server.Serve()
-	}()
+	go server.Serve()
+	defer server.Close()
 
 	done := make(chan any)
 	defer close(done)
@@ -87,7 +85,7 @@ func (b *build) Run(ctx context.Context, ui packersdk.Ui) ([]packersdk.Artifact,
 			return nil, err
 		}
 		clients = append(clients, client)
-		artifacts[i] = client.Artifact()
+		artifacts[i] = client.dedicatedArtifact()
 	}
 
 	return artifacts, nil
@@ -152,10 +150,8 @@ func (b *BuildServer) Run(streamId uint32, reply *[]uint32) error {
 		streamId := b.mux.NextId()
 		server := newServerWithMux(b.mux, streamId)
 		server.RegisterArtifact(artifact)
-		go func() {
-			defer server.Close()
-			server.Serve()
-		}()
+		// The caller owns this artifact until Destroy, which closes the stream.
+		go server.Serve()
 
 		(*reply)[i] = streamId
 	}

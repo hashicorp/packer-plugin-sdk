@@ -5,8 +5,10 @@ package rpc
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/yamux"
 )
@@ -53,6 +55,41 @@ func TestMuxBroker(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+	}
+}
+
+func TestMuxBrokerCancelledAcceptClosesLateStream(t *testing.T) {
+	m := newMuxBroker(nil)
+	const id = 7
+	p := m.getStream(id)
+
+	m.CancelAccept(id)
+	if _, err := m.Accept(id); err == nil {
+		t.Fatal("expected Accept to report cancellation")
+	}
+
+	// Run queued a stream after CancelAccept and Accept drained the buffer.
+	local, peer := net.Pipe()
+	defer peer.Close()
+	p.ch <- local
+
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		m.timeoutWait(id, p)
+	}()
+	select {
+	case <-done:
+	case <-time.After(2 * time.Second):
+		t.Fatal("timeoutWait did not return for a cancelled accept")
+	}
+
+	if len(p.ch) != 0 {
+		t.Fatal("late stream left in the buffer")
+	}
+	_ = peer.SetReadDeadline(time.Now().Add(2 * time.Second))
+	if _, err := peer.Read(make([]byte, 1)); err != io.EOF {
+		t.Fatalf("late stream not closed: read err %v", err)
 	}
 }
 
