@@ -32,9 +32,15 @@ func (e *MultiError) Error() string {
 // original error is not a MultiError, it will be turned into one.
 func MultiErrorAppend(err error, errs ...error) *MultiError {
 	var me *MultiError
-	if err == nil {
+	switch {
+	case err == nil:
 		me = new(MultiError)
-	} else if !errors.As(err, &me) || me == nil {
+	case errors.As(err, &me):
+		// A nil *MultiError still matches. Start empty instead of keeping it.
+		if me == nil {
+			me = new(MultiError)
+		}
+	default:
 		newErrs := make([]error, len(errs)+1)
 		newErrs[0] = err
 		copy(newErrs[1:], errs)
@@ -45,11 +51,13 @@ func MultiErrorAppend(err error, errs ...error) *MultiError {
 
 	for _, verr := range errs {
 		var rhs *MultiError
-		if errors.As(verr, &rhs) && rhs != nil {
-			me.Errors = append(me.Errors, rhs.Errors...)
-		} else {
-			me.Errors = append(me.Errors, verr)
+		if errors.As(verr, &rhs) {
+			if rhs != nil {
+				me.Errors = append(me.Errors, rhs.Errors...)
+			}
+			continue
 		}
+		me.Errors = append(me.Errors, verr)
 	}
 	return me
 }
