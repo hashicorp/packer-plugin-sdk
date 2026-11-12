@@ -160,11 +160,13 @@ func (c *comm) Start(ctx context.Context, cmd *packersdk.RemoteCmd) (err error) 
 		err := session.Wait()
 		exitStatus := 0
 		if err != nil {
-			switch err := err.(type) {
-			case *ssh.ExitError:
-				exitStatus = err.ExitStatus()
+			var exitErr *ssh.ExitError
+			var missingErr *ssh.ExitMissingError
+			switch {
+			case errors.As(err, &exitErr):
+				exitStatus = exitErr.ExitStatus()
 				log.Printf("[ERROR] Remote command exited with '%d': %s", exitStatus, cmd.Command)
-			case *ssh.ExitMissingError:
+			case errors.As(err, &missingErr):
 				log.Printf("[ERROR] Remote command exited without exit status or exit signal.")
 				exitStatus = packersdk.CmdDisconnect
 			default:
@@ -816,7 +818,8 @@ func (c *comm) scpSession(scpCommand string, f func(io.Writer, *bufio.Reader) er
 	err = session.Wait()
 	log.Printf("[DEBUG] scp stderr (length %d): %s", stderr.Len(), stderr.String())
 	if err != nil {
-		if exitErr, ok := err.(*ssh.ExitError); ok {
+		var exitErr *ssh.ExitError
+		if errors.As(err, &exitErr) {
 			// Otherwise, we have an ExitError, meaning we can just read the
 			// exit status
 			log.Printf("[DEBUG] non-zero exit status: %d, %v", exitErr.ExitStatus(), err)

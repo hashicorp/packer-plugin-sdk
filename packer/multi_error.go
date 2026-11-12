@@ -4,6 +4,7 @@
 package packer
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -30,27 +31,15 @@ func (e *MultiError) Error() string {
 // onto a MultiError in order to create a larger multi-error. If the
 // original error is not a MultiError, it will be turned into one.
 func MultiErrorAppend(err error, errs ...error) *MultiError {
-	if err == nil {
-		err = new(MultiError)
-	}
-
-	switch err := err.(type) {
-	case *MultiError:
-		if err == nil {
-			err = new(MultiError)
+	var me *MultiError
+	switch {
+	case err == nil:
+		me = new(MultiError)
+	case errors.As(err, &me):
+		// A nil *MultiError still matches. Start empty instead of keeping it.
+		if me == nil {
+			me = new(MultiError)
 		}
-
-		for _, verr := range errs {
-			switch rhsErr := verr.(type) {
-			case *MultiError:
-				if rhsErr != nil {
-					err.Errors = append(err.Errors, rhsErr.Errors...)
-				}
-			default:
-				err.Errors = append(err.Errors, verr)
-			}
-		}
-		return err
 	default:
 		newErrs := make([]error, len(errs)+1)
 		newErrs[0] = err
@@ -59,4 +48,16 @@ func MultiErrorAppend(err error, errs ...error) *MultiError {
 			Errors: newErrs,
 		}
 	}
+
+	for _, verr := range errs {
+		var rhs *MultiError
+		if errors.As(verr, &rhs) {
+			if rhs != nil {
+				me.Errors = append(me.Errors, rhs.Errors...)
+			}
+			continue
+		}
+		me.Errors = append(me.Errors, verr)
+	}
+	return me
 }
