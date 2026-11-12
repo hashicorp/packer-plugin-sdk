@@ -43,7 +43,7 @@ type Pair struct {
 	Public  []byte
 }
 
-func NewPair(public, private interface{}) (*Pair, error) {
+func NewPair(public, private any) (*Pair, error) {
 	kb, err := x509.MarshalPKCS8PrivateKey(private)
 	if err != nil {
 		return nil, err

@@ -24,10 +24,10 @@ type GeneratedData struct {
 	State multistep.StateBag
 }
 
-func (gd *GeneratedData) Put(key string, data interface{}) {
-	genData := make(map[string]interface{})
+func (gd *GeneratedData) Put(key string, data any) {
+	genData := make(map[string]any)
 	if _, ok := gd.State.GetOk("generated_data"); ok {
-		genData = gd.State.Get("generated_data").(map[string]interface{})
+		genData = gd.State.Get("generated_data").(map[string]any)
 	}
 	genData[key] = data
 	gd.State.Put("generated_data", genData)

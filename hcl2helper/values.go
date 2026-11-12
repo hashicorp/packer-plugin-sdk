@@ -22,7 +22,7 @@ const UnknownVariableValue = "74D93920-ED26-11E3-AC10-0800200C9A66"
 
 // HCL2ValueFromConfigValue takes a value turns it into
 // a cty.Value so it can be used within, for example, an HCL2 EvalContext.
-func HCL2ValueFromConfigValue(v interface{}) cty.Value {
+func HCL2ValueFromConfigValue(v any) cty.Value {
 	if v == nil {
 		return cty.NullVal(cty.DynamicPseudoType)
 	}
@@ -39,7 +39,7 @@ func HCL2ValueFromConfigValue(v interface{}) cty.Value {
 		return cty.NumberIntVal(int64(tv))
 	case float64:
 		return cty.NumberFloatVal(tv)
-	case []interface{}:
+	case []any:
 		vals := make([]cty.Value, len(tv))
 		for i, ev := range tv {
 			vals[i] = HCL2ValueFromConfigValue(ev)
@@ -51,7 +51,7 @@ func HCL2ValueFromConfigValue(v interface{}) cty.Value {
 			vals[i] = cty.StringVal(ev)
 		}
 		return cty.ListVal(vals)
-	case map[string]interface{}:
+	case map[string]any:
 		vals := map[string]cty.Value{}
 		for k, ev := range tv {
 			vals[k] = HCL2ValueFromConfigValue(ev)
@@ -66,8 +66,8 @@ func HCL2ValueFromConfigValue(v interface{}) cty.Value {
 
 // HCL2ValueFromConfig takes a struct with it's map of hcldec.Spec, and turns it into
 // a cty.Value so it can be used as, for example, a Datasource value.
-func HCL2ValueFromConfig(conf interface{}, configSpec map[string]hcldec.Spec) cty.Value {
-	c := map[string]interface{}{}
+func HCL2ValueFromConfig(conf any, configSpec map[string]hcldec.Spec) cty.Value {
+	c := map[string]any{}
 	if err := mapstructure.Decode(conf, &c); err != nil {
 		panic(fmt.Errorf("can't convert %#v to cty.Value", conf))
 	}
@@ -81,12 +81,12 @@ func HCL2ValueFromConfig(conf interface{}, configSpec map[string]hcldec.Spec) ct
 		// as I was working on other parts of the code at the same time.
 		//
 		// In the end, this may happen when the generated flat configs and
-		// the structures returned by the plugin are not synchronised, which
+		// the structures returned by the plugin are not synchronized, which
 		// causes the object spec to be out-of-sync with the data expected.
 		//
 		// Rather than letting the hcl library panic on a nil pointer problem,
 		// we do it here, with suggestions for users on how to potentially
-		// fix the problem, without needing to delve into the behaviour of
+		// fix the problem, without needing to delve into the behavior of
 		// the SDK and the HCL libraries.
 		if spec == nil {
 			panic(`The converted value failed to have its spec inferred from it, and will panic later down the process.
@@ -102,7 +102,7 @@ If this doesn't fix your problem, this is likely a Packer bug, please consider o
 			// This should be a slice of objects, so we need to take a special care
 			if hcldec.ImpliedType(st.Nested).IsObjectType() {
 				res := []cty.Value{}
-				c := []interface{}{}
+				c := []any{}
 				if err := mapstructure.Decode(v, &c); err != nil {
 					panic(fmt.Errorf("can't convert %#v to cty.Value", conf))
 				}

@@ -279,13 +279,13 @@ func (c *SSH) ConfigSpec() hcldec.ObjectSpec { return c.FlatMapstructure().HCL2S
 func (c *WinRM) ConfigSpec() hcldec.ObjectSpec { return c.FlatMapstructure().HCL2Spec() }
 
 // Configure parses the json template into the Config structs
-func (c *SSH) Configure(raws ...interface{}) ([]string, error) {
+func (c *SSH) Configure(raws ...any) ([]string, error) {
 	err := config.Decode(c, nil, raws...)
 	return nil, err
 }
 
 // Configure parses the json template into the Config structs
-func (c *WinRM) Configure(raws ...interface{}) ([]string, error) {
+func (c *WinRM) Configure(raws ...any) ([]string, error) {
 	err := config.Decode(c, nil, raws...)
 	return nil, err
 }
@@ -300,7 +300,7 @@ var (
 type SSHInterface struct {
 	// One of `public_ip`, `private_ip`, `public_dns`, or `private_dns`. If
 	// set, either the public IP address, private IP address, public DNS name
-	// or private DNS name will used as the host for SSH. The default behaviour
+	// or private DNS name will used as the host for SSH. The default behavior
 	// if inside a VPC is to use the public IP address if available, otherwise
 	// the private IP address will be used. If not in a VPC the public DNS name
 	// will be used. Also works for WinRM.

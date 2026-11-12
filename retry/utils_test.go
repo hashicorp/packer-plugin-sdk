@@ -9,12 +9,12 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func DeepAllowUnexported(vs ...interface{}) cmp.Option {
+func DeepAllowUnexported(vs ...any) cmp.Option {
 	m := make(map[reflect.Type]struct{})
 	for _, v := range vs {
 		structTypes(reflect.ValueOf(v), m)
 	}
-	var typs []interface{}
+	var typs []any
 	for t := range m {
 		typs = append(typs, reflect.New(t).Elem().Interface())
 	}
@@ -26,7 +26,7 @@ func structTypes(v reflect.Value, m map[reflect.Type]struct{}) {
 		return
 	}
 	switch v.Kind() {
-	case reflect.Ptr:
+	case reflect.Pointer:
 		if !v.IsNil() {
 			structTypes(v.Elem(), m)
 		}
@@ -47,5 +47,7 @@ func structTypes(v reflect.Value, m map[reflect.Type]struct{}) {
 		for i := 0; i < v.NumField(); i++ {
 			structTypes(v.Field(i), m)
 		}
+	default:
+		// Scalars and other kinds have no nested structs.
 	}
 }

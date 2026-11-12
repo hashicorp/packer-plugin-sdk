@@ -16,7 +16,7 @@ import (
 func TestHCL2ValueFromConfigValue(t *testing.T) {
 	tests := []struct {
 		Name  string
-		Input interface{}
+		Input any
 		Want  cty.Value
 	}{
 		{
@@ -46,11 +46,11 @@ func TestHCL2ValueFromConfigValue(t *testing.T) {
 		},
 		{
 			Name: "nested map[string]interface{}",
-			Input: map[string]interface{}{
+			Input: map[string]any{
 				"name": "Ermintrude",
 				"age":  int(19),
-				"address": map[string]interface{}{
-					"street": []interface{}{"421 Shoreham Loop"},
+				"address": map[string]any{
+					"street": []any{"421 Shoreham Loop"},
 					"city":   "Fridgewater",
 					"state":  "MA",
 					"zip":    "91037",
@@ -69,7 +69,7 @@ func TestHCL2ValueFromConfigValue(t *testing.T) {
 		},
 		{
 			Name: "simple map[string]interface{}",
-			Input: map[string]interface{}{
+			Input: map[string]any{
 				"foo": "bar",
 				"bar": "baz",
 			},
@@ -80,7 +80,7 @@ func TestHCL2ValueFromConfigValue(t *testing.T) {
 		},
 		{
 			Name: "[]interface{} as tuple",
-			Input: []interface{}{
+			Input: []any{
 				"foo",
 				true,
 			},
@@ -127,7 +127,7 @@ func TestHCL2ValueFromConfigValue(t *testing.T) {
 func TestHCL2ValueFromConfig(t *testing.T) {
 	tests := []struct {
 		Name  string
-		Input interface{}
+		Input any
 		Spec  map[string]hcldec.Spec
 		Want  cty.Value
 	}{

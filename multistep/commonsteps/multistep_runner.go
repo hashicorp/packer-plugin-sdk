@@ -44,9 +44,9 @@ func newRunner(steps []multistep.Step, config common.PackerConfig, ui packersdk.
 	if config.PackerDebug {
 		pauseFn := MultistepDebugFn(ui)
 		return &multistep.DebugRunner{Steps: steps, PauseFn: pauseFn}, pauseFn
-	} else {
-		return &multistep.BasicRunner{Steps: steps}, nil
 	}
+
+	return &multistep.BasicRunner{Steps: steps}, nil
 }
 
 // NewRunner returns a multistep.Runner that runs steps augmented with support
@@ -68,7 +68,7 @@ func NewRunnerWithPauseFn(steps []multistep.Step, config common.PackerConfig, ui
 	return runner
 }
 
-func typeName(i interface{}) string {
+func typeName(i any) string {
 	return reflect.Indirect(reflect.ValueOf(i)).Type().Name()
 }
 

@@ -10,7 +10,7 @@ import (
 
 // cty.Value is does not know how to encode itself through the wire so we
 // transform it to bytes.
-func encodeCTYValues(config []interface{}) ([]interface{}, error) {
+func encodeCTYValues(config []any) ([]any, error) {
 	for i := range config {
 		if v, ok := config[i].(cty.Value); ok {
 			b, err := json.Marshal(v, cty.DynamicPseudoType)
@@ -24,7 +24,7 @@ func encodeCTYValues(config []interface{}) ([]interface{}, error) {
 }
 
 // decodeCTYValues will try to decode a cty value when it finds a byte slice
-func decodeCTYValues(config []interface{}) ([]interface{}, error) {
+func decodeCTYValues(config []any) ([]any, error) {
 	for i := range config {
 		if b, ok := config[i].([]byte); ok {
 			t, err := json.Unmarshal(b, cty.DynamicPseudoType)

@@ -30,13 +30,13 @@ const HttpIPNotImplemented = "ERR_HTTP_IP_NOT_IMPLEMENTED_BY_BUILDER"
 const HttpPortNotImplemented = "ERR_HTTP_PORT_NOT_IMPLEMENTED_BY_BUILDER"
 const HttpAddrNotImplemented = "ERR_HTTP_ADDR_NOT_IMPLEMENTED_BY_BUILDER"
 
-func PopulateProvisionHookData(state multistep.StateBag) map[string]interface{} {
-	hookData := make(map[string]interface{})
+func PopulateProvisionHookData(state multistep.StateBag) map[string]any {
+	hookData := make(map[string]any)
 
 	// Load Builder hook data from state, if it has been set.
 	hd, ok := state.GetOk("generated_data")
 	if ok {
-		hookData = hd.(map[string]interface{})
+		hookData = hd.(map[string]any)
 	}
 
 	// Warn user that the id isn't implemented
@@ -150,11 +150,11 @@ func (s *StepProvision) runWithHook(ctx context.Context, state multistep.StateBa
 
 			return multistep.ActionContinue
 		case <-ctx.Done():
-			log.Printf("Cancelling provisioning due to context cancellation: %s", ctx.Err())
+			log.Printf("Canceling provisioning due to context cancellation: %s", ctx.Err())
 			return multistep.ActionHalt
 		case <-time.After(1 * time.Second):
 			if _, ok := state.GetOk(multistep.StateCancelled); ok {
-				log.Println("Cancelling provisioning due to interrupt...")
+				log.Println("Canceling provisioning due to interrupt...")
 				return multistep.ActionHalt
 			}
 		}

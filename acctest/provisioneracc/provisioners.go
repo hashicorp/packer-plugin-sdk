@@ -248,10 +248,10 @@ func TestProvisionersAgainstBuilders(testCase *ProvisionerTestCase, t *testing.T
 						"acceptance test template can be found at %s",
 						checkErr.Error(), filepath.Join(cwd, logfile),
 						filepath.Join(cwd, templatePath))
-				} else {
-					os.Remove(templatePath)
-					os.Remove(logfile)
 				}
+
+				os.Remove(templatePath)
+				os.Remove(logfile)
 			})
 		}
 	}

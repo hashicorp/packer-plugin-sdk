@@ -290,7 +290,7 @@ func outputHCL2SpecField(w io.Writer, accessor string, fieldType types.Type, tag
 // a cty.Type or a string. The second argument is used for recursion and is the
 // type that will be used by the parent. For example when fieldType is a []string; a
 // recursive goFieldToCtyType call will return a cty.String.
-func goFieldToCtyType(accessor string, fieldType types.Type) (interface{}, cty.Type) {
+func goFieldToCtyType(accessor string, fieldType types.Type) (any, cty.Type) {
 	switch f := fieldType.(type) {
 	case *types.Pointer:
 		return goFieldToCtyType(accessor, f.Elem())
@@ -472,8 +472,8 @@ func uniqueTags(tagName string, fields []*types.Var, tags []string) ([]*types.Va
 	uniqueTags := map[string]bool{}
 	for i := range fields {
 		field, tag := fields[i], tags[i]
-		structtag, _ := structtag.Parse(tag)
-		h, err := structtag.Get(tagName)
+		st, _ := structtag.Parse(tag)
+		h, err := st.Get(tagName)
 		if err == nil {
 			if uniqueTags[h.Name] {
 				return nil, nil, fmt.Errorf("field %q: duplicate tag %q", field.Name(), tagName)
@@ -498,14 +498,14 @@ func getMapstructureSquashedStruct(topPkg *types.Package, utStruct *types.Struct
 		if _, ok := field.Type().(*types.Signature); ok {
 			continue // ignore funcs
 		}
-		structtag, err := structtag.Parse(tag)
+		st, err := structtag.Parse(tag)
 		if err != nil {
 			log.Printf("could not parse field tag %s of : %v", tag, err)
 			continue
 		}
 
 		// Contains mapstructure-to-hcl2 tag
-		if ms, err := structtag.Get("mapstructure-to-hcl2"); err == nil {
+		if ms, err := st.Get("mapstructure-to-hcl2"); err == nil {
 			// Stop if is telling to skip it
 			if ms.HasOption("skip") {
 				continue
@@ -513,7 +513,7 @@ func getMapstructureSquashedStruct(topPkg *types.Package, utStruct *types.Struct
 		}
 
 		// Contains mapstructure tag
-		if ms, err := structtag.Get("mapstructure"); err == nil {
+		if ms, err := st.Get("mapstructure"); err == nil {
 			// Squash structs
 			if ms.HasOption("squash") {
 				ot := field.Type()

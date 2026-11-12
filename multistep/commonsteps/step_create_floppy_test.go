@@ -21,7 +21,7 @@ import (
 const TestFixtures = "test-fixtures"
 
 func TestStepCreateFloppy_Impl(t *testing.T) {
-	var raw interface{} = new(StepCreateFloppy)
+	var raw any = new(StepCreateFloppy)
 	if _, ok := raw.(multistep.Step); !ok {
 		t.Fatalf("StepCreateFloppy should be a step")
 	}
@@ -305,9 +305,9 @@ func TestStepCreateFloppyContent(t *testing.T) {
 	}
 
 	// check the FilesAdded array to see if it matches
-	for path := range step.Content {
-		if !step.FilesAdded[path] {
-			t.Fatalf("unable to find file: %s for %v", path, step.Content)
+	for filename := range step.Content {
+		if !step.FilesAdded[filename] {
+			t.Fatalf("unable to find file: %s for %v", filename, step.Content)
 		}
 	}
 

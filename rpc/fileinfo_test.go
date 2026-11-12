@@ -17,8 +17,8 @@ func (fi dummyFileInfo) Mode() os.FileMode { return 0644 }
 func (fi dummyFileInfo) ModTime() time.Time {
 	return time.Time{}.Add(1 * time.Minute)
 }
-func (fi dummyFileInfo) IsDir() bool      { return false }
-func (fi dummyFileInfo) Sys() interface{} { return nil }
+func (fi dummyFileInfo) IsDir() bool { return false }
+func (fi dummyFileInfo) Sys() any    { return nil }
 func TestNewFileInfoNilPointer(t *testing.T) {
 	fi := NewFileInfo(os.FileInfo(nil))
 	if fi != nil {
