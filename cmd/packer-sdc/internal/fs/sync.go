@@ -101,7 +101,8 @@ func syncFile(src, dst string) error {
 				//
 				// ERROR_PRIVILEGE_NOT_HELD is 1314 (0x522):
 				// https://msdn.microsoft.com/en-us/library/windows/desktop/ms681385(v=vs.85).aspx
-				if lerr, ok := err.(*os.LinkError); ok && lerr.Err != syscall.Errno(1314) {
+				var lerr *os.LinkError
+				if errors.As(err, &lerr) && !errors.Is(lerr.Err, syscall.Errno(1314)) {
 					return err
 				}
 			} else {

@@ -8,6 +8,7 @@ package ssh
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"testing"
@@ -220,7 +221,7 @@ func TestHandshakeTimeout(t *testing.T) {
 	}
 
 	_, err := New(address, config)
-	if err != ErrHandshakeTimeout {
+	if !errors.Is(err, ErrHandshakeTimeout) {
 		// Note: there's another error that can come back from this call:
 		//   ssh: handshake failed: EOF
 		// This should appear in cases where the handshake fails because of
