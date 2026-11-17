@@ -73,6 +73,11 @@ func TestUSBDriver(t *testing.T) {
 			false,
 		},
 		{
+			"<menu>",
+			key.Code(0x65),
+			false,
+		},
+		{
 			"<return>",
 			key.CodeReturnEnter,
 			false,
@@ -118,6 +123,18 @@ func TestUSBDriver(t *testing.T) {
 				t.Fatalf("bad: wrong shift: \n expected: %t \n actual: %t", tt.shift, shift)
 			}
 		})
+	}
+}
+
+// Every special key the PC-XT driver knows must also be known by the USB
+// driver, otherwise a boot command that validates fine fails at run time.
+func TestUSBDriver_SpecialKeysMatchPCXTDriver(t *testing.T) {
+	usb := NewUSBDriver(nil, time.Duration(0))
+	pcxt := NewPCXTDriver(nil, 0, time.Duration(0))
+	for special := range pcxt.specialMap {
+		if _, ok := usb.specialMap[special]; !ok {
+			t.Errorf("special key <%s> is supported by the PC-XT driver but not by the USB driver", special)
+		}
 	}
 }
 
