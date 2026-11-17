@@ -73,6 +73,10 @@ func NewUSBDriver(send SendUsbScanCodes, interval time.Duration) *usbDriver {
 		"leftsuper":  key.CodeLeftGUI,
 		"rightsuper": key.CodeRightGUI,
 		"spacebar":   key.CodeSpacebar,
+		// golang.org/x/mobile/event/key has no constant for the Menu key;
+		// 0x65 is "Keyboard Application" in the USB HID Usage Tables
+		// (Keyboard/Keypad page 0x07).
+		"menu": key.Code(0x65),
 
 		// https://developer.apple.com/accessories/Accessory-Design-Guidelines.pdf
 		"leftcommand":  key.CodeLeftGUI,
