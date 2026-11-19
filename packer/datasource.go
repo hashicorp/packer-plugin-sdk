@@ -24,3 +24,11 @@ type Datasource interface {
 	// Execute the func call and return the values
 	Execute() (cty.Value, error)
 }
+
+// SensitiveOutputer is an optional interface for a Datasource whose outputs
+// contain secrets. Packer hides the string values of the named top-level
+// outputs, as declared in OutputSpec, from its UI and logs after Execute.
+type SensitiveOutputer interface {
+	// SensitiveOutputs returns the names of the outputs to hide.
+	SensitiveOutputs() []string
+}
