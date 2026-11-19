@@ -77,6 +77,7 @@ func (c *Communicator) Upload(dst string, r io.Reader, fi *os.FileInfo) error {
 		return fmt.Errorf("Error preparing shell script: %s", err)
 	}
 	defer os.Remove(tf.Name())
+	defer tf.Close()
 
 	if _, err := io.Copy(tf, r); err != nil {
 		return err

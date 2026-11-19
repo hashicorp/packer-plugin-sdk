@@ -50,6 +50,7 @@ func (p *provisioner) Provision(ctx context.Context, ui packersdk.Ui, comm packe
 	server.RegisterCommunicator(comm)
 	server.RegisterUi(ui)
 	go server.Serve()
+	defer server.Close()
 
 	done := make(chan any)
 	defer close(done)
