@@ -74,7 +74,7 @@ func TestUSBDriver(t *testing.T) {
 		},
 		{
 			"<menu>",
-			key.Code(0x65),
+			codeApplication,
 			false,
 		},
 		{
