@@ -11,6 +11,10 @@ import (
 // available over an RPC connection.
 type artifact struct {
 	commonClient
+	// Closes the dedicated stream for this artifact after Destroy. Nil for
+	// artifacts that borrow a client shared with other endpoints, such as
+	// the input artifact handed to a post-processor alongside its UI.
+	closeStream func() error
 }
 
 // ArtifactServer wraps a packersdk.Artifact implementation and makes it
@@ -46,7 +50,12 @@ func (a *artifact) State(name string) (result any) {
 
 func (a *artifact) Destroy() error {
 	var result error
-	if err := a.client.Call(a.endpoint+".Destroy", new(any), &result); err != nil {
+	err := a.client.Call(a.endpoint+".Destroy", new(any), &result)
+	// Close the dedicated stream, even if Destroy failed.
+	if a.closeStream != nil {
+		_ = a.closeStream()
+	}
+	if err != nil {
 		return err
 	}
 

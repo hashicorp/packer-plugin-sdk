@@ -69,23 +69,34 @@ func (p *postProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, a pack
 
 	var response PostProcessorProcessResponse
 	if err := p.client.Call(p.endpoint+".PostProcess", nextId, &response); err != nil {
+		_ = server.Close()
 		return nil, false, false, err
 	}
 
 	if response.Err != nil {
+		_ = server.Close()
 		return nil, false, false, response.Err
 	}
 
 	if response.StreamId == 0 {
+		_ = server.Close()
 		return nil, false, false, nil
 	}
 
 	client, err := newClientWithMux(p.mux, response.StreamId)
 	if err != nil {
+		_ = server.Close()
 		return nil, false, false, err
 	}
 
-	return client.Artifact(), response.Keep, response.ForceOverride, nil
+	// The returned artifact may still call back into the input artifact
+	// served here, so keep that server up until Destroy.
+	remote := client.Artifact().(*artifact)
+	remote.closeStream = func() error {
+		_ = server.Close()
+		return client.Close()
+	}
+	return remote, response.Keep, response.ForceOverride, nil
 }
 
 func (p *PostProcessorServer) Configure(args *PostProcessorConfigureArgs, reply *any) (err error) {
@@ -136,6 +147,7 @@ func (p *PostProcessorServer) PostProcess(streamId uint32, reply *PostProcessorP
 		if err := server.RegisterArtifact(artifactResult); err != nil {
 			return err
 		}
+		// The caller owns this artifact until Destroy, which closes the stream.
 		go server.Serve()
 	}
 	return nil

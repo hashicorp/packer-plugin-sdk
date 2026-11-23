@@ -40,6 +40,7 @@ func (h *hook) Run(ctx context.Context, name string, ui packersdk.Ui, comm packe
 	server.RegisterCommunicator(comm)
 	server.RegisterUi(ui)
 	go server.Serve()
+	defer server.Close()
 
 	done := make(chan any)
 	defer close(done)

@@ -123,6 +123,7 @@ func syncFile(src, dst string) error {
 	if err != nil {
 		return err
 	}
+	defer out.Close()
 
 	inS, err := in.Stat()
 	if err != nil {

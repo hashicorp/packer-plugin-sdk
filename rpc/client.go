@@ -90,6 +90,14 @@ func (c *Client) Artifact() packer.Artifact {
 	}
 }
 
+// dedicatedArtifact returns an artifact that closes this client on Destroy. Use
+// it only when the client's stream is dedicated to the artifact.
+func (c *Client) dedicatedArtifact() *artifact {
+	a := c.Artifact().(*artifact)
+	a.closeStream = c.Close
+	return a
+}
+
 func (c *Client) Build() packer.Build {
 	return &build{
 		commonClient: commonClient{
