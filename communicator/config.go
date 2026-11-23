@@ -10,10 +10,12 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/hashicorp/hcl/v2/hcldec"
 	helperssh "github.com/hashicorp/packer-plugin-sdk/communicator/ssh"
+	"github.com/hashicorp/packer-plugin-sdk/communicator/sshkey"
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer-plugin-sdk/pathing"
@@ -206,25 +208,21 @@ type SSH struct {
 // keypair for the instance. You can change the algorithm type and bits
 // settings.
 type SSHTemporaryKeyPair struct {
-	// `dsa` | `ecdsa` | `ed25519` | `rsa` ( the default )
+	// `ecdsa` | `ed25519` | `rsa` ( the default )
 	//
-	// Specifies the type of key to create. The possible values are 'dsa',
-	// 'ecdsa', 'ed25519', or 'rsa'.
+	// Specifies the type of key to create. The possible values are 'ecdsa',
+	// 'ed25519', or 'rsa'.
 	//
-	// NOTE: DSA is deprecated and no longer recognized as secure, please
-	// consider other alternatives like RSA or ED25519.
+	// NOTE: DSA is no longer supported, please use ECDSA, ED25519 or RSA
+	// instead.
 	SSHTemporaryKeyPairType string `mapstructure:"temporary_key_pair_type"`
 	// Specifies the number of bits in the key to create. For RSA keys, the
 	// minimum size is 1024 bits and the default is 4096 bits. Generally, 3072
-	// bits is considered sufficient. DSA keys must be exactly 1024 bits as
-	// specified by FIPS 186-2. For ECDSA keys, bits determines the key length
-	// by selecting from one of three elliptic curve sizes: 256, 384 or 521
-	// bits. Attempting to use bit lengths other than these three values for
-	// ECDSA keys will fail. Ed25519 keys have a fixed length and bits will be
-	// ignored.
-	//
-	// NOTE: DSA is deprecated and no longer recognized as secure as specified
-	// by FIPS 186-5, please consider other alternatives like RSA or ED25519.
+	// bits is considered sufficient. For ECDSA keys, bits determines the key
+	// length by selecting from one of three elliptic curve sizes: 256, 384 or
+	// 521 bits. Attempting to use bit lengths other than these three values
+	// for ECDSA keys will fail. Ed25519 keys have a fixed length and bits will
+	// be ignored.
 	SSHTemporaryKeyPairBits int `mapstructure:"temporary_key_pair_bits"`
 }
 
@@ -540,6 +538,10 @@ func (c *Config) prepareSSH(ctx *interpolate.Context) []error {
 
 	if c.SSHUsername == "" {
 		errs = append(errs, errors.New("An ssh_username must be specified\n  Note: some builders used to default ssh_username to \"root\"."))
+	}
+
+	if strings.EqualFold(c.SSHTemporaryKeyPairType, "dsa") {
+		errs = append(errs, fmt.Errorf("temporary_key_pair_type is invalid: %w", sshkey.ErrDSANotSupported))
 	}
 
 	if c.SSHPrivateKeyFile != "" {

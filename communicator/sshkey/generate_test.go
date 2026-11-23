@@ -4,6 +4,7 @@
 package sshkey
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -14,7 +15,6 @@ func TestGeneratePair_parseable(t *testing.T) {
 	tests := []struct {
 		t Algorithm
 	}{
-		{DSA},
 		{RSA},
 		{ECDSA},
 		{ED25519},
@@ -39,5 +39,17 @@ func TestGeneratePair_parseable(t *testing.T) {
 				t.Fatalf("wrong public key: %s", diff)
 			}
 		})
+	}
+}
+
+func TestGeneratePair_dsaNotSupported(t *testing.T) {
+	for _, bits := range []int{0, 1024} {
+		pair, err := GeneratePair(DSA, nil, bits)
+		if !errors.Is(err, ErrDSANotSupported) {
+			t.Fatalf("GeneratePair(DSA, %d) error = %v, want %v", bits, err, ErrDSANotSupported)
+		}
+		if pair != nil {
+			t.Fatalf("GeneratePair(DSA, %d) returned a pair, want nil", bits)
+		}
 	}
 }

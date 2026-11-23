@@ -5,7 +5,6 @@ package ssh
 
 import (
 	"bytes"
-	"crypto/dsa" //nolint:all
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"fmt"
@@ -265,13 +264,6 @@ func TestKeyPairFromPrivateKey(t *testing.T) {
 				comment: uuid.TimeOrderedUUID(),
 			},
 		},
-		pemDsa: {
-			t: Dsa,
-			d: expectedData{
-				bits:    1024,
-				comment: uuid.TimeOrderedUUID(),
-			},
-		},
 		pemEcdsa384: {
 			t: Ecdsa,
 			d: expectedData{
@@ -305,8 +297,6 @@ func TestKeyPairFromPrivateKey(t *testing.T) {
 		}
 
 		switch expected.t {
-		case Dsa:
-			err = verifyDsaKeyPair(kp, expected)
 		case Ecdsa:
 			err = verifyEcdsaKeyPair(kp, expected.d)
 		case Ed25519:
@@ -319,6 +309,15 @@ func TestKeyPairFromPrivateKey(t *testing.T) {
 		if err != nil {
 			t.Fatal(err.Error())
 		}
+	}
+}
+
+func TestKeyPairFromPrivateKey_dsaNotSupported(t *testing.T) {
+	kp, err := KeyPairFromPrivateKey(FromPrivateKeyConfig{
+		RawPrivateKeyPemBlock: []byte(pemDsa),
+	})
+	if err == nil {
+		t.Fatalf("expected an error for a DSA private key, got key pair %#v", kp)
 	}
 }
 
@@ -400,41 +399,6 @@ func verifyRsaKeyPair(kp KeyPair, e expectedData) error {
 	if len(e.comment) > 0 {
 		expectedBytes = append(expectedBytes, ' ')
 		expectedBytes = append(expectedBytes, e.comment...)
-	}
-
-	if !bytes.Equal(expectedBytes, kp.PublicKeyAuthorizedKeysLine) {
-		return fmt.Errorf("authorized keys line should be:\n'%s'\nGot:\n'%s'",
-			string(expectedBytes), string(kp.PublicKeyAuthorizedKeysLine))
-	}
-
-	return nil
-}
-
-func verifyDsaKeyPair(kp KeyPair, e fromPrivateExpectedData) error {
-	privateKey, err := gossh.ParseRawPrivateKey(kp.PrivateKeyPemBlock)
-	if err != nil {
-		return err
-	}
-
-	pk, ok := privateKey.(*dsa.PrivateKey)
-	if !ok {
-		return fmt.Errorf("private key should be *rsa.PrivateKey")
-	}
-
-	publicKey, err := gossh.NewPublicKey(&pk.PublicKey)
-	if err != nil {
-		return err
-	}
-
-	if kp.Comment != e.d.comment {
-		return fmt.Errorf("key pair comment should be:\n'%s'\nGot:\n'%s'",
-			e.d.comment, kp.Comment)
-	}
-
-	expectedBytes := bytes.TrimSuffix(gossh.MarshalAuthorizedKey(publicKey), []byte("\n"))
-	if len(e.d.comment) > 0 {
-		expectedBytes = append(expectedBytes, ' ')
-		expectedBytes = append(expectedBytes, e.d.comment...)
 	}
 
 	if !bytes.Equal(expectedBytes, kp.PublicKeyAuthorizedKeysLine) {

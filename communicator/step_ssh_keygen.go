@@ -51,7 +51,7 @@ func (s *StepSSHKeyGen) Run(ctx context.Context, state multistep.StateBag) multi
 	}
 	a, err := sshkey.AlgorithmString(algorithm)
 	if err != nil {
-		err := fmt.Errorf("%w: possible algorithm types are `dsa` | `ecdsa` | `ed25519` | `rsa` ( the default )", err)
+		err := fmt.Errorf("%w: possible algorithm types are `ecdsa` | `ed25519` | `rsa` ( the default )", err)
 		state.Put("error", err)
 		return multistep.ActionHalt
 	}
