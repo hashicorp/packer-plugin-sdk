@@ -14,6 +14,11 @@ import (
 	"golang.org/x/mobile/event/key"
 )
 
+// codeApplication is the Menu key. golang.org/x/mobile/event/key has no
+// constant for it; 0x65 is "Keyboard Application" in the USB HID Usage
+// Tables (Keyboard/Keypad page 0x07).
+const codeApplication key.Code = 0x65
+
 // SendUsbScanCodes will be called to send codes to the VM
 type SendUsbScanCodes func(k key.Code, down bool) error
 
@@ -73,6 +78,7 @@ func NewUSBDriver(send SendUsbScanCodes, interval time.Duration) *usbDriver {
 		"leftsuper":  key.CodeLeftGUI,
 		"rightsuper": key.CodeRightGUI,
 		"spacebar":   key.CodeSpacebar,
+		"menu":       codeApplication,
 
 		// https://developer.apple.com/accessories/Accessory-Design-Guidelines.pdf
 		"leftcommand":  key.CodeLeftGUI,
