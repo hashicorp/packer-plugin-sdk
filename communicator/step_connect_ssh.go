@@ -31,10 +31,11 @@ import (
 // In general, you should use StepConnect.
 type StepConnectSSH struct {
 	// All the fields below are documented on StepConnect
-	Config    *Config
-	Host      func(multistep.StateBag) (string, error)
-	SSHConfig func(multistep.StateBag) (*gossh.ClientConfig, error)
-	SSHPort   func(multistep.StateBag) (int, error)
+	Config       *Config
+	Host         func(multistep.StateBag) (string, error)
+	SSHConfig    func(multistep.StateBag) (*gossh.ClientConfig, error)
+	SSHConfigOtp func(multistep.StateBag) (*gossh.ClientConfig, error)
+	SSHPort      func(multistep.StateBag) (int, error)
 }
 
 func (s *StepConnectSSH) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
@@ -216,6 +217,13 @@ func (s *StepConnectSSH) waitForSSH(state multistep.StateBag, ctx context.Contex
 			KeepAliveInterval:      s.Config.SSHKeepAliveInterval,
 			Timeout:                s.Config.SSHReadWriteTimeout,
 			Tunnels:                tunnels,
+		}
+		if s.SSHConfigOtp != nil {
+			// Create dynamic SSH config function
+			sshConfigFunc := func() (*gossh.ClientConfig, error) {
+				return s.SSHConfigOtp(state)
+			}
+			config.SSHConfigOtp = sshConfigFunc
 		}
 
 		log.Printf("[INFO] Attempting SSH connection to %s...", address)
