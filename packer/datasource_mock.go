@@ -17,6 +17,8 @@ type MockDatasource struct {
 	ConfigureCalled  bool  `mapstructure-to-hcl2:",skip"`
 	ConfigureConfigs []any `mapstructure-to-hcl2:",skip"`
 	ExecuteCalled    bool  `mapstructure-to-hcl2:",skip"`
+
+	SensitiveOutputNames []string `mapstructure-to-hcl2:",skip"`
 }
 
 type MockDatasourceResponse struct {
@@ -47,4 +49,8 @@ func (d *MockDatasource) Execute() (cty.Value, error) {
 	return cty.ObjectVal(map[string]cty.Value{
 		"foo": cty.StringVal(d.Foo),
 	}), nil
+}
+
+func (d *MockDatasource) SensitiveOutputs() []string {
+	return d.SensitiveOutputNames
 }

@@ -8,6 +8,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"log"
+	"net/rpc"
 
 	"github.com/hashicorp/hcl/v2/hcldec"
 	"github.com/hashicorp/packer-plugin-sdk/packer"
@@ -110,6 +111,26 @@ func (d *datasource) Execute() (cty.Value, error) {
 	return res, err
 }
 
+type SensitiveOutputsResponse struct {
+	Outputs []string
+}
+
+func (d *datasource) SensitiveOutputs() []string {
+	method := d.endpoint + ".SensitiveOutputs"
+	resp := new(SensitiveOutputsResponse)
+	if err := d.client.Call(method, new(any), resp); err != nil {
+		// Plugins built with an older SDK do not serve this method. Any other
+		// failure must not be mistaken for "no sensitive outputs", or callers
+		// would skip redacting secrets.
+		if err == rpc.ServerError("rpc: can't find method "+method) {
+			log.Printf("[DEBUG] - datasource: SensitiveOutputs unavailable: %v", err)
+			return nil
+		}
+		panic(fmt.Sprintf("Datasource.SensitiveOutputs failed: %v", err))
+	}
+	return resp.Outputs
+}
+
 // DatasourceServer wraps a packer.Datasource implementation and makes it
 // exportable as part of a Golang RPC server.
 type DatasourceServer struct {
@@ -172,6 +193,13 @@ func (d *DatasourceServer) Execute(args *any, reply *ExecuteResponse) error {
 		err = reply.Error
 	}
 	return err
+}
+
+func (d *DatasourceServer) SensitiveOutputs(args *any, reply *SensitiveOutputsResponse) error {
+	if s, ok := d.d.(packer.SensitiveOutputer); ok {
+		reply.Outputs = s.SensitiveOutputs()
+	}
+	return nil
 }
 
 func (d *DatasourceServer) Cancel(args *any, reply *any) error {
