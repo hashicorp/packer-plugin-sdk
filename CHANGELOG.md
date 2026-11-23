@@ -1,6 +1,42 @@
  # Latest Release
  Please refer to [releases](https://github.com/hashicorp/packer-plugin-sdk/releases) for latest CHANGELOG information.
 
+## 0.6.14 (November 23, 2026)
+
+* acctest: Use `t3.small` for the Windows amazon-ebs provisioner fixture
+    [GH-381](https://github.com/hashicorp/packer-plugin-sdk/pull/381)
+* adapter: Use pointer receivers on all `scpUploadState` methods
+    [GH-366](https://github.com/hashicorp/packer-plugin-sdk/pull/366)
+* bootcommand: Add the `<menu>` key to the USB driver
+    [GH-380](https://github.com/hashicorp/packer-plugin-sdk/pull/380)
+* communicator: Remove DSA SSH key support and update `golang.org/x/crypto`
+    to v0.59.0. Builds that set `temporary_key_pair_type = "dsa"` or use a DSA
+    `ssh_private_key_file` now fail; use `ed25519`, `ecdsa`, or `rsa` instead
+    [GH-382](https://github.com/hashicorp/packer-plugin-sdk/pull/382)
+* communicator/winrm: Use `RunWithContext` when downloading files
+    [GH-365](https://github.com/hashicorp/packer-plugin-sdk/pull/365)
+* packer: Add the optional `SensitiveOutputer` interface so datasources can
+    declare sensitive outputs
+    [GH-378](https://github.com/hashicorp/packer-plugin-sdk/pull/378)
+* packer: Ignore a nil `MultiError` when combining errors
+    [GH-363](https://github.com/hashicorp/packer-plugin-sdk/pull/363)
+* sdk: Use `errors.As` and `errors.Is` for wrapped error checks
+    [GH-363](https://github.com/hashicorp/packer-plugin-sdk/pull/363)
+* sdk: Apply mechanical syntax and style cleanups, including American English
+    spelling in some log and error messages
+    [GH-377](https://github.com/hashicorp/packer-plugin-sdk/pull/377)
+* sdk: Upgrade Go to 1.26.11 and update module dependencies
+    [GH-381](https://github.com/hashicorp/packer-plugin-sdk/pull/381)
+* sdk: Add and update copyright headers for compliance
+    [GH-376](https://github.com/hashicorp/packer-plugin-sdk/pull/376)
+
+## 0.6.13 (October 22, 2026)
+
+* packer: Redact secrets longest-first and make secret redaction race-free
+    [GH-340](https://github.com/hashicorp/packer-plugin-sdk/pull/340)
+* sdk: Update `go-getter` and other dependencies to address vulnerabilities
+    [GH-375](https://github.com/hashicorp/packer-plugin-sdk/pull/375)
+
 ## 0.6.12 (October 07, 2026)
 
 * sdk: Update AWS SDK, EventStream, and go-getter dependencies
