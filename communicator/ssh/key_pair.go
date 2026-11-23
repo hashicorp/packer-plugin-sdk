@@ -6,7 +6,6 @@ package ssh
 import (
 	"bytes"
 	"crypto"
-	"crypto/dsa" //nolint:all
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
@@ -28,6 +27,7 @@ const (
 	Default KeyPairType = ""
 	Rsa     KeyPairType = "RSA"
 	Ecdsa   KeyPairType = "ECDSA"
+	// Deprecated: DSA is no longer supported by golang.org/x/crypto/ssh.
 	Dsa     KeyPairType = "DSA"
 	Ed25519 KeyPairType = "ED25519"
 )
@@ -60,32 +60,22 @@ type KeyPair struct {
 // KeyPairFromPrivateKey returns a KeyPair loaded from an existing private key.
 //
 // Supported key pair types include:
-//   - DSA (NOTE: deprecated from Go as DSA is not regarded as secure anymore, please consider RSA or ED25519 instead)
 //   - ECDSA
 //   - ED25519
 //   - RSA
+//
+// DSA keys are no longer supported and return an error.
 func KeyPairFromPrivateKey(config FromPrivateKeyConfig) (KeyPair, error) {
 	privateKey, err := gossh.ParseRawPrivateKey(config.RawPrivateKeyPemBlock)
 	if err != nil {
 		return KeyPair{}, err
 	}
 
-	switch pk := privateKey.(type) {
-	case crypto.Signer:
+	if pk, ok := privateKey.(crypto.Signer); ok {
 		// crypto.Signer is implemented by ecdsa.PrivateKey,
 		// ed25519.PrivateKey, and rsa.PrivateKey - separate cases
 		// for each PrivateKey type would be redundant.
 		publicKey, err := gossh.NewPublicKey(pk.Public())
-		if err != nil {
-			return KeyPair{}, err
-		}
-		return KeyPair{
-			Comment:                     config.Comment,
-			PrivateKeyPemBlock:          config.RawPrivateKeyPemBlock,
-			PublicKeyAuthorizedKeysLine: authorizedKeysLine(publicKey, config.Comment),
-		}, nil
-	case *dsa.PrivateKey:
-		publicKey, err := gossh.NewPublicKey(&pk.PublicKey)
 		if err != nil {
 			return KeyPair{}, err
 		}

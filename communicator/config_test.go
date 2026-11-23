@@ -8,6 +8,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"os"
 	"reflect"
@@ -15,6 +16,7 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/packer-plugin-sdk/communicator/sshkey"
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
@@ -52,6 +54,17 @@ func TestConfig_badtype(t *testing.T) {
 	c := &Config{Type: "foo"}
 	if err := c.Prepare(testContext(t)); len(err) != 1 {
 		t.Fatalf("bad: %#v", err)
+	}
+}
+
+func TestConfig_temporaryKeyPairTypeDSA(t *testing.T) {
+	for _, keyType := range []string{"dsa", "DSA"} {
+		c := testConfig()
+		c.SSHTemporaryKeyPairType = keyType
+		errs := c.Prepare(testContext(t))
+		if len(errs) != 1 || !errors.Is(errs[0], sshkey.ErrDSANotSupported) {
+			t.Fatalf("temporary_key_pair_type %q: expected ErrDSANotSupported, got %#v", keyType, errs)
+		}
 	}
 }
 
